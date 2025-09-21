@@ -1,0 +1,61 @@
+{% include 'message.html' %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Nota</title>
+</head>
+<body>
+    <h1>Agregar Nota</h1>
+
+    <form method="POST">
+        <!-- Seleccionar curso -->
+        <label>Curso:</label>
+        <select name="curso_id" onchange="this.form.submit()" required>
+            <option value="" disabled {% if not curso_seleccionado %}selected{% endif %}>Seleccione un curso</option>
+            {% for id_curso, nivel, generacion in cursos %}
+                <option value="{{ id_curso }}" {% if curso_seleccionado == id_curso %}selected{% endif %}>
+                    {{ nivel }} {{ generacion }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if curso_seleccionado %}
+        {% if alumnos %}
+        <form method="POST">
+            <!-- Mantener el curso seleccionado -->
+            <input type="hidden" name="curso_id" value="{{ curso_seleccionado }}">
+
+            <label>Alumno:</label>
+            <select name="alumno_rut_alum" required>
+                <option value="" disabled selected>Seleccione un alumno</option>
+                {% for rut, nombre in alumnos %}
+                    <option value="{{ rut }}">{{ nombre }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label>Asignatura:</label>
+            <select name="asignatura_codigo" required>
+                {% for cod, detalle in asignaturas %}
+                    <option value="{{ cod }}">{{ detalle }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label>Nombre Evaluación:</label>
+            <input type="text" name="nombre" required><br><br>
+
+            <label>Nota:</label>
+            <input type="number" name="nota" step="0.1" min="1" max="7" required><br><br>
+
+            <button type="submit">Guardar</button>
+        </form>
+        {% else %}
+            <p style="color: red;">No hay alumnos registrados en este curso.</p>
+        {% endif %}
+    {% endif %}
+
+    <a href="{{ url_for('listar_notas') }}">Volver</a>
+</body>
+</html>

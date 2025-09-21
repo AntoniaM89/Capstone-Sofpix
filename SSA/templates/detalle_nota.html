@@ -1,0 +1,24 @@
+{% include 'message.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Detalle de Nota</h1>
+    <p><b>ID Nota:</b> {{ nota[0] }}</p>
+    <p><b>Nombre Evaluación:</b> {{ nota[1] }}</p>
+    <p><b>Nota:</b> {{ nota[2] }}</p>
+    <p><b>Asignatura:</b> {{ nota[4] }}</p>
+    <p><b>Profesor:</b> {{ nota[5] }}</p>
+    <p><b>Alumno:</b>
+    {{ nota[7] }}{% if nota[8] %} {{ nota[8] }}{% endif %} {{ nota[9] }}{% if nota[10] %} {{ nota[10] }}{% endif %}
+    </p>
+
+    <a href="{{ url_for('listar_notas') }}">Volver</a>
+
+</body>
+</html>

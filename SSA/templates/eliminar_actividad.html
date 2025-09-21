@@ -1,0 +1,19 @@
+{% include 'message.html' %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eliminar Actividad</title>
+</head>
+<body>
+
+<h1>Eliminar Actividad</h1>
+<p>¿Seguro que deseas eliminar la actividad <b>{{ actividad.Nombre }}</b> (Tipo: {{ actividad.Tipo }})?</p>
+<p>Carpeta: {{ actividad.Carpeta }} | Fecha: {{ actividad.Fecha }}</p>
+
+<form method="POST">
+    <button type="submit">Sí, eliminar</button>
+    <a href="{{ url_for('listar_actividades') }}">Cancelar</a>
+</form>
+</body>
+</html>

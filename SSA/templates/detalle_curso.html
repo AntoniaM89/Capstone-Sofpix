@@ -1,0 +1,16 @@
+{% include 'message.html' %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles del Curso</title>
+</head>
+<body>
+    <h1>Detalles del Curso</h1>
+    <p><b>ID:</b> {{ curso[0] }}</p>
+    <p><b>Nivel:</b> {{ curso[1] }}</p>
+    <p><b>Generación:</b> {{ curso[2] }}</p>
+    <a href="{{ url_for('listar_cursos') }}">Volver al listado</a>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{% include 'message.html' %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Actividades</title>
+</head>
+<body>
+
+<h1>Actividades</h1>
+<p><a href="{{ url_for('home') }}">Volver al Inicio</a></p>
+<a href="{{ url_for('agregar_actividad') }}">Agregar Nueva Actividad</a>
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Carpeta / Fecha</th>
+        <th>Curso</th>
+        <th>Acciones</th>
+    </tr>
+    {% for a in actividades %}
+    <tr>
+        <td>{{ a[0] }}</td>
+        <td>{{ a[1] }} {% if a[2] %} {{ a[2] }}{% endif %} {{ a[3] }}</td>
+        <td>{{ a[4].strftime("%d-%m-%Y") }}</td>
+        <td>{% if a[5] and a[6] %}{{ a[5] }} {{ a[6] }}{% endif %}</td>
+        <td>
+            <a href="{{ url_for('detalle_actividad', id_act=a[0]) }}">Ver</a> |
+            <a href="{{ url_for('editar_actividad', id_act=a[0]) }}">Editar</a> |
+            <a href="{{ url_for('eliminar_actividad', id_act=a[0]) }}">Eliminar</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

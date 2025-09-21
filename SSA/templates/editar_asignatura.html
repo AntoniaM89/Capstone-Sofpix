@@ -1,0 +1,27 @@
+{% include 'message.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Editar Asignatura</h1>
+    <form method="POST">
+        <p><b>ID:</b> {{ asignatura[0] }}</p>
+        <input type="text" name="nombre_asi" placeholder="Nombre Asignatura" value="{{ asignatura[1] }}" required>
+        <select name="profesor_correo" required>
+            {% for prof in profesores %}
+                <option value="{{ prof[0] }}" {% if prof[0] == asignatura[2] %}selected{% endif %}>
+                    {{ prof[1] }} {{ prof[2] or '' }} {{ prof[3] }} {{ prof[4] or '' }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit">Actualizar</button>
+    </form>
+    <a href="{{ url_for('listar_asignaturas') }}">Volver al listado</a>
+
+</body>
+</html>

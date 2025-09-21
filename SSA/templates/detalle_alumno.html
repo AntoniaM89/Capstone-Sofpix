@@ -1,0 +1,17 @@
+{% include 'message.html' %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle Alumno</title>
+</head>
+<body>
+    <h1>Detalle del Alumno</h1>
+    <p><strong>RUT:</strong> {{ alumno[0] }}</p>
+    <p><strong>Nombres:</strong> {{ alumno[1] }} {% if alumno[2] %} {{ alumno[2] }}{% endif %}</p>
+    <p><strong>Apellidos:</strong> {{ alumno[3] }} {{ alumno[4] }}</p>
+    <p><strong>Curso:</strong> {{ alumno[6] }} {{ alumno[7] }}</p>
+    <a href="{{ url_for('listar_alumnos') }}">Volver al listado</a>
+</body>
+</html>

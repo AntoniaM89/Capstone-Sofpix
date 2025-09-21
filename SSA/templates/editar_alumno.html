@@ -1,0 +1,32 @@
+{% include 'message.html' %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Alumno</title>
+</head>
+<body>
+    <h1>Editar Alumno</h1>
+    <form method="POST">
+        <input type="hidden" name="rut_alum" value="{{ alumno[0] }}">
+
+        <input type="text" name="nom_alum" value="{{ alumno[1] }}" required><br>
+        <input type="text" name="seg_nom_alum" value="{{ alumno[2] }}"><br>
+        <input type="text" name="ap_pat_alum" value="{{ alumno[3] }}" required><br>
+        <input type="text" name="ap_mat_alum" value="{{ alumno[4] }}"><br>
+
+        <label>Curso:</label>
+        <select name="curso_id" required>
+            {% for curso in cursos %}
+                <option value="{{ curso[0] }}" {% if curso[0] == alumno[5] %}selected{% endif %}>
+                    {{ curso[1] }} {{ curso[2] }}
+                </option>
+            {% endfor %}
+        </select><br><br>
+
+        <button type="submit">Guardar cambios</button>
+    </form>
+    <a href="{{ url_for('listar_alumnos') }}">Volver al listado</a>
+</body>
+</html>

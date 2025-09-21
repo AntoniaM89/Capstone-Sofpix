@@ -1,0 +1,25 @@
+{% include 'message.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Agregar Nuevo Profesor</h1>
+    <form method="POST">
+        <input type="email" name="correo" placeholder="Correo" required>
+        <input type="text" name="nom_user" placeholder="Nombre" required>
+        <input type="text" name="seg_nom_user" placeholder="Segundo Nombre">
+        <input type="text" name="ap_pat_user" placeholder="Apellido Paterno" required>
+        <input type="text" name="ap_mat_user" placeholder="Apellido Materno">
+        <input type="password" name="pass_enc" placeholder="Contraseña" required>
+        <input type="text" name="area" placeholder="Área" required>
+        <button type="submit">Agregar</button>
+    </form>
+    <a href="{{ url_for('listar_profesores') }}">Volver al listado</a>
+
+</body>
+</html>

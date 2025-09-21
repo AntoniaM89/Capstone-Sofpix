@@ -1,0 +1,40 @@
+{% include 'message.html' %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Notas</title>
+</head>
+<body>
+    <h1>Notas</h1>
+
+    <p><a href="{{ url_for('home') }}">Volver al Inicio</a></p>
+
+    <a href="{{ url_for('agregar_nota') }}">Agregar Nueva Nota</a>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>Nombre Evaluación</th>
+            <th>Nota</th>
+            <th>Asignatura</th>
+            <th>Alumno</th>
+            <th>Acciones</th>
+        </tr>
+        {% for n in notas %}
+        <tr>
+            <td>{{ n[1] }}</td>
+            <td>{{ n[2] }}</td>
+            <td>{{ n[3] }}</td>
+            <td>{{ n[4] }}</td>
+            <td>
+                <a href="{{ url_for('detalle_nota', id_nota=n[0]) }}">Ver</a> |
+                <a href="{{ url_for('editar_nota', id_nota=n[0]) }}">Editar</a> |
+                <a href="{{ url_for('eliminar_nota', id_nota=n[0]) }}">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>
+

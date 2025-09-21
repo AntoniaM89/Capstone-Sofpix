@@ -1,0 +1,21 @@
+{% include 'message.html' %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle Actividad</title>
+</head>
+<body>
+
+    <h1>Detalle de la Actividad</h1>
+    <p><b>ID:</b> {{ actividad.ID }}</p>
+    <p><b>Nombre:</b> {{ actividad.Nombre }}</p>
+    <p><b>Tipo:</b> {{ actividad.Tipo }}</p>
+    <p><b>Carpeta:</b> {{ actividad.Carpeta }}</p>
+    <p><b>Fecha de Creación:</b> {{ actividad.Fecha }}</p>
+    <p><b>Curso:</b> {{ actividad.CursoNivel }} {{ actividad.CursoGeneracion }}</p>
+
+    <a href="{{ url_for('listar_actividades') }}">Volver al listado</a>
+</body>
+</html>
+
