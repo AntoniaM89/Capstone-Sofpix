@@ -1,0 +1,58 @@
+{% include 'message.html' %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Nota</title>
+</head>
+<body>
+    <h1>Agregar Nota</h1>
+
+    <form method="POST">
+        <label>Curso:</label>
+        <select name="curso_id" onchange="this.form.submit()" required>
+            <option value="" disabled {% if not curso_seleccionado %}selected{% endif %}>Seleccione un curso</option>
+            {% for curso in cursos %}
+                <option value="{{ curso.id_curso }}" {% if curso_seleccionado == curso.id_curso|string %}selected{% endif %}>
+                    {{ curso.nivel }} {{ curso.generacion }}
+                </option>
+            {% endfor %}
+        </select><br><br>
+
+        {% if curso_seleccionado %}
+            {% if alumnos %}
+                <label>Alumno:</label>
+                <select name="alumno_rut_alum" required>
+                    <option value="" disabled selected>Seleccione un alumno</option>
+                    {% for alumno in alumnos %}
+                        <option value="{{ alumno.rut_alum }}">
+                            {{ alumno.nom_alum }}{% if alumno.seg_nom_alum %} {{ alumno.seg_nom_alum }}{% endif %} 
+                            {{ alumno.ap_pat_alum }}{% if alumno.ap_mat_alum %} {{ alumno.ap_mat_alum }}{% endif %}
+                        </option>
+                    {% endfor %}
+                </select><br><br>
+
+                <label>Asignatura:</label>
+                <select name="asignatura_codigo" required>
+                    {% for asignatura in asignaturas %}
+                        <option value="{{ asignatura.codigo }}">{{ asignatura.nombre_asi }} Dictado por: {{ asignatura.profesor }}</option>
+                    {% endfor %}
+                </select><br><br>
+
+                <label>Nombre Evaluación:</label>
+                <input type="text" name="nombre" required><br><br>
+
+                <label>Nota:</label>
+                <input type="number" name="nota" step="0.1" min="1" max="7" required><br><br>
+
+                <button type="submit" name="action" value="guardar">Guardar</button>
+            {% else %}
+                <p style="color: red;">No hay alumnos registrados en este curso.</p>
+            {% endif %}
+        {% endif %}
+    </form>
+
+    <a href="{{ url_for('list_notas') }}">Volver</a>
+</body>
+</html>

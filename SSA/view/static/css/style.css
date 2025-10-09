@@ -1,0 +1,257 @@
+/* Importaciones de fuentes locales */
+@font-face {
+    font-family: 'LazyDog';
+    src: url('../fonts/lazy_dog.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ChunkFive';
+    src: url('../fonts/Chunkfive Ex.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Lato Fonts */
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-BoldItalic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+}
+
+
+/* HTML y Body */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(90deg, #5de0e6, #004aad);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    font-family: 'LazyDog', Arial, sans-serif;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 800px; 
+    min-height: 450px; 
+}
+
+
+/* Contenedor que se escala dinámicamente */
+.scale-container {
+    width: 800px;
+    height: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-origin: top center;
+}
+
+/* Contenedor de flashes */
+.flash-container {
+    padding: 0;
+    margin: 0 0 15px 0;
+    list-style: none;
+    display: flex;            
+    flex-direction: column;   
+    align-items: center;     
+}
+
+/* Cada flash */
+.flash-message {
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+    list-style-type: none;
+    min-width: 200px;        
+    text-align: center;      
+}
+
+/* Colores */
+.flash-success { background-color: green; }
+.flash-error   { background-color: red; }
+.flash-info    { background-color: blue; }
+
+
+/* Botón de retroceso con lápiz */
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 140px;
+    height: 60px;
+    background-color: transparent;
+    border-radius: 12px;
+    z-index: 1000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    text-decoration: none;
+}
+
+.back-button img {
+    width: 50px;
+    height: auto;
+    object-fit: contain;
+    transform: rotate(90deg); 
+    margin-left: 10px;
+    position: absolute;
+}
+
+.back-button span {
+    position: relative;
+    z-index: 10;           
+    font-family: 'ChunkFive', Arial, sans-serif;
+    font-size: 1rem;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1em;
+    text-decoration: none; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    display: block;
+}
+
+.back-button:hover {
+    filter: brightness(1.05);
+}
+
+.back-button.hidden {
+    opacity: 0;
+    pointer-events: none; 
+}
+
+
+/* Estilo generico para eliminar */
+.eliminar-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 0 15px;
+}
+
+.eliminar-card {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    font-family: 'LazyDog', Arial, sans-serif;
+    color: #000000;
+    text-align: center;
+    border: 2px solid #d32f2f;
+}
+
+.eliminar-title {
+    font-size: 2rem;
+    color: #d32f2f;
+    margin-bottom: 15px;
+}
+
+.eliminar-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.eliminar-buttons button,
+.eliminar-buttons a {
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: 'LazyDog', Arial, sans-serif;
+    transition: background 0.2s;
+}
+
+.eliminar-buttons button {
+    background-color: #d32f2f;
+    color: #fff;
+}
+
+.eliminar-buttons button:hover {
+    background-color: #e53935;
+}
+
+.eliminar-buttons a {
+    background-color: #5c5c5c;
+    color: #ffffff;
+    text-align: center;
+}
+
+.eliminar-buttons a:hover {
+    background-color: #757575;
+}

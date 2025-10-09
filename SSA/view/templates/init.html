@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofpix - Inicio</title>
+
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/home.css">
+</head>
+
+<body>
+    <div class="scale-container">
+        <div class="start-container">
+            <div class="logo-sofpix">
+                SOFP
+                <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="pencil" class="pencil-icon">
+                X
+            </div>
+
+            <img src="{{ url_for('static', filename='icons/hand_brush.png') }}" alt="hand brush" class="hand-brush">
+
+            <div class="start-buttons">
+                <form action="{{ url_for('login') }}" method="get">
+                    <button type="submit">Iniciar Sesión</button>
+                </form>
+                <form action="{{ url_for('add_profesor') }}">
+                    <button>Registrarse</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function scaleContent() {
+        const container = document.querySelector('.scale-container');
+        const mainContainer = document.querySelector('.start-container');
+        const pencil = document.querySelector('.pencil-icon');
+
+        const baseWidth = 1920;
+        const baseHeight = 1080;
+        const minWidth = 800;
+        const minHeight = 800;
+
+        const vw = Math.max(window.innerWidth, minWidth);
+        const vh = Math.max(window.innerHeight, minHeight);
+
+        const scaleX = vw / baseWidth;
+        const scaleY = vh / baseHeight;
+        let scale = Math.min(1, scaleX, scaleY);
+
+
+        const minScale = 0.85;
+        scale = Math.max(scale, minScale);
+
+        container.style.transform = `scale(${scale})`;
+
+
+        const paddingTopMin = 100;  
+        const paddingTopMax = 200;  
+        const gapMin = 20;
+        const gapMax = 100;
+
+
+        const factorWidth = (vw - minWidth) / (baseWidth - minWidth);
+        const factorHeight = (vh - minHeight) / (baseHeight - minHeight);
+        let factor = Math.min(factorWidth, factorHeight, 1);
+
+
+        const minFactor = 0.3;
+        factor = Math.max(factor, minFactor);
+
+        mainContainer.style.paddingTop = `${paddingTopMin + (paddingTopMax - paddingTopMin) * (1 - factor)}px`;
+        mainContainer.style.gap = `${gapMin + (gapMax - gapMin) * (1 - factor)}px`;
+
+
+        const pencilMin = 40;
+        const pencilMax = 60; 
+        const pencilSize = pencilMin + (pencilMax - pencilMin) * factor;
+        pencil.style.width = `${pencilSize}px`;
+    }
+
+
+    window.addEventListener('load', scaleContent);
+    window.addEventListener('resize', scaleContent);
+    </script>
+</body>
+</html>

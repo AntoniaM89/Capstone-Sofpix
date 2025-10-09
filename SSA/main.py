@@ -11,6 +11,12 @@ if __name__ == '__main__':
     flask_thread.daemon = True
     flask_thread.start()
 
-    # Abrir pywebview apuntando a Flask
-    webview.create_window("SSA Sofpix", "http://127.0.0.1:5000",width=1200, height=800)
+    # Abrir pywebview apuntando a Flask con tamaño mínimo
+    webview.create_window(
+        "SSA Sofpix",
+        "http://127.0.0.1:5000",
+        width=800,
+        height=800,
+        min_size=(800, 800)  # tamaño mínimo de ventana
+    )
     webview.start()

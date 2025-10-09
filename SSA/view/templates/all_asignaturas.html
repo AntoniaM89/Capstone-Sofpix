@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Asignaturas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/asignaturas.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <a href="{{ url_for('prueba') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container-asignaturas">
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flash-container">
+            {% for category, message in messages %}
+            <li class="flash-message {% if category == 'success' %}flash-success{% elif category == 'error' %}flash-error{% else %}flash-info{% endif %}">
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        {% if session.get('rol') == 'admin' %}
+        <div class="add-asignatura">
+            <a href="{{ url_for('add_asignatura') }}">
+                <i class="fa fa-plus"></i> Agregar Nueva Asignatura
+            </a>
+        </div>
+        {% endif %}
+
+        {% for asignatura in asignaturas %}
+        <div class="asignatura-card">
+
+            <div class="asignatura-header">
+                {% if asignatura.cursos|length > 0 %}
+                <button class="asignatura-toggle">
+                    <i class="fa fa-plus"></i> {{ asignatura.nombre }}
+                </button>
+                {% else %}
+                <span class="asignatura-no-cursos">{{ asignatura.nombre }}</span>
+                {% endif %}
+
+                <div class="admin-actions">
+                    <a href="{{ url_for('detail_asignatura', codigo=asignatura.codigo) }}" class="detalle-btn">
+                        <i class="fa fa-info-circle"></i> Detalles
+                    </a>
+
+                    {% if session.rol == 'admin' %}
+                    <a href="{{ url_for('update_asignatura', codigo=asignatura.codigo) }}">
+                        <i class="fa fa-edit"></i> Editar
+                    </a>
+                    <a href="{{ url_for('delete_asignatura', codigo=asignatura.codigo) }}">
+                        <i class="fa fa-trash"></i> Eliminar
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+
+            {% if asignatura.cursos|length > 0 %}
+            <div class="cursos-list">
+                {% for curso in asignatura.cursos %}
+                <a class="curso-item" href="{{ url_for('detalle_curso_prof_asignatura', codigo_asignatura=asignatura.codigo, codigo_curso=curso.codigo) }}">
+                    {{ curso.nombre }}
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+ <!-- Script acordeón + ocultar back button -->
+    <script>
+    (function() {
+        const backButton = document.querySelector('.back-button');
+        const container = document.querySelector('.scale-container-asignaturas');
+        const margin = 5;
+        const minSpace = 120;
+
+        function checkOverlap() {
+            if (!backButton) return;
+
+            const buttonRect = backButton.getBoundingClientRect();
+            let isOverlapping = false;
+
+            document.querySelectorAll('.asignatura-card').forEach(card => {
+                const cardRect = card.getBoundingClientRect();
+
+                // Verificar solapamiento con toda la tarjeta
+                const overlap = !(
+                    buttonRect.bottom < cardRect.top + margin ||
+                    buttonRect.top > cardRect.bottom - margin ||
+                    buttonRect.right < cardRect.left + margin ||
+                    buttonRect.left > cardRect.right - margin
+                );
+
+                if (overlap) isOverlapping = true;
+            });
+
+            const spaceAvailable = window.innerHeight - buttonRect.bottom;
+
+            if (isOverlapping || spaceAvailable < minSpace) {
+                backButton.classList.add('hidden');
+            } else {
+                backButton.classList.remove('hidden');
+            }
+        }
+
+        function setupToggles() {
+            document.querySelectorAll('.asignatura-toggle').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const cursos = btn.closest('.asignatura-card').querySelector('.cursos-list');
+                    const icon = btn.querySelector('i');
+
+                    cursos.classList.toggle('active');
+                    icon.classList.toggle('fa-plus');
+                    icon.classList.toggle('fa-minus');
+
+                    requestAnimationFrame(checkOverlap);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupToggles();
+            requestAnimationFrame(checkOverlap);
+
+            if (container) {
+                container.addEventListener('scroll', () => requestAnimationFrame(checkOverlap));
+            }
+            window.addEventListener('resize', () => requestAnimationFrame(checkOverlap));
+        });
+    })();
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+/* Contenedor general del curso  */
+.scale-container-curso {
+    width: 90%;
+    max-width: 900px;
+    min-width: 600px;
+    min-height: 70vh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    gap: 20px;
+    transform-origin: top center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px 10px 20px 20px;
+}
+
+/* Tarjeta del curso */
+.curso-card {
+    width: 95%;
+    background: linear-gradient(135deg, #ffde59, #ff914d);
+    border-radius: 25px;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 20px auto;
+}
+
+/* Encabezado */
+.curso-header {
+    background: linear-gradient(135deg, #0080c8, #5de0e6);
+    border-radius: 30px;
+    padding: 15px;
+    text-align: center;
+    font-family: 'ChunkFive', Arial, sans-serif;
+}
+
+.curso-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.curso-header p {
+    margin: 5px 0 0;
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+/* Lista de alumnos */
+.alumnos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Botón de alumno */
+.alumno-toggle {
+    width: 100%;
+    background: linear-gradient(135deg,#5de0e6, #0080c8);
+    color: #fff;
+    font-family: 'LazyDog', Arial, sans-serif;
+    font-size: 1rem;
+    padding: 12px;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s;
+}
+
+.alumno-toggle:hover {
+    background: #00b9d1;
+}
+
+/* Contenedor de notas */
+.notas {
+    display: none;
+    margin-top: 10px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.notas.active {
+    display: block;
+}
+
+/* Nota individual */
+.nota-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    margin: 6px 0;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #00b9d1;
+    font-weight: bold;
+}
+
+.nota-item span {
+    align-self: center;
+    align-items: center;
+    text-align: center;
+}
+
+.nota {
+    background: #004aad;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+/* Scroll personalizado */
+.scale-container-curso::-webkit-scrollbar {
+    width: 12px;
+    background: transparent;
+}
+
+.scale-container-curso::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.scale-container-curso::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #ffde59, #ff914d);
+    border-radius: 10px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+.scale-container-curso::-webkit-scrollbar-thumb:hover {
+    filter: brightness(1.2);
+}
