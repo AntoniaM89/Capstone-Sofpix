@@ -3,70 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <title>Biblioteca</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        async function descargarArchivo(id) {
+            if (window.pywebview) {
+                // Estamos en la app de escritorio
+                try {
+                    const result = await window.pywebview.api.descargar(id);
+                    if (result.ok) {
+                        alert("✅ Archivo descargado en: " + result.ruta);
+                    } else {
+                        alert("❌ Error al descargar el archivo");
+                    }
+                } catch (e) {
+                    console.error("Error en descarga:", e);
+                    alert("❌ No se pudo completar la descarga");
+                }
+            } else {
+                // Modo navegador normal → abrir ruta de descarga
+                window.location.href = `/biblioteca/descargar/${id}`;
+            }
+        }
+    </script>
 </head>
 <body>
     <h1>📚 Biblioteca</h1>
 
-    <!-- Formulario para subir archivo -->
-    <form action="{{ url_for('biblioteca_controller.gestionar_biblioteca') }}" method="POST" enctype="multipart/form-data">
-        <label for="nombre">Nombre del archivo:</label>
-        <input type="text" id="nombre" name="nombre" required><br><br>
-
-        <label for="tipo">Tipo:</label>
-        <select id="tipo" name="tipo" required>
-            <option value="pdf">PDF</option>
-            <option value="docx">DOCX</option>
-            <option value="img">Imagen</option>
-            <option value="otros">Otros</option>
-        </select><br><br>
-
-        <label for="contenido">Archivo:</label>
-        <input type="file" id="contenido" name="contenido" required><br><br>
-
-        <label for="carpeta">Carpeta:</label>
-        <input type="text" id="carpeta" name="carpeta" placeholder="Ej: Matemáticas"><br><br>
-
-        <label for="profesor_correo">Profesor:</label>
-        <select id="profesor_correo" name="profesor_correo" required>
+    <!-- Subida de archivo -->
+    <form method="POST" enctype="multipart/form-data">
+        <label>Archivo:</label>
+        <input type="file" name="contenido" required>
+        <br>
+        <label>Carpeta:</label>
+        <input type="text" name="carpeta" placeholder="Ej: Matemáticas">
+        <br>
+        <label>Profesor:</label>
+        <select name="profesor_correo" required>
             <option value="">-- Selecciona un profesor --</option>
-            {% for profesor in profesores %}
-                <option value="{{ profesor[0] }}">
-                    {{ profesor[1] }} {{ profesor[2] }} ({{ profesor[0] }})
-                </option>
+            {% for p in profesores %}
+                <option value="{{ p[0] }}">{{ p[1] }} {{ p[2] }} ({{ p[0] }})</option>
             {% endfor %}
-        </select><br><br>
-
-        <button type="submit">📤 Guardar archivo</button>
+        </select>
+        <br><br>
+        <button type="submit">Subir</button>
     </form>
 
     <hr>
 
-    <!-- Listado de archivos -->
-    <h2>📂 Archivos guardados</h2>
-    {% if archivos %}
-        <table border="1" cellpadding="5">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Tipo</th>
-                    <th>Carpeta</th>
-                    <th>Profesor</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for archivo in archivos %}
-                <tr>
-                    <td>{{ archivo[1] }}</td>
-                    <td>{{ archivo[2] }}</td>
-                    <td>{{ archivo[5] }}</td>
-                    <td>{{ archivo[4] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No hay archivos cargados todavía.</p>
-    {% endif %}
+    <!-- Listado -->
+    <h2>Archivos existentes</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Fecha</th>
+            <th>Profesor</th>
+            <th>Carpeta</th>
+            <th>Acciones</th>
+        </tr>
+        {% for a in archivos %}
+        <tr>
+            <td>{{ a[0] }}</td>
+            <td>{{ a[1] }}</td>
+            <td>{{ a[2] }}</td>
+            <td>{{ a[3] }}</td>
+            <td>{{ a[4] }}</td>
+            <td>{{ a[5] }}</td>
+            <td>
+                <!-- Descargar -->
+                <button type="button" onclick="descargarArchivo('{{ a[0] }}')">⬇ Descargar</button>
+
+
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <script>
+    window.addEventListener('load', function () {
+        document.body.tabIndex = 0;
+        document.body.focus();
+
+        document.addEventListener('keydown', function (e) {
+        console.log('keydown', e.key, e.keyCode);
+        if (e.key === 'Escape' || e.keyCode === 27) {
+            if (window.history.length > 1) {
+            window.history.back();
+            } else {
+            console.log('No history -> fallback to /');
+            window.location.href = '/';
+            }
+        }
+        });
+    });
+    </script>
+
 </body>
 </html>

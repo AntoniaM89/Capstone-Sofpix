@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Quizzes</title>
+</head>
+<body>
+    <h1>📝 Quizzes</h1>
+
+    <!-- Crear quiz -->
+    <form method="POST">
+        <label>Título:</label>
+        <input type="text" name="titulo" required><br>
+
+        <label>Descripción:</label>
+        <textarea name="descripcion" rows="3"></textarea><br>
+
+        <label>Profesor:</label>
+        <select name="profesor_correo" required>
+            <option value="">-- Selecciona un profesor --</option>
+            {% for p in profesores %}
+                <option value="{{ p['correo'] }}">{{ p['nom_user'] }}{% if p['seg_nom_user'] %} {{ p['seg_nom_user'] }}{% endif %} {{ p['ap_pat_user'] }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label>Carpeta:</label>
+        <input type="text" name="carpeta" placeholder="General"><br><br>
+
+        <button type="submit">➕ Crear Quiz</button>
+    </form>
+
+    <hr>
+
+    <!-- Listado de quizzes -->
+    <h2>Quizzes existentes</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Profesor</th>
+            <th>Fecha</th>
+            <th>Carpeta</th>
+            <th>Acciones</th>
+        </tr>
+        {% for q in quizzes %}
+        <tr>
+            <td>{{ q['id'] }}</td>
+            <td>{{ q['titulo'] }}</td>
+            <td>{{ q['descripcion'] }}</td>
+            <td>{{ q['nom_user'] }}{% if q['seg_nom_user'] %} {{ q['seg_nom_user'] }}{% endif %} {{ q['ap_pat_user'] }}</td>
+            <td>{{ q['fecha_creacion'] }}</td>
+            <td>{{ q['carpeta'] }}</td>
+            <td>
+                <form action="{{ url_for('quiz_controller.eliminar', id_quiz=q['id']) }}" method="POST" style="display:inline;">
+                    <button type="submit" onclick="return confirm('¿Seguro que quieres eliminar este quiz?')">🗑 Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

@@ -1,50 +1,61 @@
 from model.db import get_connection
 
+# === AGREGAR ARCHIVO ===
 def agregar_archivo(nombre, tipo, contenido, profesor_correo, carpeta):
     conn = get_connection()
     cur = conn.cursor()
-    if carpeta == "":
+    if not carpeta:
         carpeta = "Home"
     cur.execute("""
-        INSERT INTO BIBLIOTECA (Nombre, Tipo, Contenido, Profesor_Correo, Carpeta)
-        VALUES (:1, :2, :3, :4, :5)
+        INSERT INTO BIBLIOTECA (nombre, tipo, contenido, profesor_correo, carpeta)
+        VALUES (%s, %s, %s, %s, %s)
     """, (nombre, tipo, contenido, profesor_correo, carpeta))
     conn.commit()
     cur.close()
     conn.close()
 
-def listar_archivos(profesor_correo, carpeta):
+
+# === OBTENER ARCHIVO (para descarga) ===
+def obtener_archivo(id_archivo):
     conn = get_connection()
     cur = conn.cursor()
-    if carpeta:
-        cur.execute("""
-            SELECT ID, Nombre, Tipo, Fecha_Subida, Carpeta
-            FROM BIBLIOTECA
-            WHERE Profesor_Correo=:1 AND Carpeta=:2
-        """, (profesor_correo, carpeta))
-    else:
-        cur.execute("""
-            SELECT ID, Nombre, Tipo, Fecha_Subida, Carpeta
-            FROM BIBLIOTECA
-            WHERE Profesor_Correo=:1
-        """, (profesor_correo,))
-    rows = cur.fetchall()
+    cur.execute("SELECT nombre, tipo, contenido FROM BIBLIOTECA WHERE id = %s", (id_archivo,))
+    archivo = cur.fetchone()
+
+    if archivo:
+        # Si usas DictCursor, archivo será un diccionario
+        if isinstance(archivo, dict):
+            nombre = archivo['nombre']
+            tipo = archivo['tipo']
+            contenido = archivo['contenido']
+        else:
+            # Si aún es tupla (cursor normal)
+            nombre, tipo, contenido = archivo
+
+        cur.close()
+        conn.close()
+        return nombre, tipo, contenido
+
     cur.close()
     conn.close()
-    return rows
+    return None
 
-def renombrar_archivo(archivo_id, nuevo_nombre):
+
+# === EDITAR NOMBRE ===
+def editar_nombre(id_archivo, nuevo_nombre):
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute("UPDATE BIBLIOTECA SET Nombre=:1 WHERE ID=:2", (nuevo_nombre, archivo_id))
+    cur.execute("UPDATE BIBLIOTECA SET nombre = %s WHERE id = %s", (nuevo_nombre, id_archivo))
     conn.commit()
     cur.close()
     conn.close()
 
-def eliminar_archivo(archivo_id):
+
+# === ELIMINAR ARCHIVO ===
+def eliminar_archivo(id_archivo):
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute("DELETE FROM BIBLIOTECA WHERE ID=:1", (archivo_id,))
+    cur.execute("DELETE FROM BIBLIOTECA WHERE id = %s", (id_archivo,))
     conn.commit()
     cur.close()
     conn.close()

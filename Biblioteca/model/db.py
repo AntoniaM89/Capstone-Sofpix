@@ -1,17 +1,22 @@
-import oracledb
+import pymysql
 
-# Configurar credenciales
-DB_USER = "tester"
-DB_PASS = "testing1234"
+# Configuración MySQL
+DB_USER = "root"
+DB_PASS = "Yin1234."
 DB_HOST = "localhost"
-DB_PORT = "1521"
-DB_SERVICE = "ORCLPDB"
-DB_DSN = f"{DB_HOST}:{DB_PORT}/{DB_SERVICE}"
+DB_PORT = 3306
+DB_NAME = "SSA_DB"
 
 def get_connection():
-    # Devuelve una nueva conexión a la base de datos Oracle.
-    return oracledb.connect(
+    """
+    Devuelve una nueva conexión a la base de datos MySQL.
+    """
+    return pymysql.connect(
+        host=DB_HOST,
         user=DB_USER,
         password=DB_PASS,
-        dsn=DB_DSN
+        database=DB_NAME,
+        port=DB_PORT,
+        charset='utf8mb4',
+        cursorclass=pymysql.cursors.DictCursor  # Para obtener resultados como diccionario
     )
