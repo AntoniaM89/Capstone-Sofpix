@@ -1,0 +1,127 @@
+-- Crear base de datos
+CREATE DATABASE IF NOT EXISTS SSA_DB;
+USE SSA_DB;
+
+-- Borrar tablas si existen (orden correcto por claves foráneas)
+DROP TABLE IF EXISTS nota;
+DROP TABLE IF EXISTS actividad;
+DROP TABLE IF EXISTS alumno;
+DROP TABLE IF EXISTS asignatura;
+DROP TABLE IF EXISTS curso;
+DROP TABLE IF EXISTS profesor;
+DROP TABLE IF EXISTS quiz_pregunta;
+DROP TABLE IF EXISTS quiz;
+DROP TABLE IF EXISTS biblioteca;
+
+
+-- ======================================
+-- Tablas
+-- ======================================
+
+-- Tabla profesor
+CREATE TABLE profesor (
+    correo       VARCHAR(100) NOT NULL,
+    nom_user     VARCHAR(50) NOT NULL,
+    seg_nom_user VARCHAR(50),
+    ap_pat_user  VARCHAR(50) NOT NULL,
+    ap_mat_user  VARCHAR(50),
+    pass_enc     VARCHAR(100) NOT NULL,
+    area         VARCHAR(50) NOT NULL,
+    rol          ENUM('admin','profesor') NOT NULL DEFAULT 'profesor',
+    PRIMARY KEY (correo)
+);
+
+-- Tabla curso
+CREATE TABLE curso (
+    id_curso   VARCHAR(50) NOT NULL,
+    nivel      VARCHAR(50) NOT NULL,
+    generacion INT NOT NULL,
+    PRIMARY KEY (id_curso)
+);
+
+-- Tabla alumno
+CREATE TABLE alumno (
+    rut_alum     INT NOT NULL,
+    nom_alum     VARCHAR(50) NOT NULL,
+    seg_nom_alum VARCHAR(50),
+    ap_pat_alum  VARCHAR(50) NOT NULL,
+    ap_mat_alum  VARCHAR(50),
+    curso_id     VARCHAR(50),
+    PRIMARY KEY (rut_alum),
+    FOREIGN KEY (curso_id) REFERENCES curso (id_curso)
+);
+
+-- Tabla asignatura
+CREATE TABLE asignatura (
+    codigo          VARCHAR(50) NOT NULL,
+    nombre_asi      VARCHAR(50) NOT NULL,
+    profesor_correo VARCHAR(100),
+    PRIMARY KEY (codigo),
+    FOREIGN KEY (profesor_correo) REFERENCES profesor (correo)
+);
+
+-- Tabla actividad
+CREATE TABLE actividad (
+    id_act         VARCHAR(50) NOT NULL,
+    nom_act        VARCHAR(50) NOT NULL,
+    tipo_act       VARCHAR(50) NOT NULL,
+    json_act       TEXT,
+    nombre_carpeta VARCHAR(50) NOT NULL,
+    fecha_cre      DATETIME NOT NULL,
+    curso_id       VARCHAR(50),
+    PRIMARY KEY (id_act),
+    FOREIGN KEY (curso_id) REFERENCES curso (id_curso)
+);
+
+-- Tabla nota
+CREATE TABLE nota (
+    id_nota           VARCHAR(100) NOT NULL,
+    nombre            VARCHAR(20) NOT NULL,
+    nota              DECIMAL(5,2) NOT NULL,
+    codigo_curso      VARCHAR(20) NOT NULL,
+    asignatura_codigo VARCHAR(50),
+    alumno_rut_alum   INT,
+    PRIMARY KEY (id_nota),
+    FOREIGN KEY (asignatura_codigo) REFERENCES asignatura (codigo),
+    FOREIGN KEY (alumno_rut_alum) REFERENCES alumno (rut_alum)
+);
+
+
+-- NUEVAS
+
+-- Tabla biblioteca
+CREATE TABLE biblioteca (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    nombre          VARCHAR(255) NOT NULL,
+    tipo            VARCHAR(50),                -- ej: pdf, docx, img
+    contenido       LONGBLOB NOT NULL,          -- archivo binario
+    fecha_subida    DATETIME DEFAULT CURRENT_TIMESTAMP,
+    carpeta         VARCHAR(100),               -- ubicación
+    profesor_correo VARCHAR(100),               -- profesor que sube
+    FOREIGN KEY (profesor_correo) REFERENCES profesor (correo)
+);
+
+-- Tabla quiz
+CREATE TABLE quiz (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    titulo          VARCHAR(100) NOT NULL,
+    descripcion     VARCHAR(400),
+    profesor_correo VARCHAR(100) NOT NULL,
+    fecha_creacion  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    carpeta         VARCHAR(100) DEFAULT 'General',
+    FOREIGN KEY (profesor_correo) REFERENCES profesor (correo)
+);
+
+-- Tabla quiz_pregunta
+CREATE TABLE quiz_pregunta (
+    id                  INT AUTO_INCREMENT PRIMARY KEY,
+    quiz_id             INT NOT NULL,
+    pregunta            VARCHAR(500) NOT NULL,
+    img_url             VARCHAR(500),
+    opcion_a            VARCHAR(250) NOT NULL,
+    opcion_b            VARCHAR(250) NOT NULL,
+    opcion_c            VARCHAR(250) NOT NULL,
+    opcion_d            VARCHAR(250) NOT NULL,
+    respuesta_correcta  ENUM('A','B','C','D') NOT NULL,
+    FOREIGN KEY (quiz_id) REFERENCES quiz(id) ON DELETE CASCADE
+);
