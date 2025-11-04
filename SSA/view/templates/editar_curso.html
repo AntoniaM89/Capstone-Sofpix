@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Curso</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/curso.css') }}">
+</head>
+<body>
+    <a href="{{ url_for('list_cursos') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="curso-detail-card">
+
+        <div class="curso-detail-header">
+            <h2>Editar Curso</h2>
+        </div>
+
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flash-container">
+            {% for category, message in messages %}
+            <li class="flash-message {% if category == 'success' %}flash-success{% elif category == 'error' %}flash-error{% else %}flash-info{% endif %}">
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" class="curso-detail-form">
+            <div class="curso-detail-info">
+                <p><b>ID:</b> <span id="id_curso">{{ curso.id_curso }}</span></p>
+
+                <label for="nivel"><b>Nivel:</b></label>
+                <select name="nivel" id="nivel" required>
+                    {% set niveles = [
+                        "Pre Kinder","Kinder","1 Basico","2 Basico","3 Basico",
+                        "4 Basico","5 Basico","6 Basico","7 Basico","8 Basico",
+                        "I Medio","II Medio","III Medio","IV Medio"
+                    ] %}
+                    {% for n in niveles %}
+                        <option value="{{ n }}" {% if curso.nivel == n %}selected{% endif %}>{{ n }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="generacion"><b>Generación (Año):</b></label>
+                <input type="number" name="generacion" id="generacion" min="1990" max="2500" value="{{ curso.generacion }}" required>
+            </div>
+
+            <div class="curso-detail-actions">
+                <button type="submit" class="edit-btn">Actualizar</button>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        const NIVEL_MAP = {{ NIVEL_MAP|tojson }};
+        const nivelSelect = document.getElementById('nivel');
+        const generacionInput = document.getElementById('generacion');
+        const idSpan = document.getElementById('id_curso');
+
+        function actualizarId() {
+            const nuevoNivel = nivelSelect.value;
+            const nuevaGeneracion = generacionInput.value;
+            const prefijo = NIVEL_MAP[nuevoNivel] || "XXX";  // fallback
+            idSpan.textContent = `${prefijo}${nuevaGeneracion}`;
+        }
+
+        nivelSelect.addEventListener('change', actualizarId);
+        generacionInput.addEventListener('input', actualizarId);
+    </script>
+
+</body>
+</html>

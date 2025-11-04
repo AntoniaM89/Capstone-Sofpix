@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Asignatura</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/asignaturas.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+
+    <a href="{{ url_for('mis_asignaturas') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="asignatura-detail-card" style="max-width: 800px;">
+        <div class="asignatura-detail-header">
+            <h2> Agregar Asignatura</h2>
+        </div>
+
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flash-container">
+            {% for category, message in messages %}
+            <li class="flash-message {% if category == 'success' %}flash-success{% elif category == 'error' %}flash-error{% else %}flash-info{% endif %}">
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        
+        <form method="POST" class="asignatura-detail-info">
+
+            <!-- Selección de asignatura existente -->
+            <label><b>Asignatura:</b></label>
+            <select name="nombre_asi" onchange="this.form.action_type.value='seleccion'; this.form.submit();">
+                {% for nombre in asign_map.keys() %}
+                    <option value="{{ nombre }}" {% if seleccion == nombre %}selected{% endif %}>{{ nombre }}</option>
+                {% endfor %}
+                <option value="Otros" {% if seleccion == 'Otros' %}selected{% endif %}>Otros</option>
+            </select>
+
+
+            <input type="hidden" name="action_type" value="guardar">
+
+
+
+            {% if seleccion == "Otros" %}
+                <label><b>Nombre de la asignatura:</b></label>
+                <input type="text" name="nombre_manual" placeholder="Ej. Matemáticas Avanzadas"
+                       value="{{ request.form.nombre_manual or '' }}" required>
+
+                <label><b>Código de 3 letras:</b></label>
+                <input type="text" name="codigo_manual" maxlength="3" placeholder="Ej. MAT"
+                       value="{{ request.form.codigo_manual or '' }}" required>
+            {% endif %}
+
+            <!-- Selección de profesor -->
+            <label><b>Profesor:</b></label>
+            <select name="profesor_correo" required>
+                {% for p in profesores %}
+                    <option value="{{ p['correo'] }}"
+                        {% if request.form.profesor_correo == p['correo'] %}selected{% endif %}>
+                        {{ p['nom_user'] }} {% if p['seg_nom_user'] %}{{ p['seg_nom_user'] }}{% endif %}
+                        {{ p['ap_pat_user'] }} {% if p['ap_mat_user'] %}{{ p['ap_mat_user'] }}{% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <div class="asignatura-detail-actions">
+                <button type="submit" name="action" value="guardar" class="asignatura-edit-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                </button>
+            </div>
+        </form>        
+    </div>
+
+</body>
+</html>

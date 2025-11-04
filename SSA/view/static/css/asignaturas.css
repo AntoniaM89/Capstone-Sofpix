@@ -1,0 +1,112 @@
+/* Contenedor general de la página */
+.scale-container {
+    width: 90%;
+    max-width: 900px;
+    min-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 10px;
+}
+
+/* Tarjeta principal */
+.card-base {
+    width: 100%;
+    background: linear-gradient(135deg, #ffde59, #ff914d);
+    border-radius: 25px;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: #fff;
+}
+
+/* Encabezado de la tarjeta */
+.card-header h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    text-align: center;
+}
+
+/* Contenedor de las cards internas */
+.cards-list-gest {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Card crema individual */
+.card-crema {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 15px;
+    max-height: 50vh;          /* Altura máxima antes de activar scroll */
+    overflow-y: auto;          /* Scroll vertical si hay muchas asignaturas */
+    margin: 10px 0;            /* Separación superior e inferior */
+}
+
+/* Lista interna de asignaturas */
+.card-crema ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Card individual de asignatura dentro de la lista */
+.card-crema li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.2);
+}
+
+/* Botones agregar/quitar */
+.add-btn, .remove-btn {
+    padding: 6px 12px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: filter 0.2s;
+}
+
+.add-btn { background: #00b9d1; color: #fff; }
+.remove-btn { background: #ff4c4c; color: #fff; }
+
+.add-btn:hover, .remove-btn:hover { filter: brightness(1.2); }
+
+/* Scroll personalizado dentro de card-crema */
+.card-crema::-webkit-scrollbar {
+    width: 8px;
+}
+
+.card-crema::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 5px;
+}
+
+.card-crema::-webkit-scrollbar-thumb {
+    background: #00b9d1;
+    border-radius: 5px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.card-crema::-webkit-scrollbar-thumb:hover {
+    filter: brightness(1.2);
+}
+
+/* Mensajes cuando no hay asignaturas */
+.asignatura-no-cursos {
+    text-align: center;
+    padding: 10px;
+    color: #fff;
+    opacity: 0.9;
+}

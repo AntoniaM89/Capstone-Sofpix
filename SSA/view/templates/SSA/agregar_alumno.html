@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Alumno</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="add-item-page">
+
+<div class="add-card">
+    <div class="add-header">
+        <h2>Agregar Nuevo Alumno</h2>
+    </div>
+
+    <!-- Mensajes flash -->
+    {% include 'message.html' %}
+
+    <form method="POST" class="add-form add-info add-alumno-form">
+
+        <div class="form-group">
+            <label for="rut_alum">RUT:</label>
+            <input 
+                type="number" 
+                id="rut_alum" 
+                name="rut_alum" 
+                placeholder="Ej: 12345678" 
+                value="{{ rut_alum or '' }}" 
+                required
+                oninput="this.value = this.value.slice(0, 9)"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="nom_alum">Nombre:</label>
+            <input type="text" id="nom_alum" name="nom_alum" placeholder="Ej: Juan" value="{{ nom_alum or '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="seg_nom_alum">Segundo Nombre:</label>
+            <input type="text" id="seg_nom_alum" name="seg_nom_alum" placeholder="Ej: Carlos" value="{{ seg_nom_alum or '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="ap_pat_alum">Apellido Paterno:</label>
+            <input type="text" id="ap_pat_alum" name="ap_pat_alum" placeholder="Ej: Pérez" value="{{ ap_pat_alum or '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="ap_mat_alum">Apellido Materno:</label>
+            <input type="text" id="ap_mat_alum" name="ap_mat_alum" placeholder="Ej: Soto" value="{{ ap_mat_alum or '' }}">
+        </div>
+
+        <div class="form-group full-width">
+            <label for="curso_id">Curso:</label>
+            <select id="curso_id" name="curso_id" required>
+                <option value="">Selecciona un curso</option>
+                {% for curso in cursos %}
+                    <option value="{{ curso.id_curso }}" {% if curso_id == curso.id_curso|string %}selected{% endif %}>
+                        {{ curso.nivel }} {{ curso.generacion }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="add-actions">
+                <button type="submit" class="add-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                </button>
+
+                <!-- Botón Cancelar -->
+                <a href="{{ url_for('list_alumnos') }}" class="cancel-btn">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                </a>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Biblioteca</title>
+</head>
+<body>
+
+    <!-- Botón Volver -->
+    <a href="{{ url_for('home') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container" style="align-items: flex-start; gap: 40px; padding-top: 50px;">
+
+        <h1 style="color:#fff; text-align:center; width:100%;">Bienvenido a la App</h1>
+
+        <!-- Botones principales -->
+        <div style="display:flex; flex-direction:column; gap:20px; align-items:center; width:100%;">
+
+            <a href="{{ url_for('biblioteca_controller.gestionar_biblioteca') }}" class="btn-action" style="padding:15px 30px; font-size:1.2rem; background: linear-gradient(135deg,#ffde59,#ff914d); color:#222; font-weight:bold;">
+                Ir a Biblioteca
+            </a>
+
+            <a href="{{ url_for('quiz_controller.gestionar_quizzes') }}" class="btn-action" style="padding:15px 30px; font-size:1.2rem; background: linear-gradient(135deg,#ffde59,#ff914d); color:#222; font-weight:bold;">
+                Ir a Quizzes
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!-- templates/SSA/curso_asignatura_notas.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Notas de {{ asignatura_nombre }} - {{ curso.nivel }} {{ curso.generacion }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notas.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Botón Volver -->
+    <a href="{{ url_for('list_cursos') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container">
+
+        <div class="add-item">
+            <a href="{{ url_for('add_nota', 
+                                codigo_asignatura=codigo_asignatura, 
+                                id_curso=id_curso) }}" 
+               class="btn-action">
+                <i class="fa fa-plus"></i> Agregar Nota
+            </a>
+        </div>
+
+        <!-- Mensajes flash -->
+        {% include 'message.html' %}
+
+        <div class="cards-list">
+            <main class="notas-container">
+
+                <section class="notas-header">
+                    <h2>Notas: {{ asignatura_nombre }}</h2>
+                    <p>Curso: {{ curso.nivel }} - Generación {{ curso.generacion }} | Profesor: {{ profesor_nombre }}</p>
+                </section>
+
+                {% if alumnos %}
+                <section class="tabla-notas-section">
+                    <div class="tabla-wrapper">
+                        <table class="tabla-notas">
+                            <thead>
+                                <tr>
+                                    <th>Alumno</th>
+                                    <th>RUT</th>
+                                    <th>Evaluación</th>
+                                    <th>Nota</th>
+                                    <th>Observación</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for alumno in alumnos %}
+                                    {% if alumno.notas %}
+                                        {% for nota in alumno.notas %}
+                                        <tr>
+                                            <td>
+                                                {{ alumno.nom_alum }}
+                                                {% if alumno.seg_nom_alum %} {{ alumno.seg_nom_alum }}{% endif %}
+                                                {{ alumno.ap_pat_alum }}
+                                                {% if alumno.ap_mat_alum %} {{ alumno.ap_mat_alum }}{% endif %}
+                                            </td>
+                                            <td>{{ alumno.rut_alum }}</td>
+                                            <td>{{ nota.nombre }}</td>
+                                            <td>{{ "%.1f"|format(nota.nota) }}</td>
+                                            <td>{{ nota.observacion or '-' }}</td>
+                                            <td class="acciones">
+                                                <a href="{{ url_for('update_nota', id_nota=nota.id_nota) }}" class="btn-accion editar" title="Modificar">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </a>
+                                                <a href="{{ url_for('delete_nota', id_nota=nota.id_nota) }}" class="btn-accion eliminar" title="Eliminar">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td>{{ alumno.nom_alum }}{% if alumno.seg_nom_alum %} {{ alumno.seg_nom_alum }}{% endif %} {{ alumno.ap_pat_alum }}{% if alumno.ap_mat_alum %} {{ alumno.ap_mat_alum }}{% endif %}</td>
+                                            <td>{{ alumno.rut_alum }}</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                {% else %}
+                    <p class="mensaje-vacio">No hay alumnos inscritos en este curso para esta asignatura.</p>
+                {% endif %}
+
+            </main>
+        </div>
+    </div>
+</body>
+</html>

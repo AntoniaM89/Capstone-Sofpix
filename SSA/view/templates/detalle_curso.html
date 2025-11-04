@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Curso</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/curso.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <a href="{{ url_for('mis_asignaturas') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container-curso">
+        <div class="curso-card">
+
+            <div class="curso-header">
+                <h2>{{ asignatura_nombre }} dictada por: {{ profesor_nombre }}</h2>
+                <p>{{ curso.nivel }} - Generación {{ curso.generacion }}</p>
+            </div>
+
+            <div class="alumnos-list">
+                {% if curso.alumnos %}
+                    {% for alumno in curso.alumnos %}
+                    <div class="alumno-card">
+
+                        <div class="alumno-info-left">
+                            <div class="alumno-icon">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <div class="alumno-texto">
+                                <p class="alumno-nombre">
+                                    {{ alumno.nom_alum }}{% if alumno.seg_nom_alum %} {{ alumno.seg_nom_alum }}{% endif %}
+                                    {{ alumno.ap_pat_alum }}{% if alumno.ap_mat_alum %} {{ alumno.ap_mat_alum }}{% endif %}
+                                </p>
+                                <p class="alumno-rut"><strong>RUT:</strong> {{ alumno.rut_alum }}</p>
+                            </div>
+                        </div>
+
+                        <div class="alumno-info-right admin-actions">
+                            <a href="{{ url_for('detail_alumno_notas_asignatura', 
+                                                rut_alum=alumno.rut_alum, 
+                                                codigo_asignatura=codigo_asignatura, 
+                                                id_curso=id_curso) }}" 
+                               class="detalle-btn">
+                                <i class="fa fa-book"></i> Modificar Notas
+                            </a>
+                        </div>
+
+                        <div class="accordion" style="width: 100%; margin-top: 10px;">
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span>Notas del alumno</span>
+                                    <i class="fa fa-chevron-down accordion-icon"></i>
+                                </button>
+                                <div class="accordion-content">
+                                    {% if alumno.notas %}
+                                        {% for nota in alumno.notas %}
+                                        <div class="nota-item">
+                                            <span class="nota-nombre">{{ nota.nombre }}</span>
+                                            <span class="nota-valor">{{ "%.1f"|format(nota.nota) }}</span>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="nota-item">
+                                            <span>No hay notas registradas para esta asignatura</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay alumnos inscritos en este curso.</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script acordeón + ocultar back button -->
+    <script>
+    (function() {
+        const backButton = document.querySelector('.back-button');
+        const container = document.querySelector('.scale-container-curso'); 
+        const margin = 5;
+        const minSpace = 120;
+
+        function checkOverlap() {
+            if (!backButton) return;
+
+            const buttonRect = backButton.getBoundingClientRect();
+            let isOverlapping = false;
+
+            document.querySelectorAll('.curso-card').forEach(card => { 
+                const cardRect = card.getBoundingClientRect();
+
+                const overlap = !(
+                    buttonRect.bottom < cardRect.top + margin ||
+                    buttonRect.top > cardRect.bottom - margin ||
+                    buttonRect.right < cardRect.left + margin ||
+                    buttonRect.left > cardRect.right - margin
+                );
+
+                if (overlap) isOverlapping = true;
+            });
+
+            const spaceAvailable = window.innerHeight - buttonRect.bottom;
+
+            if (isOverlapping || spaceAvailable < minSpace) {
+                backButton.classList.add('hidden');
+            } else {
+                backButton.classList.remove('hidden');
+            }
+        }
+
+        function setupAccordions() {
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const item = header.parentElement;
+                    item.classList.toggle('active');
+                    requestAnimationFrame(checkOverlap);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupAccordions();
+            requestAnimationFrame(checkOverlap);
+
+            if (container) {
+                container.addEventListener('scroll', () => requestAnimationFrame(checkOverlap));
+            }
+            window.addEventListener('resize', () => requestAnimationFrame(checkOverlap));
+        });
+    })();
+    </script>
+
+</body>
+</html>

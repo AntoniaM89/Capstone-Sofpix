@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>📘 Gestión de Quizzes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notas.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Botón Volver -->
+    <a href="{{ url_for('prueba') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container">
+        <div class="add-item">
+            <div class="upload-card collapsible">
+                <div class="add-header">
+                    <h2>📝 Crear nuevo Quiz</h2>
+                </div>
+
+                <div class="collapsible-content" style="display:none;">
+                    <form method="POST" action="{{ url_for('quiz_controller.gestionar_quizzes') }}" class="add-form">
+                        <label>Título:</label>
+                        <input type="text" name="titulo" required>
+
+                        <label>Descripción:</label>
+                        <textarea name="descripcion" rows="4"></textarea>
+
+                        <label>Carpeta:</label>
+                        <input type="text" name="carpeta" value="General">
+
+                        <label>Profesor:</label>
+                        <select name="profesor_correo" required>
+                            <option value="">-- Selecciona un profesor --</option>
+                            {% for prof in profesores %}
+                                <option value="{{ prof['correo'] }}">{{ prof['nom_user'] }} {{ prof['ap_pat_user'] }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <div class="add-actions" style="margin-top:15px;">
+                            <button type="submit" class="add-btn">
+                                <i class="fa-solid fa-plus"></i> Crear Quiz
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% include 'message.html' %}
+
+        <div class="cards-list">
+            <main class="notas-container">
+                <section class="notas-header">
+                    <h2>📚 Quizzes existentes</h2>
+                    <p>Administra, juega o elimina tus quizzes creados.</p>
+                </section>
+
+                {% if quizzes %}
+                <section class="tabla-notas-section">
+                    <div class="tabla-wrapper">
+                        <table class="tabla-notas">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Título</th>
+                                    <th>Descripción</th>
+                                    <th>Profesor</th>
+                                    <th>Fecha</th>
+                                    <th>Carpeta</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for q in quizzes %}
+                                <tr>
+                                    <td>{{ q.ID }}</td>
+                                    <td>{{ q.titulo }}</td>
+                                    <td>{{ q.descripcion }}</td>
+                                    <td>{{ q.profesor_correo }}</td>
+                                    <td>{{ q.fecha_creacion }}</td>
+                                    <td>{{ q.carpeta }}</td>
+                                    <td class="acciones">
+                                        <a href="{{ url_for('quiz_controller.jugar_quiz', id_quiz=q.ID) }}" class="btn-accion jugar" title="Jugar">
+                                            <i class="fa-solid fa-play"></i>
+                                        </a>
+
+                                        <a href="{{ url_for('quiz_pregunta_controller.gestionar_preguntas', quiz_id=q.ID) }}" class="btn-accion editar" title="Ver/Agregar preguntas">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </a>
+
+                                        <form action="{{ url_for('quiz_controller.eliminar', id_quiz=q.ID) }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn-accion eliminar" title="Eliminar" onclick="return confirm('¿Eliminar este quiz?')">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                {% else %}
+                    <p class="mensaje-vacio">No hay quizzes creados todavía.</p>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const collapsibles = document.querySelectorAll('.upload-card.collapsible');
+            collapsibles.forEach(card => {
+                const content = card.querySelector('.collapsible-content');
+                const header = card.querySelector('.add-header');
+                header.addEventListener('click', () => {
+                    content.style.display = (content.style.display === "block") ? "none" : "block";
+                });
+                content.addEventListener('click', e => e.stopPropagation());
+            });
+        });
+    </script>
+
+</body>
+</html>

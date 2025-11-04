@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profesores</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+
+<a href="{{ url_for('SSA') }}" class="back-button">
+    <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+    <span>Volver</span>
+</a>
+
+<div class="scale-container">
+
+    {% if session.get('rol') == 'admin' %}
+    <div class="add-item">
+        <a href="{{ url_for('add_profesor') }}" class="btn-action">
+            <i class="fa fa-plus"></i> Agregar Profesor
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Mensajes flash -->
+    {% include 'message.html' %}
+
+    <!-- Contenedor scroll interno para los cards -->
+    <div class="cards-list">
+        {% if profesores %}
+            {% for p in profesores %}
+            <div class="card-base">
+
+                <!-- Header toggle -->
+                <div class="card-header">
+                    <button class="card-toggle {% if session.get('rol') == 'profesor' and session.get('correo') == p.correo %}active{% endif %}">
+                        <i class="fa fa-chevron-down toggle-icon {% if session.get('rol') == 'profesor' and session.get('correo') == p.correo %}fa-chevron-up{% endif %}"></i>
+                        {{ p.nom_user }} {% if p.seg_nom_user %}{{ p.seg_nom_user }}{% endif %} {{ p.ap_pat_user }} {% if p.ap_mat_user %}{{ p.ap_mat_user }}{% endif %}
+                    </button>
+
+                    <div class="admin-actions" style="gap:8px;">
+                        <a href="{{ url_for('detail_profesor', correo=p.correo) }}" class="btn-action">
+                            <i class="fa fa-eye"></i> Ver
+                        </a>
+                        <a href="{{ url_for('update_profesor', correo=p.correo) }}" class="btn-action">
+                            <i class="fa fa-edit"></i> Editar
+                        </a>
+
+                        {% if session.get('rol') == 'admin' %}
+                        <a href="{{ url_for('delete_profesor', correo=p.correo) }}" class="btn-action">
+                            <i class="fa fa-trash"></i> Eliminar
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Info desplegable -->
+                <div class="items-list {% if session.get('rol') == 'profesor' and session.get('correo') == p.correo %}active{% endif %}">
+                    <p><b>Correo:</b> {{ p.correo }}</p>
+                    <p><b>Área:</b> {{ p.area or 'No especificada' }}</p>
+                </div>
+
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="asignatura-no-cursos">No hay profesores registrados.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.card-toggle').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            const lista = toggle.parentElement.nextElementSibling;
+            const icon = toggle.querySelector('.toggle-icon');
+
+            lista.classList.toggle('active');
+            icon.classList.toggle('fa-chevron-up');
+            icon.classList.toggle('fa-chevron-down');
+        });
+    });
+});
+</script>
+
+</body>
+</html>

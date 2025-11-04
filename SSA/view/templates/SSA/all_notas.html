@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Notas por Asignatura</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notas.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Botón Volver -->
+    <a href="{{ url_for('SSA') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="notas-scale-container">
+
+        <div class="notas-cards-list">
+            <!-- Mensajes flash -->
+            {% include 'message.html' %}
+            <div class="notas-card">
+                <div class="notas-container-wrapper">
+                    <section class="notas-header-fixed">
+                        <h2>Notas por Asignatura</h2>
+                        <p>Visualiza todas las calificaciones registradas por curso y profesor.</p>
+                    </section>
+
+                    <div class="notas-table-scroll">
+                        {% if notas %}
+                        <table class="tabla-notas">
+                            <thead>
+                                <tr>
+                                    <th>Asignatura</th>
+                                    {% if session.get('rol') == 'admin' %}
+                                    <th>Dictado por</th>
+                                    {% endif %}
+                                    <th>Curso</th>
+                                    <th>Alumno</th>
+                                    <th>Evaluación</th>
+                                    <th>Nota</th>
+                                    <th>Observación</th>
+                                    <th>Acciones</th>
+                               </tr>
+                            </thead>
+                            <tbody>
+                                {% for nota in notas %}
+                                <tr>
+                                    <td>{{ nota.nombre_asi}}</td>
+                                    {% if session.get('rol') == 'admin' %}
+                                    <td>{{ nota.profesor }}</td>
+                                    {% endif %}
+                                    <td>{{ nota.nivel }} {{ nota.generacion }}</td>
+                                    <td>
+                                        {{ nota.nom_alum }}
+                                        {% if nota.seg_nom_alum %} {{ nota.seg_nom_alum }}{% endif %}
+                                        {{ nota.ap_pat_alum }}
+                                        {% if nota.ap_mat_alum %} {{ nota.ap_mat_alum }}{% endif %}
+                                    </td>
+                                    <td>{{ nota.nombre_evaluacion }}</td>
+                                    <td>{{ nota.nota }}</td>
+                                    <td>{{ nota.observacion or '' }}</td>
+                                    <td class="acciones">
+                                        <a href="{{ url_for('update_nota', id_nota=nota.id_nota, next=request.path) }}" class="btn-accion editar">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                        <a href="{{ url_for('delete_nota', id_nota=nota.id_nota, next=request.path) }}" class="btn-accion eliminar">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p class="mensaje-vacio">No hay notas registradas.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

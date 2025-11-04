@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Alumnos - {{ curso_nivel }} {{ curso_generacion }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/alumno.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+
+<a href="{{ url_for('mis_asignaturas') }}" class="back-button">
+    <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+    <span>Volver</span>
+</a>
+
+<div class="scale-container">
+
+    {% include 'message.html' %}
+
+    <!-- Card principal -->
+    <div class="card-base">
+        <div class="card-header">
+            <h2>Curso: {{ curso_nivel }} {{ curso_generacion }} | Asignatura: {{ codigo_asignatura }}</h2>
+        </div>
+
+        <div class="cards-list-gest">
+            <!-- Alumnos actuales -->
+            <div class="card-crema scroll-card">
+                <h3>Alumnos en la Asignatura</h3>
+                {% if alumnos_actuales %}
+                    <div class="cards-list">
+                        {% for alumno in alumnos_actuales %}
+                        <div class="alumno-card alumno-card-white">
+                            <div class="alumno-info-left">
+                                <div class="alumno-icon"><i class="fa fa-user"></i></div>
+                                <div class="alumno-texto">
+                                    <p class="alumno-nombre">
+                                        {{ alumno.nom_alum }}{% if alumno.seg_nom_alum %} {{ alumno.seg_nom_alum }}{% endif %}
+                                        {{ alumno.ap_pat_alum }}{% if alumno.ap_mat_alum %} {{ alumno.ap_mat_alum }}{% endif %}
+                                    </p>
+                                    <p class="alumno-rut"><strong>RUT:</strong> {{ alumno.rut_alum }}</p>
+                                </div>
+                            </div>
+                            <div class="alumno-actions">
+                                <form method="POST">
+                                    <input type="hidden" name="accion" value="quitar">
+                                    <input type="hidden" name="rut_alum" value="{{ alumno.rut_alum }}">
+                                    <button type="submit" class="no-border-btn eliminar" title="Quitar de Asignatura">
+                                        <i class="fa fa-minus-circle"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="asignatura-no-cursos">No hay alumnos asignados a esta asignatura.</p>
+                {% endif %}
+            </div>
+
+            <!-- Alumnos disponibles -->
+            <div class="card-crema scroll-card">
+                <h3>Alumnos Disponibles</h3>
+                {% if alumnos_disponibles %}
+                    <div class="cards-list">
+                        {% for alumno in alumnos_disponibles %}
+                        <div class="alumno-card alumno-card-white">
+                            <div class="alumno-info-left">
+                                <div class="alumno-icon"><i class="fa fa-user"></i></div>
+                                <div class="alumno-texto">
+                                    <p class="alumno-nombre">
+                                        {{ alumno.nom_alum }}{% if alumno.seg_nom_alum %} {{ alumno.seg_nom_alum }}{% endif %}
+                                        {{ alumno.ap_pat_alum }}{% if alumno.ap_mat_alum %} {{ alumno.ap_mat_alum }}{% endif %}
+                                    </p>
+                                    <p class="alumno-rut"><strong>RUT:</strong> {{ alumno.rut_alum }}</p>
+                                </div>
+                            </div>
+                            <div class="alumno-actions">
+                                <form method="POST">
+                                    <input type="hidden" name="accion" value="agregar">
+                                    <input type="hidden" name="rut_alum" value="{{ alumno.rut_alum }}">
+                                    <button type="submit" class="no-border-btn agregar" title="Agregar a Asignatura">
+                                        <i class="fa fa-plus-circle"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="asignatura-no-cursos">No hay alumnos disponibles para agregar.</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

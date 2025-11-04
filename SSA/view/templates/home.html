@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Módulos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+<body>
+    <div class="scale-container">
+        <div class="main-container">
+            <div class="welcome-box">
+                <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Lápiz" class="pencil-icon">
+                <b><p>Bienvenido, nos alegra tenerte de vuelta</p></b>
+            </div>
+
+            <div class="modules-container">
+                <a href="{{ url_for('prueba') }}" class="module-link">
+                    <div class="module-card">
+                        <img src="{{ url_for('static', filename='icons/books-stack-of-three.png') }}" alt="Biblioteca" class="module-icon">
+                        <h2>Biblioteca de Recursos</h2>
+                    </div>
+                </a>
+                <div class="module-card">
+                    <img src="{{ url_for('static', filename='icons/whiteboard.png') }}" alt="Pizarra" class="module-icon">
+                    <h2>Pizarra Interactiva</h2>
+                </div>
+                <a href="{{ url_for('SSA') }}" class="module-link">
+                    <div class="module-card">
+                        <img src="{{ url_for('static', filename='icons/test.png') }}" alt="SA" class="module-icon">
+                        <h2>SA (Seguimiento de Aprendizaje)</h2>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+<script>
+    function scaleContent() {
+        const container = document.querySelector('.scale-container');
+        const mainContainer = document.querySelector('.main-container');
+        const welcomeBox = document.querySelector('.welcome-box');
+        const pencil = document.querySelector('.pencil-icon');
+
+        const baseWidth = 1920;
+        const baseHeight = 1080;
+        const minWidth = 800;
+        const minHeight = 800;
+
+        const vw = Math.max(window.innerWidth, minWidth);
+        const vh = Math.max(window.innerHeight, minHeight);
+
+        const scaleX = vw / baseWidth;
+        const scaleY = vh / baseHeight;
+        const scale = Math.min(1, scaleX, scaleY);
+        container.style.transform = `scale(${scale})`;
+
+        const paddingTopMin = 0;  
+        const paddingTopMax = 700;
+        const gapMin = 20;
+        const gapMax = 50;
+        const fontSizeMin = 43;
+        const fontSizeMax = 45;
+        const paddingBoxMin = {top:5, horizontal:10};
+        const paddingBoxMax = {top:10, horizontal:20};
+        const pencilWidthMin = 75;
+        const pencilWidthMax = 80;
+
+        const factorWidth = (vw - minWidth) / (baseWidth - minWidth);
+        const factorHeight = (vh - minHeight) / (baseHeight - minHeight);
+        const factor = Math.min(factorWidth, factorHeight, 1);
+
+        if (factor > 0.02) {
+            mainContainer.style.paddingTop = `${paddingTopMin}px`;
+        } else {
+            mainContainer.style.paddingTop =
+                `${paddingTopMin + (paddingTopMax - paddingTopMin) * (1 - factor)}px`;
+        }
+
+        mainContainer.style.gap = `${gapMin + (gapMax - gapMin) * (1 - factor)}px`;
+        welcomeBox.style.fontSize = `${fontSizeMin + (fontSizeMax - fontSizeMin) * (1 - factor)}px`;
+        welcomeBox.style.padding = `${paddingBoxMin.top + (paddingBoxMax.top - paddingBoxMin.top) * (1 - factor)}px 
+                                    ${paddingBoxMin.horizontal + (paddingBoxMax.horizontal - paddingBoxMin.horizontal) * (1 - factor)}px`;
+
+        const pencilWidth = pencilWidthMin + (pencilWidthMax - pencilWidthMin) * (1 - factor);
+        pencil.style.width = `${pencilWidth}px`;
+    }
+
+    window.addEventListener('load', scaleContent);
+    window.addEventListener('resize', scaleContent);
+</script>
+
+</body>
+</html>

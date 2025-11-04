@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Profesor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profesor.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <a href="{{ url_for('list_profesores') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container-profesores">
+        <div class="detail-card">
+            <div class="detail-header">
+                <h2>
+                    <i class="fa fa-user"></i> {{ profesor.nom_user }} {{ profesor.ap_pat_user }}
+                </h2>
+                <p class="area"><i class="fa fa-briefcase"></i> {{ profesor.area or 'No especificada' }}</p>
+            </div>
+
+            <div class="detail-info">
+                <p><b>Correo:</b> {{ profesor.correo }}</p>
+                <p><b>Nombre:</b> {{ profesor.nom_user }}</p>
+                <p><b>Segundo Nombre:</b> {{ profesor.seg_nom_user or '—' }}</p>
+                <p><b>Apellido Paterno:</b> {{ profesor.ap_pat_user }}</p>
+                <p><b>Apellido Materno:</b> {{ profesor.ap_mat_user or '—' }}</p>
+            </div>
+
+            <div class="detail-actions">
+                <a href="{{ url_for('update_profesor', correo=profesor.correo) }}" class="edit-btn">
+                    <i class="fa fa-edit"></i> Editar
+                </a>
+
+                {% if session.get('rol') == 'admin' %}
+                <a href="{{ url_for('delete_profesor', correo=profesor.correo) }}" class="delete-btn">
+                    <i class="fa fa-trash"></i> Eliminar
+                </a>
+                {% endif %}
+            </div>
+        </div>
+</body>
+</html>

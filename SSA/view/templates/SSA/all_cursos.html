@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Todos los Cursos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+
+<a href="{{ url_for('SSA') }}" class="back-button">
+    <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+    <span>Volver</span>
+</a>
+
+<div class="scale-container">
+
+    <!-- Botón agregar nuevo curso -->
+    {% if session.get('rol') == 'admin' %}
+    <div class="add-item">
+        <a href="{{ url_for('add_curso') }}" class="btn-action">
+            <i class="fa fa-plus"></i> Agregar Curso
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Mensajes flash -->
+    {% include 'message.html' %}
+
+    <div class="cards-list">
+        {% for curso in cursos %}
+        <div class="card-base">
+
+            <div class="card-header">
+                <button class="card-toggle">
+                    <i class="fa fa-chevron-down toggle-icon"></i>
+                    {{ curso.nivel }} Generación {{ curso.generacion }}
+                </button>
+
+                {% if session.get('rol') == 'admin' %}
+                <div class="admin-actions" style="gap:8px;">
+                    <a href="{{ url_for('gestionar_asignaturas', id_curso=curso.id_curso) }}" class="btn-action">
+                        <i class="fa fa-edit"></i> Gestionar Asignaturas
+                    </a>
+                    <a href="{{ url_for('delete_curso', id_curso=curso.id_curso) }}" class="btn-action">
+                        <i class="fa fa-trash"></i> Eliminar
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Lista de asignaturas dentro del curso -->
+            <div class="items-list">
+                {% if curso.asignaturas %}
+                    {% for asignatura in curso.asignaturas %}
+                    <a href="{{ url_for('detalle_curso_prof_asignatura', 
+                                        codigo_asignatura=asignatura.codigo, 
+                                        codigo_curso=curso.id_curso) }}" 
+                       class="card-item">
+                        {{ asignatura.nombre_asi }} {% if session.get('rol') == 'admin' %}| Dictada por: {{ asignatura.profesor_nombre }} {% endif %}
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay asignaturas asociadas al curso</p>
+                {% endif %}
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.card-toggle').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            const lista = toggle.parentElement.nextElementSibling;
+            const icon = toggle.querySelector('.toggle-icon');
+
+            lista.classList.toggle('active');
+            icon.classList.toggle('fa-chevron-up');
+            icon.classList.toggle('fa-chevron-down');
+        });
+    });
+});
+</script>
+
+</body>
+</html>

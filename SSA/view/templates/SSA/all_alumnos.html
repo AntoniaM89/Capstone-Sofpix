@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/alumno.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .lista-asignaturas { 
+            list-style: disc; 
+            margin-left: 20px; 
+            padding-left: 0; 
+            display: none; 
+        }
+        .toggle-asignaturas {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Botón de volver -->
+    <a href="{{ url_for('SSA') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container">
+        
+        <!-- Agregar alumno (solo admin) -->
+        {% if session.get('rol') == 'admin' %}
+        <div class="add-item">
+            <a href="{{ url_for('add_alumno') }}" class="btn-action">
+                <i class="fa fa-plus"></i> Agregar Alumno
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Mensajes flash -->
+        {% include 'message.html' %}
+
+        <!-- Listado de alumnos -->
+        <div class="card-base">
+            <div class="list-header">
+                <h2>{{ titulo }}</h2>
+            </div>
+
+            <div class="cards-list">
+                {% for alumno in alumnos %}
+                <div class="alumno-card">
+                    <div class="alumno-info-left">
+                        <div class="alumno-icon">
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <div class="alumno-texto">
+                            <p class="alumno-nombre">
+                                {{ alumno.nom_alum }}{% if alumno.seg_nom_alum %} {{ alumno.seg_nom_alum }}{% endif %}
+                                {{ alumno.ap_pat_alum }}{% if alumno.ap_mat_alum %} {{ alumno.ap_mat_alum }}{% endif %}
+                            </p>
+                            <p class="alumno-rut"><strong>RUT:</strong> {{ alumno.rut_alum }}</p>
+
+                            {% if alumno.curso %}
+                            <p class="alumno-extra"><strong>Curso:</strong> {{ alumno.curso }}</p>
+                            {% endif %}
+
+                            {% if alumno.asignaturas %}
+                            <div class="alumno-extra">
+                                <button class="toggle-asignaturas">
+                                    📚 Asignaturas ({{ alumno.asignaturas|length }})
+                                </button>
+                                <ul class="lista-asignaturas">
+                                    {% for asi in alumno.asignaturas %}
+                                    <li>{{ asi }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción (solo admin) -->
+                    {% if session.get('rol') == 'admin' %}
+                    <div class="alumno-actions">
+                        <a href="{{ url_for('detail_alumno_notas', rut_alum=alumno.rut_alum) }}" class="action-btn detail-btn" title="Ver Detalle Notas">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                        <a href="{{ url_for('update_alumno', rut_alum=alumno.rut_alum) }}" class="action-btn edit-btn" title="Modificar Alumno">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a href="{{ url_for('delete_alumno', rut_alum=alumno.rut_alum) }}" class="action-btn delete-btn" title="Eliminar Alumno">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.toggle-asignaturas').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const ul = btn.nextElementSibling;
+                ul.style.display = (ul.style.display === 'none' || ul.style.display === '') ? 'block' : 'none';
+            });
+        });
+    });
+    </script>
+
+</body>
+</html>

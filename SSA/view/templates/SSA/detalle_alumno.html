@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle Notas - {{ alumno.nom_alum }} {{ alumno.ap_pat_alum }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notas.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <!-- Botón Volver -->
+    <a href="{{ url_for('list_alumnos') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="notas-scale-container">
+        <div class="notas-cards-list">
+            <!-- Mensajes flash -->
+            {% include 'message.html' %}
+
+            <div class="notas-card">
+                <!-- Cabecera fija -->
+                <section class="notas-header-fixed">
+                    <h2>Notas de {{ alumno.nom_alum }} {{ alumno.ap_pat_alum }} {{ alumno.ap_mat_alum }}</h2>
+                    <p>Curso: {{ alumno.nivel }} {{ alumno.generacion }}</p>
+                </section>
+
+                <!-- Tabla de notas -->
+                <div class="notas-table-scroll">
+                    {% if notas %}
+                    <table class="tabla-notas">
+                        <thead>
+                            <tr>
+                                <th>Asignatura</th>
+                                {% if session.get('rol') == 'admin' %}
+                                <th>Dictado por</th>
+                                {% endif %}
+                                <th>Nombre Evaluacion</th>
+                                <th>Nota</th>
+                                <th>Observacion de la evaluacion</th>
+                                {% if session.get('rol') == 'admin' %}
+                                <th>Acciones</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for nota in notas %}
+                            <tr>
+                                <td>{{ nota.nombre_asi }}</td>
+                                {% if session.get('rol') == 'admin' %}
+                                <td>{{ nota.profesor or "Profesor desconocido" }}</td>
+                                {% endif %}
+                                <td>{{ nota.nombre }}</td>
+                                <td>{{ nota.nota }}</td>
+                                <td>{{ nota.observacion or '' }}</td>
+                                {% if session.get('rol') == 'admin' %}
+                                <td class="acciones">
+                                    <a href="{{ url_for('update_nota', id_nota=nota.id_nota, next=request.path) }}" class="btn-accion editar" title="Modificar Nota">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a href="{{ url_for('delete_nota', id_nota=nota.id_nota, next=request.path) }}" class="btn-accion eliminar" title="Eliminar Nota">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="mensaje-vacio">Este alumno no tiene notas registradas.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
