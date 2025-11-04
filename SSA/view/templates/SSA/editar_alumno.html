@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Alumno</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+
+<div class="edit-card">
+    <div class="edit-header">
+        <h2>Editar Alumno</h2>
+    </div>
+
+    <!-- Mensajes flash -->
+    {% include 'message.html' %}
+
+    <form method="POST" class="edit-info">
+        <div class="id-line">
+            <b>RUT Alumno:</b>
+            <span>{{ alumno.rut_alum }}</span>
+            <input type="hidden" name="rut_alum" value="{{ alumno.rut_alum }}">
+        </div>
+
+        <label for="nom_alum"><b>Primer Nombre:</b></label>
+        <input type="text" id="nom_alum" name="nom_alum" value="{{ alumno.nom_alum }}" required>
+
+        <label for="seg_nom_alum"><b>Segundo Nombre:</b></label>
+        <input type="text" id="seg_nom_alum" name="seg_nom_alum" value="{{ alumno.seg_nom_alum or ''}}">
+
+        <label for="ap_pat_alum"><b>Apellido Paterno:</b></label>
+        <input type="text" id="ap_pat_alum" name="ap_pat_alum" value="{{ alumno.ap_pat_alum }}" required>
+
+        <label for="ap_mat_alum"><b>Apellido Materno:</b></label>
+        <input type="text" id="ap_mat_alum" name="ap_mat_alum" value="{{ alumno.ap_mat_alum or ''}}">
+
+        <label for="curso_id"><b>Curso:</b></label>
+        <select id="curso_id" name="curso_id" required {% if tiene_notas %}disabled{% endif %}>
+            {% for curso in cursos %}
+                <option value="{{ curso.id_curso }}" {% if curso.id_curso == alumno.curso_id %}selected{% endif %}>
+                    {{ curso.nivel }} {{ curso.generacion }}
+                </option>
+            {% endfor %}
+        </select>
+        {% if tiene_notas %}
+            <p style="color:red; font-size: 0.9em;">No se puede cambiar el curso porque el alumno ya tiene notas registradas.</p>
+        {% endif %}
+
+
+        <div class="edit-actions">
+            <!-- Botón Guardar -->
+            <button type="submit" class="save-btn">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+            </button>
+
+            <!-- Botón Cancelar -->
+            <a href="{{ url_for('list_alumnos') }}" class="save-btn cancel-btn" style="background: #ff4d4d; margin-left: 12px; text-decoration: none;">
+                <i class="fa-solid fa-xmark"></i> Cancelar
+            </a>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

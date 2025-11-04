@@ -15,15 +15,17 @@
             </div>
 
             <div class="modules-container">
-                <div class="module-card">
-                    <img src="{{ url_for('static', filename='icons/books-stack-of-three.png') }}" alt="Biblioteca" class="module-icon">
-                    <h2>Biblioteca de Recursos</h2>
-                </div>
+                <a href="{{ url_for('prueba') }}" class="module-link">
+                    <div class="module-card">
+                        <img src="{{ url_for('static', filename='icons/books-stack-of-three.png') }}" alt="Biblioteca" class="module-icon">
+                        <h2>Biblioteca de Recursos</h2>
+                    </div>
+                </a>
                 <div class="module-card">
                     <img src="{{ url_for('static', filename='icons/whiteboard.png') }}" alt="Pizarra" class="module-icon">
                     <h2>Pizarra Interactiva</h2>
                 </div>
-                <a href="{{ url_for('prueba') }}" class="module-link">
+                <a href="{{ url_for('SSA') }}" class="module-link">
                     <div class="module-card">
                         <img src="{{ url_for('static', filename='icons/test.png') }}" alt="SA" class="module-icon">
                         <h2>SA (Seguimiento de Aprendizaje)</h2>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Asignaturas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/asignatura.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+
+    <a href="{{ url_for('SSA') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container">
+
+        {% if session.get('rol') == 'admin' %}
+        <div class="add-item">
+            <a href="{{ url_for('add_asignatura') }}">
+                <i class="fa fa-plus"></i> Agregar Nueva Asignatura
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Mensajes flash -->
+        {% include 'message.html' %}
+        
+        <div class="cards-list">
+            {% for asignatura in asignaturas %}
+            <div class="card-base">
+
+                <div class="card-header">
+                    {% if asignatura.cursos|length > 0 %}
+                    <button class="card-toggle">
+                        <i class="fa fa-chevron-down toggle-icon"></i>
+                        {{ asignatura.nombre_asi }}
+                    </button>
+                    {% else %}
+                    <span class="asignatura-no-cursos">{{ asignatura.nombre_asi }}</span>
+                    {% endif %}
+
+                    <div class="admin-actions">
+                        {% if session.rol == 'admin' %}
+                        <a href="{{ url_for('update_asignatura', codigo=asignatura.codigo) }}" class="btn-action">
+                            <i class="fa fa-edit"></i> Editar
+                        </a>
+                        <a href="{{ url_for('delete_asignatura', codigo=asignatura.codigo) }}" class="btn-action">
+                            <i class="fa fa-trash-alt"></i> Eliminar
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if asignatura.cursos|length > 0 %}
+                <div class="items-list grid-2">
+                    {% for curso in asignatura.cursos %}
+                    <a class="card-item" 
+                       href="{{ url_for('gestionar_alumnos', codigo_asignatura=asignatura.codigo, id_curso=curso.codigo) }}">
+                        Gestionar Alumnos de {{ curso.nombre }}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.card-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const items = btn.closest('.card-base').querySelector('.items-list.grid-2');
+                const icon = btn.querySelector('.toggle-icon');
+
+                if (!items) return;
+
+                items.classList.toggle('active');
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+            });
+        });
+    });
+    </script>
+
+</body>
+</html>

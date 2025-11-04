@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Curso</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="add-card">
+        <div class="add-header">
+            <h2>Agregar Curso</h2>
+        </div>
+
+        <form method="POST" class="add-form add-info">
+
+            <label for="nivel"><b>Nivel:</b></label>
+            <select name="nivel" id="nivel" required>
+                <option value="" disabled selected>Seleccione un nivel</option>
+                <option value="Pre Kinder">Pre Kinder</option>
+                <option value="Kinder">Kinder</option>
+                <option value="1 Basico">1 Básico</option>
+                <option value="2 Basico">2 Básico</option>
+                <option value="3 Basico">3 Básico</option>
+                <option value="4 Basico">4 Básico</option>
+                <option value="5 Basico">5 Básico</option>
+                <option value="6 Basico">6 Básico</option>
+                <option value="7 Basico">7 Básico</option>
+                <option value="8 Basico">8 Básico</option>
+                <option value="I Medio">I Medio</option>
+                <option value="II Medio">II Medio</option>
+                <option value="III Medio">III Medio</option>
+                <option value="IV Medio">IV Medio</option>
+            </select>
+
+            <label for="generacion"><b>Generación (Año):</b></label>
+            <input type="number" name="generacion" id="generacion" min="1990" max="2500" 
+                step="1" required
+                oninput="if(this.value.length > 4) this.value = this.value.slice(0,4); this.value = this.value.replace(/\D/g,'')">
+            <div class="add-actions">
+                <button type="submit" class="add-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                </button>
+
+                <!-- Botón Cancelar -->
+                <a href="{{ url_for('list_cursos') }}" class="cancel-btn">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                </a>
+            </div>
+            </div>
+
+        </form>
+    </div>
+
+</body>
+</html>

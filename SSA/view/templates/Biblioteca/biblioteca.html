@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notas.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script>
+        async function descargarArchivo(id) {
+            if (window.pywebview) {
+                try {
+                    const result = await window.pywebview.api.descargar(id);
+                    if (result.ok) {
+                        alert("✅ Archivo descargado en: " + result.ruta);
+                    } else {
+                        alert("❌ Error al descargar el archivo");
+                    }
+                } catch (e) {
+                    console.error("Error en descarga:", e);
+                    alert("❌ No se pudo completar la descarga");
+                }
+            } else {
+                window.location.href = `/biblioteca/descargar/${id}`;
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Botón Volver -->
+    <a href="{{ url_for('prueba') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container">
+        <div class="add-item">
+            <div class="upload-card collapsible">
+                <div class="add-header">
+                    <h2>📤 Subir Archivo</h2>
+                </div>
+
+                <div class="collapsible-content" style="display: none;">
+                    <form method="POST" enctype="multipart/form-data" class="add-form">
+                        <label>Archivo:</label>
+                        <input type="file" name="contenido" required>
+
+                        <label>Carpeta:</label>
+                        <input type="text" name="carpeta" placeholder="Ej: Matemáticas">
+
+                        <label>Profesor:</label>
+                        <select name="profesor_correo" required>
+                            <option value="">-- Selecciona un profesor --</option>
+                            {% for p in profesores %}
+                                <option value="{{ p.correo }}">
+                                    {{ p.nom_user }} {{ p.ap_pat_user }} ({{ p.correo }})
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <div class="add-actions" style="margin-top:15px;">
+                            <button type="submit" class="add-btn">
+                                <i class="fa fa-upload"></i> Subir Archivo
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensajes flash -->
+        {% include 'message.html' %}
+
+        <div class="cards-list">
+            <main class="notas-container">
+                <section class="notas-header">
+                    <h2>📚 Biblioteca</h2>
+                    <p>Sube, descarga o elimina los archivos compartidos</p>
+                </section>
+
+                {% if archivos %}
+                <section class="tabla-notas-section">
+                    <div class="tabla-wrapper">
+                        <table class="tabla-notas">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha</th>
+                                    <th>Profesor</th>
+                                    <th>Carpeta</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for a in archivos %}
+                                <tr>
+                                    <td>{{ a.id }}</td>
+                                    <td>{{ a.nombre }}</td>
+                                    <td>{{ a.tipo }}</td>
+                                    <td>{{ a.fecha_subida }}</td>
+                                    <td>{{ a.profesor_correo }}</td>
+                                    <td>{{ a.carpeta }}</td>
+                                    <td class="acciones">
+                                        <!-- Botón Descargar -->
+                                        <button type="button" class="btn-accion descargar"
+                                                title="Descargar"
+                                                onclick="descargarArchivo('{{ a.id }}')">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+
+                                        <!-- Botón Eliminar -->
+                                        <a href="{{ url_for('biblioteca_controller.delete_archivo', id=a.id) }}" class="btn-accion eliminar" title="Eliminar">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                {% else %}
+                <p class="mensaje-vacio">No hay archivos cargados.</p>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function () {
+            document.body.tabIndex = 0;
+            document.body.focus();
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' || e.keyCode === 27) {
+                    if (window.history.length > 1) {
+                        window.history.back();
+                    } else {
+                        window.location.href = '/';
+                    }
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const collapsibles = document.querySelectorAll('.upload-card.collapsible');
+
+            collapsibles.forEach(card => {
+                const content = card.querySelector('.collapsible-content');
+
+                // Toggle solo si clickeas en la cabecera (no en el contenido)
+                const header = card.querySelector('.add-header');
+                header.addEventListener('click', () => {
+                    if (content.style.display === "block") {
+                        content.style.display = "none";
+                    } else {
+                        content.style.display = "block";
+                    }
+                });
+
+                // Evita que clics dentro del formulario cierren el collapsible
+                content.addEventListener('click', e => e.stopPropagation());
+            });
+        });
+
+
+    </script>
+
+</body>
+</html>

@@ -1,142 +1,168 @@
-/* Contenedor general del curso */
-.scale-container-curso {
-    width: 90%;
-    max-width: 900px;
-    min-width: 600px;
-    min-height: 70vh;
+/* Contenedor principal de toda la vista */
+.scale-container {
+    width: 95%;
+    max-width: 1200px;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 20px;
-    transform-origin: top center;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 20px 10px 20px 20px;
+    padding-top: 2.5rem; /* espacio superior para flash y botón */
+    padding-bottom: 2rem;
+    box-sizing: border-box;
 }
 
-/* Tarjeta del curso */
-.curso-card {
-    width: 95%;
+/* Card general */
+.card-base {
+    width: calc(100% - 40px);
+    max-width: none;
+    max-height: 75vh; /* ajustado para scroll interno */
     background: linear-gradient(135deg, #ffde59, #ff914d);
     border-radius: 25px;
-    padding: 20px;
+    padding: 30px 20px; /* más espacio interno */
     box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin: 20px auto;
-}
-
-/* Encabezado */
-.curso-header {
-    background: linear-gradient(135deg, #0080c8, #5de0e6);
-    border-radius: 30px;
-    padding: 15px;
-    text-align: center;
-    font-family: 'ChunkFive', Arial, sans-serif;
-}
-
-.curso-header h2 {
-    margin: 0;
-    font-size: 1.5rem;
     color: #fff;
-}
-
-.curso-header p {
-    margin: 5px 0 0;
-    font-size: 0.9rem;
-    color: #fff;
-}
-
-/* Lista de alumnos */
-.alumnos-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    margin-top: 1rem; /* separa del botón y flash */
+    box-sizing: border-box;
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden; /* evita que los elementos sobresalgan */
 }
 
-/* Alumno acordeón */
-.alumno {
+/* Listado de tarjetas */
+.cards-list {
+    max-height: 70vh; /* altura máxima con scroll */
+    overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    gap: 5px;
-}
-
-/* Botón del acordeón */
-.alumno-toggle {
+    gap: 15px;
     width: 100%;
-    background: linear-gradient(135deg,#5de0e6, #0080c8);
-    color: #fff;
-    font-family: 'LazyDog', Arial, sans-serif;
-    font-size: 1rem;
-    padding: 12px;
-    border: none;
-    border-radius: 40px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background 0.3s;
-}
-
-.alumno-toggle.open {
-    background: linear-gradient(135deg,#0080c8, #5de0e6);
-}
-
-/* Contenido del acordeón */
-.alumno-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    background: rgba(255,255,255,0.1);
-    padding: 0 15px;
-    border-radius: 15px;
-}
-
-.alumno-content.active {
-    max-height: 200px;
-    padding: 10px 15px;
-}
-
-/* Botón Ver notas */
-.ver-notas-btn {
-    background: linear-gradient(135deg,#ffde59,#ff914d);
-    border: none;
-    border-radius: 30px;
-    color: #000;
-    font-weight: bold;
-    padding: 6px 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: filter 0.2s;
-}
-
-.ver-notas-btn:hover {
-    filter: brightness(1.1);
+    box-sizing: border-box;
 }
 
 /* Scroll personalizado */
-.scale-container-curso::-webkit-scrollbar {
+.cards-list::-webkit-scrollbar {
     width: 12px;
     background: transparent;
 }
 
-.scale-container-curso::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-}
-
-.scale-container-curso::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #ffde59, #ff914d);
+.cards-list::-webkit-scrollbar-thumb {
+    background: #00b9d1;
     border-radius: 10px;
     border: 3px solid transparent;
     background-clip: content-box;
 }
 
-.scale-container-curso::-webkit-scrollbar-thumb:hover {
+.cards-list::-webkit-scrollbar-thumb:hover {
     filter: brightness(1.2);
 }
 
+/* Tarjeta de alumno */
+.alumno-card {
+    background: #00b9d1;
+    border-radius: 15px;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+/* Info izquierda de la tarjeta */
+.alumno-info-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.alumno-icon {
+    width: 55px;
+    height: 55px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.alumno-texto p {
+    margin: 2px 0;
+}
+
+.alumno-nombre {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.alumno-rut {
+    font-size: 0.9em;
+    opacity: 0.9;
+}
+
+.alumno-extra {
+    font-size: 0.85em;
+    opacity: 0.8;
+}
+
+/* Botones de modificar y eliminar */
+.alumno-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+.detail-btn i {
+    color: #000000;
+    font-size: 18px;
+}
+
+.edit-btn i {
+    color: #1e90ff; 
+    font-size: 18px;
+}
+
+.delete-btn i {
+    color: #ff4c4c;
+    font-size: 18px;
+}
+
+/* Encabezado de listado */
+.list-header {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.list-header h2 {
+    font-size: 1.8em;
+    margin: 0;
+}
+
+.list-header p {
+    opacity: 0.9;
+}
+
+/* Botón de agregar alumno */
+.add-item {
+    margin-bottom: 1rem; /* separa el botón de la card */
+}
+
+/* Mensajes flash */
+.flash-message {
+    margin-bottom: 1rem; /* separa los flashes de la card */
+}

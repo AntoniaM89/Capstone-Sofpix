@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Nota</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css') }}">  <!-- tu CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <a href="{{ url_for('detalle_curso_prof_asignatura', codigo_asignatura=codigo_asignatura, codigo_curso=id_curso) }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    
+<div class="edit-card">
+    <div class="edit-header">
+        <h2>Editar Nota</h2>
+    </div>
+
+    <form method="POST" class="edit-info">
+        
+        <!-- Mensajes flash -->
+        {% include 'message.html' %}
+        
+        <div class="id-line">
+            <b>ID Nota:</b>
+            <span>{{ nota.id_nota }}</span>
+        </div>
+
+        <label for="nombre"><b>Nombre Evaluación:</b></label>
+        <input type="text" id="nombre" name="nombre" value="{{ nota.nombre }}" required>
+
+        <label for="nota"><b>Nota:</b></label>
+        <input type="number" id="nota" step="0.1" min="1" max="7" name="nota" value="{{ nota.nota }}" required>
+        <br>
+        <label for="observacion"><b>Observación:</b></label>
+        <input type="text" id="observacion" name="observacion" placeholder="Opcional" value="{{ nota.observacion or '' }}">
+
+        <div class="edit-actions">
+            <!-- Botón Guardar -->
+            <button type="submit" class="save-btn">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+            </button>
+        </div>
+
+    </form>
+
+    
+</div>
+    <script>
+    document.getElementById('nota').addEventListener('input', function(e) {
+        let value = parseFloat(this.value);
+        if (!isNaN(value)) {
+            // Redondea a un decimal
+            this.value = Math.round(value * 10) / 10;
+        }
+    });
+    </script>
+
+</body>
+</html>

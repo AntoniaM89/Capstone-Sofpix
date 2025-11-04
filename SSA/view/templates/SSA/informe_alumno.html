@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe por Alumno</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/metricas.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Informe por Alumno</h1>
+        <p>Genera la boleta con las notas por asignatura.</p>
+    </header>
+
+    <a href="{{ url_for('reportes') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div id="main-content">
+        <!-- Mensajes flash -->
+        {% include 'message.html' %}
+        <!-- Filtros -->
+        <section id="filtros" class="filtros-card">
+            <form id="filtro-informe" method="get" action="{{ url_for('informe_alumno') }}">
+                <div class="filtro-section filtro-inline">
+
+                    <!-- Curso -->
+                    <div class="filtro-grupo">
+                        <label for="curso">Curso:</label>
+                        <select name="curso" id="curso" onchange="actualizarAlumnos(); autoGenerarInforme();">
+                            <option value="">Seleccione un curso</option>
+                            {% for c in cursos %}
+                                <option value="{{ c.id_curso }}" {% if filtros.curso == c.id_curso %}selected{% endif %}>
+                                    {{ c.nivel }} {{ c.generacion }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Alumno -->
+                    <div class="filtro-grupo">
+                        <label for="alumno">Alumno:</label>
+                        <select name="rut" id="alumno" onchange="autoGenerarInforme()">
+                            <option value="">Seleccione un alumno</option>
+                            {% for a in alumnos %}
+                                <option value="{{ a.rut_alum }}" {% if filtros.rut == a.rut_alum %}selected{% endif %}>
+                                    {{ a.nom_alum }} {{ a.ap_pat_alum }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="filtro-botones">
+                    <button type="button" class="btn-export" style="border-radius: 10px;" onclick="limpiarFiltros()">Limpiar</button>
+                    <a 
+                        href="{{ url_for('informe_alumno_pdf') }}?curso={{ filtros.curso }}&rut={{ filtros.rut }}" 
+                        class="btn-export" style="border-radius: 10px;" 
+                        target="_blank"
+                    >
+                        Descargar PDF
+                    </a>
+                </div>
+
+                </div>
+            </form>
+        </section>
+
+        <!-- Informe -->
+        {% if informe %}
+        <section class="export-card">
+            <div class="tabla-wrapper" style="background:#fff;">
+                
+                <!-- Datos del alumno directamente arriba de la tabla -->
+                <div style="margin-bottom:20px;">
+                    <p><strong>Don(a):</strong> {{ informe.alumno.nombre_completo }}</p>
+                    <p><strong>RUT:</strong> {{ informe.alumno.rut }}</p>
+                    <p><strong>Curso:</strong> {{ informe.alumno.curso_legible }}</p>
+                    <p><strong>Fecha de entrega:</strong> {{ fecha_entrega }}</p>
+                    <p style="margin-top:8px;">Ha obtenido las siguientes notas:</p>
+                </div>
+
+                <table class="notas-table">
+                    <thead>
+                        <tr>
+                            <th>Asignatura</th>
+                            {% for i in range(informe.max_notas) %}
+                                <th>N{{ i+1 }}</th>
+                            {% endfor %}
+                            <th>Prom</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in informe.asignaturas %}
+                            <tr>
+                                <td>{{ a.nombre }}</td>
+                                {% for n in a.notas %}
+                                    <td>{{ "%.1f"|format(n) }}</td>
+                                {% endfor %}
+                                {% for _ in range(informe.max_notas - (a.notas|length)) %}
+                                    <td></td>
+                                {% endfor %}
+                                <td>{{ "%.1f"|format(a.promedio) }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="promedio-final">
+                            <td><strong>Promedio final</strong></td>
+                            {% for _ in range(informe.max_notas) %}
+                                <td></td>
+                            {% endfor %}
+                            <td><strong>{{ "%.1f"|format(informe.promedio_final) if informe.promedio_final is not none else "-" }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        {% else %}
+        <div style="max-width:1000px; margin:20px auto; background:#fff; padding:16px; border-radius:8px;">
+            <p>Seleccione un curso y/o un alumno para ver una vista previa </p>
+            <p>Presione "Generar informe" para descargarlo en pdf</p></py>
+
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Rut del informe actual (si existe)
+        const rutInforme = "{{ filtros.rut if filtros.rut else '' }}";
+        const nombreInforme = "{{ informe.a.nom_alum ~ ' ' ~ informe.a.ap_pat_alum if informe and informe.a else '' }}";
+
+        // Leer parámetros de URL
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Actualizar alumnos según curso y mantener seleccionado o mostrar alumno directo
+        async function actualizarAlumnos(rutAlumno = null) {
+            const cursoId = document.getElementById('curso').value;
+            const alumnoSelect = document.getElementById('alumno');
+
+            if (!cursoId) {
+                alumnoSelect.innerHTML = '';
+                if (rutAlumno) {
+                    const option = document.createElement('option');
+                    option.value = rutAlumno;
+                    option.textContent = nombreInforme || 'Alumno seleccionado';
+                    option.selected = true;
+                    alumnoSelect.appendChild(option);
+                } else {
+                    alumnoSelect.innerHTML = '<option value="">Seleccione un alumno</option>';
+                }
+                return;
+            }
+
+            alumnoSelect.innerHTML = '<option value="">Cargando...</option>';
+            const response = await fetch(`/Reportes/informe_alumno/obtener_alumnos/${cursoId}`);
+            const data = await response.json();
+
+            alumnoSelect.innerHTML = '';
+            if (!rutAlumno) {
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.textContent = 'Seleccione un alumno';
+                placeholder.selected = true;
+                alumnoSelect.appendChild(placeholder);
+            }
+
+            let alumnoSeleccionadoEncontrado = false;
+            data.forEach(alumno => {
+                const option = document.createElement('option');
+                option.value = alumno.rut_alum;
+                option.textContent = `${alumno.nom_alum} ${alumno.ap_pat_alum}`;
+                if (rutAlumno && alumno.rut_alum === rutAlumno) {
+                    option.selected = true;
+                    alumnoSeleccionadoEncontrado = true;
+                }
+                alumnoSelect.appendChild(option);
+            });
+
+            if (rutAlumno && !alumnoSeleccionadoEncontrado) {
+                const placeholder = document.createElement('option');
+                placeholder.value = rutAlumno;
+                placeholder.textContent = nombreInforme || 'Alumno actual';
+                placeholder.selected = true;
+                alumnoSelect.insertBefore(placeholder, alumnoSelect.firstChild);
+            }
+        }
+
+        // Actualizar URL dinámicamente y generar informe automáticamente
+        function autoGenerarInforme() {
+            const curso = document.getElementById('curso').value;
+            const alumno = document.getElementById('alumno').value;
+
+            if (!alumno) return;
+
+            const url = new URL("{{ url_for('informe_alumno') }}", window.location.origin);
+            url.searchParams.set('curso', curso);
+            url.searchParams.set('rut', alumno);
+            history.replaceState(null, '', url);
+
+            document.getElementById('filtro-informe').submit();
+        }
+
+        function limpiarFiltros() {
+            window.location.href = "{{ url_for('informe_alumno') }}";
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const rutAlumno = getUrlParam('rut') || rutInforme;
+            const curso = getUrlParam('curso');
+
+            if (curso) {
+                document.getElementById('curso').value = curso;
+                actualizarAlumnos(rutAlumno);
+            } else if (rutAlumno) {
+                actualizarAlumnos(rutAlumno);
+            }
+        });      
+    </script>
+    
+
+</body>
+</html>

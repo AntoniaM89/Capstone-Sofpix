@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Profesor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <a href="{{ url_for('list_profesores') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="edit-card">
+        <div class="edit-header">
+            <h2>Editar Profesor</h2>
+        </div>
+
+        <!-- Mensajes flash -->
+        {% include 'message.html' %}
+        
+        <form method="POST" class="edit-form">
+            <div class="edit-info">
+                <p><b>Nombre:</b> <input type="text" name="nom_user" value="{{ profesor.nom_user }}" required></p>
+                <p><b>Segundo Nombre:</b> <input type="text" name="seg_nom_user" value="{{ profesor.seg_nom_user or '' }}"></p>
+                <p><b>Apellido Paterno:</b> <input type="text" name="ap_pat_user" value="{{ profesor.ap_pat_user }}" required></p>
+                <p><b>Apellido Materno:</b> <input type="text" name="ap_mat_user" value="{{ profesor.ap_mat_user or '' }}"></p>
+                <p><b>Contraseña:</b> <input type="password" name="pass_enc" value="********" required></p>
+                <p><b>Área:</b> <input type="text" name="area" value="{{ profesor.area }}" required></p>
+            </div>
+
+            <div class="edit-actions">
+                <button type="submit" class="save-btn">
+                    <i class="fa fa-save"></i>
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

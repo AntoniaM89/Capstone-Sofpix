@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Asignatura</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Tarjeta principal -->
+    <div class="add-card">
+        <div class="add-header">
+            <h2> Agregar Asignatura</h2>
+        </div>
+
+        <!-- Mensajes flash -->
+        {% include 'message.html' %}
+
+
+        <!-- Formulario -->
+        <form method="POST" class="add-form">
+            
+            <label><b>Asignatura:</b></label>
+            <select name="nombre_asi" onchange="this.form.action_type.value='seleccion'; this.form.submit();">
+                {% for nombre in asign_map.keys() %}
+                    <option value="{{ nombre }}" {% if seleccion == nombre %}selected{% endif %}>{{ nombre }}</option>
+                {% endfor %}
+                <option value="Otros" {% if seleccion == 'Otros' %}selected{% endif %}>Otros</option>
+            </select>
+
+            <input type="hidden" name="action_type" value="guardar">
+
+            {% if seleccion == "Otros" %}
+                <label><b>Nombre de la asignatura:</b></label>
+                <input type="text" name="nombre_manual" placeholder="Ej. Matemáticas Avanzadas"
+                       value="{{ request.form.nombre_manual or '' }}" required>
+
+                <label><b>Código de 3 letras:</b></label>
+                <input type="text" name="codigo_manual" maxlength="3" placeholder="Ej. MAT"
+                       value="{{ request.form.codigo_manual or '' }}" required>
+            {% endif %}
+
+            <label><b>Profesor:</b></label>
+            <select name="profesor_correo" required>
+                {% for p in profesores %}
+                    <option value="{{ p['correo'] }}"
+                        {% if request.form.profesor_correo == p['correo'] %}selected{% endif %}>
+                        {{ p['nom_user'] }} {% if p['seg_nom_user'] %}{{ p['seg_nom_user'] }}{% endif %}
+                        {{ p['ap_pat_user'] }} {% if p['ap_mat_user'] %}{{ p['ap_mat_user'] }}{% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <div class="add-actions">
+                <button type="submit" class="add-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                </button>
+
+                <!-- Botón Cancelar -->
+                <a href="{{ url_for('list_notas') }}" class="cancel-btn">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

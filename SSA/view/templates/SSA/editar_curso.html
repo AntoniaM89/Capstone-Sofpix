@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Curso</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+
+    <!-- Card principal -->
+    <div class="edit-card">
+
+        <div class="edit-header">
+            <h2>Editar Curso</h2>
+        </div>
+
+        <!-- Mensajes flash -->
+        {% include 'message.html' %}
+
+        <!-- Formulario -->
+        <form method="POST" class="edit-form">
+
+            <div class="edit-info">
+
+                <!-- ID del curso -->
+                <p class="id-line">
+                    <b>ID: {{ curso.id_curso }}</b> 
+                </p>
+
+                <!-- Nivel -->
+                <label for="nivel"><b>Nivel:</b></label>
+                <select name="nivel" id="nivel" required>
+                    {% set niveles = [
+                        "Pre Kinder","Kinder","1 Basico","2 Basico","3 Basico",
+                        "4 Basico","5 Basico","6 Basico","7 Basico","8 Basico",
+                        "I Medio","II Medio","III Medio","IV Medio"
+                    ] %}
+                    {% for n in niveles %}
+                        <option value="{{ n }}" {% if curso.nivel == n %}selected{% endif %}>{{ n }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Generación -->
+                <label for="generacion"><b>Generación (Año):</b></label>
+                <input type="number" name="generacion" id="generacion" min="1990" max="2500" value="{{ curso.generacion }}" required>
+
+            </div>
+
+            <div class="edit-actions">
+                <!-- Botón Guardar -->
+                <button type="submit" class="save-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                </button>
+
+                <!-- Botón Cancelar -->
+                <a href="{{ url_for('list_cursos') }}" class="save-btn cancel-btn" style="background: #ff4d4d; margin-left: 12px; text-decoration: none;">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                </a>
+            </div>
+
+
+
+        </form>
+
+    </div>
+
+    <script>
+        const NIVEL_MAP = {{ NIVEL_MAP|tojson }};
+        const nivelSelect = document.getElementById('nivel');
+        const generacionInput = document.getElementById('generacion');
+        const idSpan = document.getElementById('id_curso');
+
+        function actualizarId() {
+            const nuevoNivel = nivelSelect.value;
+            const nuevaGeneracion = generacionInput.value;
+            const prefijo = NIVEL_MAP[nuevoNivel] || "XXX";
+            idSpan.textContent = `${prefijo}${nuevaGeneracion}`;
+        }
+
+        nivelSelect.addEventListener('change', actualizarId);
+        generacionInput.addEventListener('input', actualizarId);
+    </script>
+
+</body>
+</html>

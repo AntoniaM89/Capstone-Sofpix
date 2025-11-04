@@ -2,7 +2,7 @@ import os
 import mysql.connector
 from dotenv import load_dotenv
 
-load_dotenv()  # Carga las variables de entorno desde .env
+load_dotenv()
 
 def get_connection():
     conn = mysql.connector.connect(
@@ -13,5 +13,3 @@ def get_connection():
         database=os.getenv("DB_NAME", "SSA_DB")
     )
     return conn
-
-
