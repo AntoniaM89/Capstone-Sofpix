@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Nota</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <a href="{{ url_for('list_notas') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="detail-card">
+
+        <div class="detail-header">
+            <h2>Detalle de la Nota</h2>
+        </div>
+
+        <div class="detail-info">
+            <p><b>ID Nota:</b> {{ nota.id_nota }}</p>
+            <p><b>Nombre Evaluación:</b> {{ nota.nombre }}</p>
+            <p><b>Nota:</b> {{ nota.nota }}</p>
+            <p><b>Observación:</b> {{ nota.observacion or '-' }}</p>
+            <hr>
+            <p><b>Alumno:</b> {{ nota.alumno_nombre }} ({{ nota.alumno_rut }})</p>
+            <p><b>Asignatura:</b> {{ nota.nombre_asi }} ({{ nota.asignatura_codigo }})</p>
+            <p><b>Profesor:</b> {{ nota.profesor }}</p>
+            <p><b>Curso:</b>  Nivel: {{ nota.nivel }} - Generación: {{ nota.generacion }}</p>
+        </div>
+
+        <div class="detail-actions">
+            {% if session.get('rol') in ['admin', 'profesor'] %}
+                <a href="{{ url_for('update_nota', id_nota=nota.id_nota) }}" class="edit-btn">
+                    <i class="fa fa-edit"></i> Editar
+                </a>
+                <a href="{{ url_for('delete_nota', id_nota=nota.id_nota) }}" class="delete-btn">
+                    <i class="fas fa-trash-alt"></i> Eliminar
+                </a>
+            {% endif %}
+        </div>
+
+    </div>
+
+</body>
+</html>

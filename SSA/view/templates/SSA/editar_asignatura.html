@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Asignatura</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="edit-card">
+        <div class="edit-header">
+            <h2>Editar Asignatura</h2>
+        </div>
+
+        <!-- Mensajes flash -->
+        {% include 'message.html' %}
+
+        {% if asignatura %}
+        <form method="POST" class="edit-form">
+            <div class="edit-info">
+
+                <!-- ID alineado al lado del label -->
+                <p class="id-line">
+                    <b>ID: <span id="codigo_asignatura">{{ asignatura.codigo }}</span></b>
+                </p>
+
+
+                <!-- Nombre de la asignatura -->
+                <label for="nombre_asi">Nombre Asignatura:</label>
+                <select name="nombre_asi" id="nombre_asi" required class="custom-select">
+                    {% for nombre, prefijo in asign_map.items() %}
+                        <option value="{{ nombre }}" {% if asignatura and asign_map[nombre] == asignatura.codigo[:3] %}selected{% endif %}>
+                            {{ nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <!-- Profesor asignado -->
+                <label for="profesor_correo">Profesor:</label>
+                <select name="profesor_correo" id="profesor_correo" required class="custom-select">
+                    {% for prof in profesores %}
+                        <option value="{{ prof.correo }}" {% if asignatura and prof.correo == asignatura.correo %}selected{% endif %}>
+                            {{ prof.nom_user }} {{ prof.seg_nom_user or '' }} {{ prof.ap_pat_user }} {{ prof.ap_mat_user or '' }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+            </div>
+
+            <div class="edit-actions">
+                <!-- Botón Guardar -->
+                <button type="submit" class="save-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                </button>
+
+                <!-- Botón Cancelar -->
+                <a href="{{ url_for('mis_asignaturas') }}" class="cancel-btn">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                </a>
+
+            </div>
+
+
+        </form>
+        {% endif %}
+    </div>
+
+    <script>
+        const asignMap = {{ asign_map|tojson }};
+        const selectNombre = document.getElementById('nombre_asi');
+        const codigoSpan = document.getElementById('codigo_asignatura');
+        const codigoActual = "{{ asignatura.codigo if asignatura else '' }}";
+
+        selectNombre.addEventListener('change', () => {
+            const nuevoNombre = selectNombre.value;
+            const nuevoPrefijo = asignMap[nuevoNombre] || codigoActual.slice(0,3);
+            const restoID = codigoActual.slice(3);
+            codigoSpan.textContent = nuevoPrefijo + restoID;
+        });
+    </script>
+</body>
+</html>

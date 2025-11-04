@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Notas del Alumno</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notas.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <a href="{{ url_for('mis_asignaturas') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container-curso">
+
+        <div class="curso-card">
+
+            <div class="curso-header">
+                <h2>Notas de: {{ alumno.nom_alum }} {% if alumno.seg_nom_alum %}{{ alumno.seg_nom_alum }}{% endif %} {{ alumno.ap_pat_alum }} {% if alumno.ap_mat_alum %}{{ alumno.ap_mat_alum }}{% endif %}</h2>
+                <p>Curso: {{ alumno.nivel }} {{ alumno.generacion }}</p>
+            </div>
+
+            <div class="alumnos-list">
+                {% if notas %}
+                    {% for nota in notas %}
+                    <div class="nota-item">
+                        <span>{{ nota.nombre }} ({{ nota.nombre_asi }})</span>
+                        <span class="nota">{{ "%.1f"|format(nota['nota']) }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="nota-item">
+                        <span>No hay notas registradas</span>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

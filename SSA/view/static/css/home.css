@@ -1,0 +1,161 @@
+/* Recuadro de bienvenida */
+.welcome-box {
+    position: relative;          
+    align-self: flex-start;      
+    background-color: #fff;
+    border-radius: 40px;
+    padding: 30px 50px;
+    margin-bottom: 125px;        
+    font-size: 35px;
+    font-weight: bold;
+    color: #054e5b;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 115px;           
+}
+
+/* Texto del welcome-box con wrap automático */
+.welcome-box p {
+    margin: 0;
+    white-space: normal;        
+    word-break: break-word;     
+    line-height: 1.2;
+    max-width: 450px;           
+}
+
+/* Lápiz decorativo */
+.welcome-box .pencil-icon {
+    position: absolute;
+    top: -40px;       
+    left: -35px;      
+    width: 95px;      
+    height: auto;
+    transform: rotate(190deg);  
+    pointer-events: none;       
+}
+
+/* Contenedor global */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 100px;
+}
+
+/* Contenedor principal de módulos */
+.modules-container {
+    display: flex;
+    gap: 300px;
+}
+
+/* Cada tarjeta de módulo */
+.module-card {
+    background: linear-gradient(90deg, #ffde59, #ff914d);
+    border-radius: 80px;
+    padding: 30px 20px;
+    width: 300px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: 'ChunkFive', Arial, sans-serif;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.module-card img.module-icon {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+.module-card h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #fff;
+}
+
+.module-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0px 6px 15px rgba(0,0,0,0.4);
+}
+
+.module-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* Pantalla de Inicio */
+
+/* Contenedor principal de inicio */
+.start-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    text-align: center;
+}
+
+/* Logo Sofpix */
+.logo-sofpix {
+    font-size: 120px;
+    font-weight: bold;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Lápiz en la "i" */
+.logo-sofpix .pencil-icon {
+    width: 60px;
+    height: auto;
+    margin: 0 5px;
+    transform: rotate(184deg) translateY(10px);
+}
+
+/* Imagen decorativa debajo del logo */
+.hand-brush {
+    width: 80%;       
+    max-width: 700px; 
+    height: auto;
+    margin: -70px 0 20px 0; 
+
+}
+
+/* Contenedor de botones */
+.start-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}
+
+/* Botones inicio y registro */
+.start-buttons button {
+    font-family: 'ChunkFive', Arial, sans-serif;
+    background-color: #fed24c;
+    border: none;
+    border-radius: 40px;
+    width: 400px;       
+    height: 80px;       
+    padding: 18px 50px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.start-buttons button:hover {
+    background-color: #f5c200;
+    transform: translateY(-3px);
+}

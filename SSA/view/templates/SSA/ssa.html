@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard SA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ssa.css') }}">
+</head>
+<body>
+
+    <a href="{{ url_for('home') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container">
+        <div class="main-container">
+
+            <!-- Contenedor de módulos -->
+            <div class="modules-container">
+                <a href="{{ url_for('list_profesores') }}" class="module-card profesores">
+                    <div class="icon-wrapper">
+                        <img src="{{ url_for('static', filename='icons/users.png') }}" alt="Profesores">
+                    </div>
+                    <p>Profesores</p>
+                </a>
+
+                <a href="{{ url_for('list_cursos') }}" class="module-card cursos">
+                    <div class="icon-wrapper">
+                        <img src="{{ url_for('static', filename='icons/courses.png') }}" alt="Cursos">
+                    </div>
+                    <p>Cursos</p>
+                </a>
+
+                <a href="{{ url_for('mis_asignaturas') }}" class="module-card asignaturas">
+                    <div class="icon-wrapper">
+                        <img src="{{ url_for('static', filename='icons/subjects.png') }}" alt="Asignaturas">
+                    </div>
+                    <p>Asignaturas</p>
+                </a>
+
+                <a href="{{ url_for('list_alumnos') }}" class="module-card alumnos">
+                    <div class="icon-wrapper">
+                        <img src="{{ url_for('static', filename='icons/student.png') }}" alt="Alumnos">
+                    </div>
+                    <p>Alumnos</p>
+                </a>
+
+                <a href="{{ url_for('list_notas') }}" class="module-card notas">
+                    <div class="icon-wrapper">
+                        <img src="{{ url_for('static', filename='icons/grades.png') }}" alt="Notas">
+                    </div>
+                    <p>Notas</p>
+                </a>
+                <a href="{{ url_for('reportes') }}" class="module-card notas">
+                    <div class="icon-wrapper">
+                        <img src="{{ url_for('static', filename='icons/metrics.png') }}" alt="Notas">
+                    </div>
+                    <p>Reportes</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

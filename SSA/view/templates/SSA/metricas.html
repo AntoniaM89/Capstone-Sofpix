@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Reportes y Métricas - SSA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/metricas.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Reportes y Métricas</h1>
+        <p>Dashboard con KPIs, gráficos y datos exportables.</p>
+    </header>
+    <a href="{{ url_for('SSA') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+    
+    <div id="main-content">
+        {% include 'message.html' %}
+        
+        <section id="filtros">
+            <form id="filtros-form" method="GET" action="{{ url_for('reportes') }}">
+                <label>
+                    Curso:
+                    <select id="curso" name="curso">
+                        <option value="">Todos</option>
+                        {% for c in cursos %}
+                            <option value="{{ c.id_curso }}" {% if filtros.curso|string() == c.id_curso|string() %}selected{% endif %}>
+                                {{ c.nivel }} {{ c.generacion }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>
+                    Asignatura:
+                    <select id="asignatura" name="asignatura">
+                        <option value="">Todos</option>
+                        {% for a in asignaturas %}
+                            <option value="{{ a.codigo }}" {% if filtros.asignatura|string() == a.codigo|string() %}selected{% endif %}>
+                                {{ a.nombre_asi }} ({{ a.codigo }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </label>
+                {% if session.get('rol') == 'admin' %}
+                <label>
+                    Profesor:
+                    <select id="profesor" name="profesor">
+                        <option value="">Todos</option>
+                        {% for p in profesores %}
+                            <option value="{{ p.correo }}" {% if filtros.profesor|string() == p.correo|string() %}selected{% endif %}>
+                                {{ p.nom_user }} {{ p.seg_nom_user or '' }} {{ p.ap_pat_user }} {{ p.ap_mat_user or '' }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </label>
+                {% else %}
+                <input type="hidden" name="profesor" value="{{ session.get('correo_prof') }}">
+                {% endif %}
+
+                <div class="filtros-buttons">
+                    <button type="submit" name="action" value="aplicar">Aplicar filtros</button>
+                    <button type="submit" name="action" value="limpiar">Limpiar</button>
+                </div>
+            </form>
+        </section>
+
+        {% if session.get('rol') == 'admin' %}
+        <div class="summary-card">
+            <h2 class="summary-title">Estadísticas actuales del sistema</h2>
+            <div class="summary-items">    
+                <div class="summary-item">
+                    <p>Profesores</p>
+                    <p>{{ summary.profesors }}</p>
+                </div>
+                <div class="summary-item">
+                    <p>Asignaturas</p>
+                    <p>{{ summary.asignaturas }}</p>
+                </div>
+                <div class="summary-item">
+                    <p>Cursos</p>
+                    <p>{{ summary.cursos }}</p>
+                </div>
+                <div class="summary-item">
+                    <p>Alumnos</p>
+                    <p>{{ summary.alumnos }}</p>
+                </div>
+                <div class="summary-item">
+                    <p>Notas</p>
+                    <p>{{ summary.notas }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <section id="kpis">
+            <div class="kpi-section">
+                <h2>KPIs por Curso</h2>
+                <div class="kpi-cards-container">
+                    <div class="kpi-card promedio-curso">
+                        <h3>Promedio curso</h3>
+                        <div class="kpi-value">
+                            {% if filtros.curso %}{{ promedio_curso or '-' }}{% else %}-{% endif %}
+                        </div>
+                        <p class="kpi-sub">Promedio del curso seleccionado</p>
+                    </div>
+
+                    <div class="kpi-card destacados">
+                        <h3>Alumnos destacados</h3>
+                        <div class="kpi-value">{{ alumnos_destacados|length }}</div>
+                        <p class="kpi-sub">Promedio ≥ 6</p>
+                    </div>
+
+                    <div class="kpi-card promedio">
+                        <h3>Alumnos promedio</h3>
+                        <div class="kpi-value">{{ alumnos_normales|length }}</div>
+                        <p class="kpi-sub">4.5 ≤ Promedio < 6</p>
+                    </div>
+
+                    <div class="kpi-card riesgo">
+                        <h3>Alumnos en riesgo</h3>
+                        <div class="kpi-value">{{ alumnos_en_riesgo|length }}</div>
+                        <p class="kpi-sub">Promedio < 4.5</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="graficos">
+            <div class="grafico-container">
+                <h2>Visualizaciones de Rendimiento</h2>
+                <div class="graficos-grid">
+
+                    <div class="grafico-card full-width">
+                        <h4> Promedio por Asignatura {% if filtros.curso %} del curso {% endif %}</h4>
+                        <div class="chart-container">
+                            <canvas id="chartAsignaturasCurso"></canvas>
+                        </div>
+                    </div>
+
+                    {% if session.get('rol') == 'admin' %}
+                    <div class="grafico-card full-width">
+                        <h4>Promedio por Profesor</h4>
+                        <div class="chart-container">
+                            <canvas id="chartPromedioProfesor"></canvas>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <div class="export-card">
+            <div class="export-actions">
+                <a href="{{ url_for('export_metricas_excel', curso=filtros.curso, asignatura=filtros.asignatura, profesor=filtros.profesor) }}" class="btn-export">Exportar a Excel</a>
+                <a href="{{ url_for('export_metricas_pdf', curso=filtros.curso, asignatura=filtros.asignatura, profesor=filtros.profesor) }}" class="btn-export">Exportar a PDF</a>
+                <a href="{{ url_for('informe_alumno')}}" class="btn-export">Generar informe por alumno</a>
+            </div>
+
+            <div class="tabla-wrapper">
+                <table id="tabla-reportes" border="1" cellspacing="0" cellpadding="6">
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>RUT</th>
+                            <th>Asignatura</th>
+                            <th>Curso</th>
+                            <th>Profesor</th>
+                            <th>Promedio</th>
+                            <th>Observación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if resultados %}
+                            {% for fila in resultados %}
+                            <tr>
+                                <td>{{ fila.nom_alum }}</td>
+                                <td>{{ fila.rut_alum }}</td>
+                                <td>{{ fila.nombre_asi }}</td>
+                                <td>{{ fila.nivel }} {{ fila.generacion }}</td>
+                                <td>{{ fila.profesor }}</td>
+                                <td>{{ fila.promedio }}</td>
+                                <td>{{ fila.observacion or '' }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td colspan="7">No hay datos para los filtros seleccionados.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% set curso_filtro = filtros.curso or '' %}
+            {% set asignatura_filtro = filtros.asignatura or '' %}
+            {% set profesor_filtro = filtros.profesor or '' %}
+
+            <div id="paginacion" class="pagination">
+                {% if page > 1 %}
+                    <a href="{{ url_for('reportes', curso=curso_filtro, asignatura=asignatura_filtro, profesor=profesor_filtro, page=page-1) }}" class="page-btn">Anterior</a>
+                {% endif %}
+                <span class="page-current">Página {{ page }} de {{ total_paginas }}</span>
+                {% if page < total_paginas %}
+                    <a href="{{ url_for('reportes', curso=curso_filtro, asignatura=asignatura_filtro, profesor=profesor_filtro, page=page+1) }}" class="page-btn">Siguiente</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Función auxiliar para rellenar y seleccionar el valor actual de un select
+        function actualizarSelect(selectId, items, valueField, textField, valorActual) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            
+            const currentValStr = String(valorActual || '');
+
+            select.innerHTML = `<option value="">Todos</option>` +
+                items.map(item => {
+                    const itemValStr = String(item[valueField]);
+                    const isSelected = itemValStr === currentValStr ? 'selected' : '';
+                    return `<option value="${item[valueField]}" ${isSelected}>${item[textField]}</option>`;
+                }).join('');
+            
+            // Aseguramos que el valor final del select coincida con el valor actual
+            select.value = currentValStr;
+        }
+
+
+        async function actualizarFiltros() {
+            const curso = document.getElementById("curso").value;
+            const asignatura = document.getElementById("asignatura").value;
+            const rol = "{{ session.get('rol') }}";
+            
+            const selectProfesor = document.getElementById("profesor");
+
+            // 'profesor' contendrá el valor que estaba seleccionado antes del evento
+            const profesor = (rol === "profesor")
+                ? "{{ session.get('correo_prof') }}"
+                : (selectProfesor?.value || ""); 
+
+            const resp = await fetch(`/Reportes/filtros_dinamicos?curso=${curso}&asignatura=${asignatura}&profesor=${profesor}&rol=${rol}`);
+            const data = await resp.json();
+
+            let valorCurso = curso;
+            let valorAsignatura = asignatura;
+            let valorProfesor = profesor;
+
+            if (data.success === false) {
+                alert(data.mensaje);
+                window.location.href = "/Reportes";
+                return;
+            }
+
+            // Actualizar Curso y Asignatura
+            actualizarSelect("curso", data.cursos, "id_curso", "nombre", valorCurso);
+            actualizarSelect("asignatura", data.asignaturas, "codigo", "nombre", valorAsignatura);
+            
+            // =========================================================
+            // LÓGICA DE BLOQUEO/SINEGIA PARA PROFESOR (SOLO ROL ADMIN)
+            // =========================================================
+            if (rol === "admin" && selectProfesor) {
+                
+                const profesorBloqueado = data.profesor_bloqueado; // Correo o null
+
+                if (profesorBloqueado) {
+                    // --- CASO 1: ASIGNATURA ESPECÍFICA SELECCIONADA (Profesor BLOQUEADO) ---
+                    actualizarSelect("profesor", data.profesores, "correo", "nombre", profesorBloqueado);
+                    
+                    selectProfesor.value = profesorBloqueado;
+                    selectProfesor.disabled = true; // Bloquear
+                    
+                } else {
+                    // --- CASO 2: ASIGNATURA = "TODOS" o no hay profesor fijo (Profesor DESBLOQUEADO) ---
+
+                    // Si Asignatura se resetea a "Todos"
+                    if (!asignatura) { 
+                        // Solo forzamos el reseteo a "Todos" si el filtro NO estaba ya seleccionado manualmente
+                        if (profesor === "") { 
+                             valorProfesor = ""; // Forzar a "Todos"
+                        } else {
+                             // Mantener la selección manual del profesor
+                             valorProfesor = profesor;
+                        }
+                    }
+
+                    // 1. Llenar el select con la lista de profesores filtrada normalmente
+                    actualizarSelect("profesor", data.profesores, "correo", "nombre", valorProfesor);
+                    
+                    // 2. HABILITAR el select para selección libre
+                    selectProfesor.disabled = false; // Desbloquear
+                }
+            }
+        }
+
+        // Función que aplica el bloqueo y asegura la selección del profesor al cargar la página
+        function inicializarBloqueo() {
+            const selectAsignatura = document.getElementById("asignatura");
+            const selectProfesor = document.getElementById("profesor");
+            const rol = "{{ session.get('rol') }}";
+            
+            // Obtenemos el valor del profesor que Flask/Jinja2 estableció en el último submit
+            const profesorFiltroActual = "{{ filtros.profesor or '' }}";
+
+
+            // Solo aplica para el rol admin y si el campo profesor existe
+            if (rol === "admin" && selectProfesor) {
+                
+                // 1. Lógica de bloqueo: Si la asignatura NO es "Todos" (tiene un valor), bloqueamos.
+                if (selectAsignatura.value) {
+                    selectProfesor.disabled = true;
+                    
+                    // 2. Lógica de persistencia de la selección:
+                    // Forzamos el valor del select al correo del profesor que ya aplicó el filtro
+                    if (profesorFiltroActual) {
+                        selectProfesor.value = profesorFiltroActual;
+                    }
+                } else {
+                    selectProfesor.disabled = false;
+                }
+            }
+        }
+
+
+        // --- Eventos y Lógica de Submit ---
+        document.getElementById("curso").addEventListener("change", actualizarFiltros);
+        document.getElementById("asignatura").addEventListener("change", actualizarFiltros);
+        
+        if ("{{ session.get('rol') }}" === 'admin') {
+            const selectProfesor = document.getElementById("profesor");
+            if (selectProfesor) {
+                 selectProfesor.addEventListener("change", actualizarFiltros);
+
+                 // *** IMPLEMENTACIÓN CLAVE: Desbloquear el campo antes del Submit ***
+                 document.getElementById("filtros-form").addEventListener("submit", function(event) {
+                    // Solo si el campo profesor está visible y es admin
+                    if (selectProfesor && selectProfesor.disabled) {
+                        // Temporalmente removemos el disabled para que el valor se envíe al servidor
+                        selectProfesor.removeAttribute('disabled');
+                        
+                        // Opcional: Volver a deshabilitar (aunque la página recargará, es buena práctica)
+                        setTimeout(() => {
+                             selectProfesor.setAttribute('disabled', 'disabled');
+                        }, 10);
+                    }
+                 });
+            }
+        }
+        
+        // Llamar a la función de inicialización al cargar la página
+        document.addEventListener("DOMContentLoaded", inicializarBloqueo);
+
+        // Lógica de datos para Chart.js
+        window.metricData = {
+            asignaturas_promedio: {{ asignaturas_promedio|tojson }} || [],
+            alumnos_destacados: {{ alumnos_destacados|tojson }} || [],
+            alumnos_normales: {{ alumnos_normales|tojson }} || [],
+            alumnos_en_riesgo: {{ alumnos_en_riesgo|tojson }} || [],
+            promedio_profesor: {{ promedio_profesor|tojson }} || null,
+            promedio_curso: {{ promedio_curso|tojson }} || null,
+            summary: {{ summary|tojson }} || {}
+        };
+        
+        // Lógica de scroll para la paginación al cargar el DOM
+        document.addEventListener("DOMContentLoaded", function() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has("page") && !params.has("fromFiltros")) {
+                const tabla = document.getElementById("tabla-reportes");
+                if (tabla) {
+                    tabla.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/metricas_graficos.js') }}"></script>
+</body>
+</html>

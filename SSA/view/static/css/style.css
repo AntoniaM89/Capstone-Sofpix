@@ -1,0 +1,1392 @@
+/* Importaciones de fuentes locales */
+@font-face {
+    font-family: 'LazyDog';
+    src: url('../fonts/lazy_dog.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ChunkFive';
+    src: url('../fonts/Chunkfive Ex.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Letters for Learners';
+    src: url('../fonts/Letters\ for\ Learners.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+
+/* Lato Fonts */
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-BoldItalic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+}
+
+
+/* HTML y Body */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(90deg, #5de0e6, #004aad);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    font-family: 'LazyDog', Arial, sans-serif;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 800px; 
+    min-height: 450px; 
+}
+
+
+/* Contenedor que se escala dinámicamente */
+.scale-container {
+    width: 800px;
+    height: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-origin: top center;
+}
+
+/* Contenedor de flashes */
+.flash-container {
+    padding: 0;
+    margin: 0 0 15px 0;
+    list-style: none;
+    display: flex;            
+    flex-direction: column;   
+    align-items: center;     
+}
+
+/* Cada flash */
+.flash-message {
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+    list-style-type: none;
+    min-width: 200px;        
+    text-align: center;      
+}
+
+/* Colores */
+.flash-success { background-color: green; }
+.flash-error   { background-color: red; }
+.flash-info    { background-color: purple; }
+
+
+/* Botón de retroceso con lápiz */
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 140px;
+    height: 60px;
+    background-color: transparent;
+    border-radius: 12px;
+    z-index: 1000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    text-decoration: none;
+}
+
+.back-button img {
+    width: 50px;
+    height: auto;
+    object-fit: contain;
+    transform: rotate(90deg);
+    margin-left: 10px;
+    position: absolute;
+}
+
+.back-button span {
+    position: relative;
+    z-index: 10;           
+    font-family: 'ChunkFive', Arial, sans-serif;
+    font-size: 1rem;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1em;
+    text-decoration: none; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    display: block;
+}
+
+.back-button:hover {
+    filter: brightness(1.05);
+}
+
+@media (max-width: 1500px) {
+    .back-button {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+@media (min-width: 901px) {
+    body {
+        scroll-padding-top: 100px;
+    }
+}
+
+
+/* Estilo generico para eliminar */
+.eliminar-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 0 15px;
+}
+
+.eliminar-card {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    font-family: 'LazyDog', Arial, sans-serif;
+    color: #000000;
+    text-align: center;
+    border: 2px solid #d32f2f;
+}
+
+.eliminar-title {
+    font-size: 2rem;
+    color: #d32f2f;
+    margin-bottom: 15px;
+}
+
+.eliminar-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.eliminar-buttons button,
+.eliminar-buttons a {
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: 'LazyDog', Arial, sans-serif;
+    transition: background 0.2s;
+}
+
+.eliminar-buttons button {
+    background-color: #d32f2f;
+    color: #fff;
+}
+
+.eliminar-buttons button:hover {
+    background-color: #e53935;
+}
+
+.eliminar-buttons a {
+    background-color: #5c5c5c;
+    color: #ffffff;
+    text-align: center;
+}
+
+.eliminar-buttons a:hover {
+    background-color: #757575;
+}
+
+/* Para Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* VISTA DE DETALLE */
+.detail-card {
+    background: linear-gradient(145deg, #ffb347, #ffcc33);
+    color: #222;
+    border-radius: 25px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+    padding: 60px 70px;
+    max-width: 1100px; /* antes 750px */
+    margin: 60px auto;
+    font-family: 'LazyDog','Segoe UI', sans-serif;
+    transition: transform 0.2s ease;
+}
+
+/* Header */
+.detail-card .detail-header {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    margin-bottom: 35px;
+    padding-bottom: 15px;
+    text-align: center;
+}
+
+.detail-card .detail-header h2 {
+    color: #fff;
+    text-shadow: 1px 1px 6px rgba(0,0,0,0.3);
+    margin: 0;
+    font-size: 2.4rem; /* más grande */
+}
+
+.detail-card .detail-header i {
+    color: #fff;
+    margin-right: 10px;
+    font-size: 1.8rem;
+}
+
+.detail-card .detail-header .area {
+    font-size: 1.2rem;
+    color: #fff;
+    opacity: 0.9;
+    margin-top: 10px;
+}
+
+/* Info */
+.detail-card .detail-info {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 40px 60px 35px 45px;
+    color: #333;
+    box-shadow: inset 0 3px 8px rgba(0,0,0,0.1);
+    font-family: 'Lato', Arial, sans-serif;
+    font-weight: 300;
+    font-size: 1.05rem;
+    max-width: 1000px;
+    margin: 40px auto;
+    line-height: 1.6;
+}
+
+.detail-card .detail-info b {
+    font-family: 'LazyDog', Arial, sans-serif;
+    color: #c65c00;
+    font-weight: 600;
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+/* Botones de acción */
+.detail-card .detail-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.detail-card .detail-actions a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 22px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: 'LazyDog', Arial, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    transition: color 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Hover effects */
+.detail-card .detail-actions .edit-btn {
+    background: linear-gradient(135deg, #0080c8, #5de0e6);
+    color: #fff;
+    border: 1px solid #ffb347;
+}
+
+.detail-card .detail-actions .edit-btn:hover {
+    background: #00b9d1;
+}
+
+.detail-card .detail-actions .delete-btn {
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: #fff;
+    border: 1px solid #c62828;
+}
+
+.detail-card .detail-actions .delete-btn:hover {
+    background: linear-gradient(135deg, #e53935, #c62828);
+}
+
+/* Ajuste responsive */
+@media screen and (max-width: 900px) {
+    .detail-card {
+        padding: 40px;
+        max-width: 95%;
+    }
+
+    .detail-card .detail-info {
+        padding: 25px;
+    }
+
+    .detail-card .detail-header h2 {
+        font-size: 1.8rem;
+    }
+}
+
+
+/* === FORMULARIOS DE EDICIÓN === */
+
+.edit-card {
+    background: linear-gradient(145deg, #ffb347, #ffcc33); /* mismo esquema del detalle */
+    color: #222;
+    border-radius: 20px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    padding: 40px 50px;
+    max-width: 750px;
+    margin: 50px auto;
+    font-family: 'LazyDog','Segoe UI', sans-serif;
+}
+
+/* Header */
+.edit-card .edit-header {
+    text-align: center;
+    border-bottom: 2px solid rgba(255,255,255,0.4);
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+}
+
+.edit-card .edit-header h2 {
+    color: #fff;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    font-size: 2rem;
+    margin: 0;
+}
+
+/* Cuerpo del formulario */
+.edit-card .edit-info {
+    background: linear-gradient(135deg, #ffffff, #fdf3d1);
+    border-radius: 12px;
+    padding: 25px 40px;
+    color: #333;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.edit-card .edit-info p {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+/* Alinea el label y el span del ID en línea */
+.edit-info .id-line {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px; 
+    margin-bottom: 16px;
+}
+
+
+
+.edit-card .edit-info b {
+    flex: 0 0 40%;
+    color: #c65c00;
+    font-weight: 600;
+}
+
+/* Anula el flex que viene de .edit-info b solo para la línea del ID */
+.edit-info .id-line b {
+    flex: none; 
+}
+
+
+/* ================= Inputs y Selects genéricos en edit-card ================= */
+.edit-info input[type="text"],
+.edit-info input[type="password"],
+.edit-info select {
+    width: 100%;
+    padding: 10px 15px;
+    margin: 8px 0 16px 0;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.edit-info input[type="text"]:focus,
+.edit-info input[type="password"]:focus,
+.edit-info select:focus {
+    outline: none;
+    border-color: #00c832;
+    box-shadow: 0 0 6px rgba(0, 200, 107, 0.4);
+}
+
+/* Aseguramos que el select despliegue opciones hacia abajo */
+.edit-info select {
+    appearance: none;
+    background: #fff url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
+    background-size: 1em;
+    cursor: pointer;
+}
+
+.edit-card .edit-info input {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.edit-card .edit-info input:focus {
+    border-color: #0080c8;
+    box-shadow: 0 0 4px rgba(0,128,200,0.4);
+    outline: none;
+}
+
+/* Botón */
+.edit-card .edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.edit-card .edit-actions .save-btn {
+    background: linear-gradient(135deg, #0080c8, #5de0e6);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-family: 'LazyDog', Arial, sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.edit-card .edit-actions .save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Responsive */
+@media screen and (max-width: 800px) {
+    .edit-card {
+        transform: scale(0.95);
+        padding: 25px;
+    }
+}
+
+
+/* === FORMULARIOS DE AGREGAR === */
+
+.add-card {
+    background: linear-gradient(145deg, #ffb347, #ffcc33);
+    color: #222;
+    border-radius: 20px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    padding: 50px 60px;
+    max-width: 850px;
+    margin: 50px auto;
+    font-family: 'LazyDog','Segoe UI', sans-serif;
+    box-sizing: border-box;
+}
+
+.add-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Header */
+.add-card .add-header {
+    text-align: center;
+    border-bottom: 2px solid rgba(255,255,255,0.4);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+}
+
+.add-card .add-header h2 {
+    color: #fff;
+    text-shadow: 1px 1px 6px rgba(0,0,0,0.3);
+    font-size: 2.2rem;
+    margin: 0;
+}
+
+.add-card .add-header i {
+    color: #fff;
+    margin-right: 10px;
+    font-size: 1.6rem;
+}
+
+
+
+.add-form {
+    background: linear-gradient(135deg, #ffffff, #fff5d7);
+    border-radius: 16px;
+    padding: 25px 40px; /* menos padding para no salirse */
+    box-shadow: inset 0 3px 8px rgba(0,0,0,0.08);
+    color: #333;
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 1.05rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* Ajuste específico para dropdown en add-form / add-info */
+.add-form select,
+.add-info select {
+    width: 100%;
+    min-width: 220px;
+    padding: 12px 18px; 
+    min-height: 42px; 
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 1rem;
+    box-sizing: border-box;
+    appearance: none;
+    background: #fff url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 14px center;
+    background-size: 1em;
+    cursor: pointer;
+}
+
+
+.add-form label {
+    display: block;
+    font-weight: 600;
+    color: #c65c00;
+    margin: 10px 0 6px 0;
+    font-family: 'LazyDog', Arial, sans-serif;
+}
+
+/* Inputs */
+.add-form input[type="text"],
+.add-form input[type="number"],
+.add-form input[type="password"],
+.add-form select {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 8px 0 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+/* Focus efecto */
+.add-form input:focus,
+.add-form select:focus {
+    outline: none;
+    border-color: #0080c8;
+    box-shadow: 0 0 6px rgba(0,128,200,0.4);
+}
+
+/* Select con ícono */
+.add-form select {
+    appearance: none;
+    background: #fff url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
+    background-size: 1em;
+    cursor: pointer;
+}
+
+.add-info input,
+.add-info select {
+    width: 100%;
+    padding: 10px 15px;
+    margin: 8px 0 16px 0;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+.add-info select {
+    appearance: none;
+    background: #fff url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
+    background-size: 1em;
+    cursor: pointer;
+}
+
+
+/* === BOTONES === */
+.add-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.add-actions .add-btn {
+    background: linear-gradient(135deg, #00a84f, #33e78c);
+    color: #fff;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 30px;
+    font-family: 'LazyDog', Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.add-actions .add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+    background: linear-gradient(135deg, #00c25c, #45f09f);
+}
+
+/* Contenedor de acciones */
+.add-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* Botón Guardar */
+.add-actions .save-btn {
+    background: linear-gradient(135deg, #0080c8, #5de0e6);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-family: 'LazyDog', Arial, sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.add-actions .save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Botón Cancelar global */
+.cancel-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-family: 'LazyDog', Arial, sans-serif;
+    font-size: 0.95rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.cancel-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    background: linear-gradient(135deg, #e53935, #c62828);
+}
+
+
+
+/* === RESPONSIVE === */
+@media screen and (max-width: 800px) {
+    .add-card {
+        padding: 25px;
+        max-width: 90%;
+    }
+
+    .add-form {
+        padding: 20px;
+    }
+
+    .add-card .add-header h2 {
+        font-size: 1.7rem;
+    }
+}
+
+/* === GRILLA 2X3 PARA FORMULARIOS DE AGREGAR (Alumno / Nota) === */
+.add-item-page .add-card {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 25px;
+    background-color: #f9f9f9;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.add-item-page .add-header h2 {
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 30px;
+}
+
+.add-item-page .add-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.add-item-page .add-form .full-width {
+    grid-column: span 2;
+}
+
+.add-item-page .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-item-page .form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #c65c00;
+}
+
+.add-item-page .form-group input,
+.add-item-page .form-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+}
+
+.add-item-page .add-actions {
+    grid-column: span 2;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.add-item-page .add-btn,
+.add-item-page .cancel-btn {
+    padding: 10px 25px;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.add-item-page .add-btn {
+    background-color: #0056b3;
+    color: white;
+    border-radius: 25px;
+}
+
+.add-item-page .add-btn:hover {
+    background-color: #004494;
+}
+
+.add-item-page .cancel-btn {
+    background-color: #ccc;
+    border-radius: 25px;
+}
+
+.add-item-page .cancel-btn:hover {
+    background-color: #aaa;
+}
+
+/* Responsive para móviles */
+@media (max-width: 600px) {
+    .add-item-page .add-form {
+        grid-template-columns: 1fr;
+    }
+    .add-item-page .add-actions {
+        flex-direction: column;
+    }
+}
+
+
+/* ================= Contenedor principal (homologado) ================= */
+.scale-container {
+    width: 90%;
+    max-width: 1500px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+
+
+/* ================= Scroll personalizado ================= */
+.scale-container::-webkit-scrollbar {
+    width: 12px;
+    background: transparent;
+}
+
+.scale-container::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.scale-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #ffde59, #ff914d);
+    border-radius: 10px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+.scale-container::-webkit-scrollbar-thumb:hover {
+    filter: brightness(1.2);
+}
+
+/* ================= Card base (homogeneidad) ================= */
+.card-base {
+    width: 95%;
+    max-width: 1500px;
+    background: linear-gradient(135deg, #ffde59, #ff914d);
+    border-radius: 25px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    margin: 25px auto 20px auto;
+    box-sizing: content-box;
+}
+
+/* ================= Header y toggle común ================= */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.card-header .title{
+    color: #fff;
+    font-family: "ChunkFive";
+}
+
+.card-header .title i{
+    color: #fff;
+    margin-right: 8px;
+}
+
+/* Toggle (nombre + icono) */
+.card-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1; /* ocupa todo el espacio disponible */
+    text-align: left;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 12px 15px;
+    font-size: 20px;
+    font-family: 'ChunkFive', Arial, sans-serif;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 25px;
+    transition: background 0.3s;
+}
+
+.card-toggle:hover {
+    background: #ff7b00;
+}
+
+/* Icono del toggle */
+.toggle-icon {
+    transition: transform 0.3s;
+    display: inline-block;
+}
+
+/* ================= Lista de items acordeón ================= */
+.items-list {
+    display: none;
+    flex-direction: column;
+    margin-left: 10px;
+    color: #fff;
+    font-family:  Arial, sans-serif;
+}
+
+.items-list.active {
+    display: flex;
+}
+
+/* ================= Card interna (elementos dentro del toggle) ================= */
+.card-item {
+    width: 95%;
+    background: linear-gradient(135deg,#5de0e6, #0080c8);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 25px;
+    text-align: center;
+    font-family: 'LazyDog', Arial, sans-serif;
+    padding: 12px 10px;
+    transition: background 0.2s;
+    display: block;
+    margin-top: 5px;
+}
+
+.card-item:hover {
+    background: #2fcfe4;
+}
+
+/* ================= Botones uniformes ================= */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-family: 'LazyDog', Arial, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    background: #fff;
+    gap: 5px;
+    color: #000;
+    border: 1px solid #ccc;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-action:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+}
+
+/* ================= Botón agregar genérico ================= */
+.add-item {
+    display: flex;
+    justify-content: flex-end; 
+    margin-bottom: 10px;      
+}
+
+
+.add-item a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    text-decoration: none;
+}
+
+.add-item a:hover {
+    background-color: #f0f0f0;
+    color: #000;
+    transform: translateY(-2px);
+}
+
+
+/* ESPECIFICO DE ASIGNATURAS*/
+/* ================= Asignaturas sin cursos ================= */
+.asignatura-no-cursos {
+    font-size: 1rem;
+    color: #fff;
+    padding: 15px;
+    font-family: 'ChunkFive', Arial, sans-serif;
+}
+
+/* ================= Lista de items tipo grid 2 columnas ================= */
+.items-list.grid-2 {
+    display: none;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.items-list.grid-2.active {
+    display: grid;
+}
+
+/* ================= Items individuales (cursos dentro de asignaturas) ================= */
+
+
+/* ================= Lista con scroll interno ================= */
+.cards-list {
+    max-height: 75vh; 
+    overflow-y: auto;
+    overflow-x: hidden; 
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%; 
+    box-sizing: border-box;
+}
+
+/* ================= Cards ================= */
+.card-base {
+    width: calc(100% - 40px);
+    max-width: none;           
+    margin: 0 auto;           
+}
+
+/* Scroll personalizado para la lista interna */
+.cards-list::-webkit-scrollbar {
+    width: 12px;
+    background: transparent;
+}
+
+.cards-list::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.cards-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #ffde59, #ff914d);
+    border-radius: 10px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+.cards-list::-webkit-scrollbar-thumb:hover {
+    filter: brightness(1.2);
+}
+
+/* ================= ESPECIFICO GESTION DE CURSOS/ASIGNATURAS ================= */
+.card-crema {
+    background: #fffdf6;
+    color: #c65c00;
+    border-radius: 25px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex: 1;               
+    min-width: 300px;        
+}
+
+/* Asegura que todas tengan la misma altura */
+.cards-list-gest .card-crema {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.cards-list-gest {
+    display: flex;
+    gap: 20px;      
+    flex-wrap: wrap;    
+}
+
+/* Lista interna */
+.card-crema ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;           
+}
+
+.card-crema li {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.card-crema li form {
+    margin: 0;
+}
+
+.card-crema li button.btn-action {
+    margin-left: 15px; /* separa el botón del texto */
+}
+
+.remove-btn {
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: #fff;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 30px;
+    font-family: 'LazyDog', Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.remove-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+    background: linear-gradient(135deg, #e53935, #c62828);
+}
+
+
+/* Tarjetas de alumnos con iconos y texto blanco */
+.alumno-card-white {
+    background-color: #00aaff; 
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Contenedor del ícono circular */
+.alumno-card-white .alumno-icon {
+    width: 40px;            
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.411); 
+    border-radius: 50%;       
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    flex-shrink: 0;        
+}
+
+/* Ícono dentro del círculo */
+.alumno-card-white .alumno-icon i {
+    color: white;
+    font-size: 1em;         
+}
+
+.alumno-card-white .alumno-texto p {
+    color: white;
+    margin: 2px 0;
+}
+
+/* Botones sin borde y más limpio */
+.no-border-btn {
+    border: none;
+    background: rgb(255, 255, 255);
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 50%;  
+}
+
+/* Subclase: botón para agregar (verde) */
+.no-border-btn.agregar {
+    color: rgb(0, 179, 68);
+}
+
+.no-border-btn.agregar:hover {
+    color: #11cf00;
+    transform: scale(1.1);
+}
+
+/* Subclase: botón para eliminar (rojo) */
+.no-border-btn.eliminar {
+    color: rgb(207, 48, 48);
+}
+
+.no-border-btn.eliminar:hover {
+    color: #ff4d4d;
+    transform: scale(1.1);
+}
+
+
+/* ================= Listas con scroll interno ================= */
+.cards-list-gest {
+    display: flex;
+    flex-direction: row;  
+    gap: 20px;            
+    max-height: 70vh;     
+    overflow-y: hidden;      
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+
+
+/* Opcional: scrollbar más estilizado */
+.cards-list-gest::-webkit-scrollbar,
+.alumnos-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.cards-list-gest::-webkit-scrollbar-thumb,
+.alumnos-list::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 4px;
+}
+
+/* Cada card con scroll interno si su contenido es grande */
+.cards-list-gest .card-crema {
+    flex: 1 1 0;           
+    max-height: 60vh;   
+    overflow-y: auto;     
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+
+/* Contenedor de cada asignatura */
+.asignatura-card {
+    display: flex;
+    justify-content: space-between; /* nombre a la izquierda, botón a la derecha */
+    align-items: center;            /* alineación vertical */
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+}
+
+/* Ajusta el span del nombre para que no rompa el layout */
+.asignatura-card span {
+    flex-grow: 1;          /* ocupa todo el espacio disponible */
+    margin-right: 10px;    /* separa del botón */
+    word-break: break-word; /* evita desbordes largos */
+}
+
+
+/* ==============================
+   |      BIBLIOTECA/QUIZ       |
+   ============================== */
+
+/* ==============================
+   TARJETA DE SUBIDA DE ARCHIVO
+   ============================== */
+.upload-card {
+    background: linear-gradient(135deg, #FFA500, #FFD700);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+}
+
+.upload-card .add-header h2 {
+    margin: 0 0 15px 0;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+.upload-card .add-form label {
+    color: #c65c00;
+    font-weight: bold;
+}
+
+.upload-card .add-form textarea {
+    width: 97%;
+}
+
+.upload-card.collapsible {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.collapsible-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+/* variable para controlar la altura máxima del panel abierto */
+:root {
+    --accordion-max: 220px;
+}
+
+/* contenido del acordeón (cerrado por defecto) */
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;           
+    transition: max-height 0.35s ease, padding 0.25s ease;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+.accordion-item.active .accordion-content {
+    max-height: var(--accordion-max);
+    overflow-y: auto;          
+    padding: 10px 16px;
+}
+
+.accordion-item.active .accordion-content::-webkit-scrollbar {
+    width: 8px;
+}
+.accordion-item.active .accordion-content::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.15);
+    border-radius: 6px;
+}
+
+/* ==============================
+   MENSAJE VACÍO
+   ============================== */
+.mensaje-vacio {
+    color: red;
+    text-align: center;
+    font-weight: 500;
+    background-color: #fffaf2;
+    padding: 15px;
+    border-radius: 8px;
+}

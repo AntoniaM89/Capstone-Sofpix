@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Asignatura</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/asignaturas.css') }}">
+</head>
+<body>
+    <div class="asignatura-detail-card">
+        <div class="asignatura-detail-header">
+            <h2>Editar Asignatura</h2>
+        </div>
+        
+        <a href="{{ url_for('mis_asignaturas') }}" class="back-button">
+            <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+            <span>Volver</span>
+        </a>
+        
+        <div class="asignatura-detail-info">
+            <!-- Mensajes flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-container">
+                {% for category, message in messages %}
+                <li class="flash-message {% if category == 'success' %}flash-success{% elif category == 'error' %}flash-error{% else %}flash-info{% endif %}">
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            {% if asignatura %}
+            <form method="POST">
+                <p><b>ID:</b> <span id="codigo_asignatura">{{ asignatura.codigo }}</span></p>
+
+                <label for="nombre_asi">Nombre Asignatura:</label>
+                <select name="nombre_asi" id="nombre_asi" required class="custom-select">
+                    {% for nombre, prefijo in asign_map.items() %}
+                        <option value="{{ nombre }}" {% if asignatura and asign_map[nombre] == asignatura.codigo[:3] %}selected{% endif %}>
+                            {{ nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="profesor_correo">Profesor:</label>
+                <select name="profesor_correo" id="profesor_correo" required class="custom-select">
+                    {% for prof in profesores %}
+                        <option value="{{ prof.correo }}" {% if asignatura and prof.correo == asignatura.correo %}selected{% endif %}>
+                            {{ prof.nom_user }} {{ prof.seg_nom_user or '' }} {{ prof.ap_pat_user }} {{ prof.ap_mat_user or '' }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <div class="asignatura-detail-actions">
+                    <button type="submit" class="asignatura-edit-btn">Actualizar</button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const asignMap = {{ asign_map|tojson }};
+        const selectNombre = document.getElementById('nombre_asi');
+        const codigoSpan = document.getElementById('codigo_asignatura');
+        const codigoActual = "{{ asignatura.codigo if asignatura else '' }}";
+
+        selectNombre.addEventListener('change', () => {
+            const nuevoNombre = selectNombre.value;
+            const nuevoPrefijo = asignMap[nuevoNombre] || codigoActual.slice(0,3);
+            const restoID = codigoActual.slice(3);
+            codigoSpan.textContent = nuevoPrefijo + restoID;
+        });
+    </script>
+</body>
+</html>

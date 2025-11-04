@@ -1,0 +1,256 @@
+/* ==============================
+   BOTONES DE ACCIÓN EN NOTAS
+   ============================== */
+.nota-item div form button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: color 0.2s, transform 0.2s;
+    position: relative;
+    margin-left: 0px;
+}
+
+
+/* ==============================
+   SCROLL PERSONALIZADO GENERAL
+   ============================== */
+.scale-container-curso::-webkit-scrollbar {
+    width: 12px;
+    background: transparent;
+}
+
+.scale-container-curso::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.scale-container-curso::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #ffde59, #ff914d);
+    border-radius: 10px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+.scale-container-curso::-webkit-scrollbar-thumb:hover {
+    filter: brightness(1.2);
+}
+
+/* ==============================
+   TABLA DE NOTAS (si se usa en otra vista)
+   ============================== */
+.notas-container {
+    width: 95%;
+    max-width: 1600px;
+    margin: 5px auto;
+    background: linear-gradient(135deg, #ffde59, #ff914d);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+.notas-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #fff;
+    font-size: 20px;
+}
+
+.notas-header h2 {
+    font-size: 1.8em;
+    color: #ffffff;
+}
+
+.notas-header p {
+    color: #ffffff;
+    font-size: 1em;
+}
+
+/* ==============================
+   TABLA
+   ============================== */
+.tabla-wrapper {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.tabla-notas {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+    background-color: #fffaf2;
+    border-radius: 12px;
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+.tabla-notas thead {
+    background: linear-gradient(135deg, #5de0e6, #0080c8);
+}
+
+.tabla-notas th {
+    color: #ffffff;
+    font-weight: 600;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.tabla-notas td {
+    vertical-align: middle;
+    padding: 12px 15px;
+}
+
+.tabla-notas th, .tabla-notas td {
+    word-wrap: break-word;
+}
+
+/* ==============================
+   ACCIONES EN TABLA
+   ============================== */
+.acciones {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+}
+
+.acciones a {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.btn-accion {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-accion.editar { color: #2a7ae4; }
+.btn-accion.eliminar { color: #e63946; }
+
+.btn-accion:hover {
+    transform: scale(1.1);
+    background-color: rgb(255, 220, 183);
+}
+
+
+/* ================= Lista de notas (solo vista profesor/admin) ================= */
+.notas-cards-list {
+    max-height: 80vh;        
+    overflow-y: hidden;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Contenedor que centra y escala la tarjeta de notas */
+.notas-scale-container {
+    width: 95%;             
+    max-width: 1200px;      
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    transform-origin: top center;
+}
+
+/* ================= Tarjeta de notas completa================= */
+.notas-card {
+    width: 100%;             
+    background: linear-gradient(135deg, #FFA500, #FFD700); 
+    border-radius: 12px;
+    padding: 0; 
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cabecera fija */
+.notas-header-fixed {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 15px;
+    color: #fff; 
+    text-align: center;
+    font-size: 20px;
+}
+
+/* Scroll de la tabla */
+.notas-table-scroll {
+    max-height: 60vh; 
+    overflow-y: auto;
+    padding: 10px 10px 20px 10px;
+    box-sizing: border-box;
+    background: transparent;
+}
+
+
+.notas-table-scroll table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fffaf2;
+}
+
+
+.notas-table-scroll::-webkit-scrollbar {
+    width: 16px;
+}
+
+.notas-table-scroll::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 5px;
+}
+
+.notas-table-scroll::-webkit-scrollbar-thumb {
+    background: #00b9d1;
+    border-radius: 10px;
+    border: 5px solid transparent;
+    background-clip: content-box;
+    min-height: 50px;
+}
+
+
+/* ==== Asegura que los botones de acciones se mantengan visibles y alineados ==== */
+.tabla-notas td.acciones {
+    white-space: nowrap;             /* evita que los botones se vayan a otra línea */
+    display: flex;                   /* los alinea en una fila */
+    justify-content: center;         /* los centra horizontalmente */
+    align-items: center;             /* los centra verticalmente */
+    gap: 8px;                        /* espacio entre botones */
+}
+
+.tabla-notas td.acciones a,
+.tabla-notas td.acciones button {
+    flex-shrink: 0;                  /* evita que se compriman al achicar pantalla */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Mantiene las columnas proporcionales incluso al achicarse */
+.tabla-notas {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.tabla-notas th:last-child,
+.tabla-notas td:last-child {
+    width: 150px;                    /* da espacio fijo a la columna de acciones */
+}

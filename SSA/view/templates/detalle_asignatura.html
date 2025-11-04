@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Asignatura</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/asignaturas.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+    <a href="{{ url_for('mis_asignaturas') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="asignatura-detail-card">
+
+        <div class="asignatura-detail-header">
+            <h2>Detalles de la Asignatura</h2>
+        </div>
+
+        <div class="asignatura-detail-info">
+            <p><b>ID:</b> {{ asignatura.codigo }}</p>
+            <p><b>Nombre:</b> {{ asignatura.nombre_asi }}</p>
+            <p><b>Profesor:</b> {{ asignatura.profesor }}</p>
+        </div>
+
+        <div class="asignatura-detail-actions">
+            <a href="{{ url_for('update_asignatura', codigo=asignatura.codigo) }}" class="edit-btn">
+                <i class="fa fa-edit"></i> Editar
+            </a>
+            <a href="{{ url_for('delete_asignatura', codigo=asignatura.codigo) }}" class="delete-btn">
+                <i class="fas fa-trash-alt"></i> Eliminar
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>

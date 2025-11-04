@@ -1,0 +1,78 @@
+<!-- templates/SSA/gestionar_asignaturas.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Asignaturas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <a href="{{ url_for('list_cursos') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container">
+        {% include 'message.html' %}
+
+        <!-- Card principal -->
+        <div class="card-base">
+            <div class="card-header">
+                <h2 style="color:white;">
+                    Gestionar Asignaturas del Curso: {{ curso_nivel }} - {{ curso_generacion }}
+                </h2>
+            </div>
+
+            <div class="cards-list-gest">
+
+                <!-- Asignaturas actuales -->
+                <div class="card-crema scroll-card">
+                    <h3>Asignaturas actuales</h3>
+                    {% if asignaturas_actuales %}
+                        <div class="cards-list">
+                            {% for asign in asignaturas_actuales %}
+                            <div class="asignatura-card">
+                                <span>{{ asign.nombre_asi }} ({{ asign.codigo }})</span>
+                                <form method="POST" class="add-actions">
+                                    <input type="hidden" name="accion" value="quitar">
+                                    <input type="hidden" name="codigo_asig" value="{{ asign.codigo }}">
+                                    <button class="remove-btn" type="submit">Quitar</button>
+                                </form>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="asignatura-no-cursos">No hay asignaturas asignadas aún.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Asignaturas disponibles -->
+                <div class="card-crema scroll-card">
+                    <h3>Asignaturas disponibles</h3>
+                    {% if asignaturas_disponibles %}
+                        <div class="cards-list">
+                            {% for asign in asignaturas_disponibles %}
+                            <div class="asignatura-card">
+                                <span>{{ asign.nombre_asi }} ({{ asign.codigo }})</span>
+                                <form method="POST" class="add-actions">
+                                    <input type="hidden" name="accion" value="agregar">
+                                    <input type="hidden" name="codigo_asig" value="{{ asign.codigo }}">
+                                    <button class="add-btn" type="submit">Agregar</button>
+                                </form>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="asignatura-no-cursos">No hay asignaturas disponibles para agregar.</p>
+                    {% endif %}
+                </div>
+
+            </div> <!-- fin cards-list-gest -->
+
+        </div> <!-- fin card-base -->
+    </div> <!-- fin scale-container -->
+
+</body>
+</html>

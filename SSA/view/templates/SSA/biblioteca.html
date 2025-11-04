@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notas.css') }}">
+    
+    <script>
+        async function descargarArchivo(id) {
+            if (window.pywebview) {
+                // Estamos en la app de escritorio
+                try {
+                    const result = await window.pywebview.api.descargar(id);
+                    if (result.ok) {
+                        alert("✅ Archivo descargado en: " + result.ruta);
+                    } else {
+                        alert("❌ Error al descargar el archivo");
+                    }
+                } catch (e) {
+                    console.error("Error en descarga:", e);
+                    alert("❌ No se pudo completar la descarga");
+                }
+            } else {
+                // Modo navegador normal → abrir ruta de descarga
+                window.location.href = `/biblioteca/descargar/${id}`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <body>
+    <!-- Subida de archivo -->
+    <div class="add-card">
+    <div class="add-header">
+        <h2>📚 Biblioteca</h2>
+    </div>
+
+    <!-- FORMULARIO -->
+    <form method="POST" enctype="multipart/form-data" class="add-form">
+        <label>Archivo:</label>
+        <input type="file" name="contenido" required>
+
+        <label>Carpeta:</label>
+        <input type="text" name="carpeta" placeholder="Ej: Matemáticas">
+
+        <label>Profesor:</label>
+        <select name="profesor_correo" required>
+            <option value="">-- Selecciona un profesor --</option>
+            {% for p in profesores %}
+                <option value="{{ p.correo }}">{{ p.nom_user }} {{ p.seg_nom_user }} ({{ p.correo }})</option>
+            {% endfor %}
+        </select>
+
+        <div class="add-actions">
+            <button type="submit" class="add-btn save-btn">Subir Archivo</button>
+        </div>
+    </form>
+
+    <!-- TABLA -->
+    <h2 style="margin-top:30px;">Archivos existentes</h2>
+    <div class="tabla-wrapper">
+        <table class="tabla-notas">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Fecha</th>
+                    <th>Profesor</th>
+                    <th>Carpeta</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in archivos %}
+                <tr>
+                    <td>{{ a[0] }}</td>
+                    <td>{{ a[1] }}</td>
+                    <td>{{ a[2] }}</td>
+                    <td>{{ a[3] }}</td>
+                    <td>{{ a[4] }}</td>
+                    <td>{{ a[5] }}</td>
+                    <td class="acciones">
+                        <button type="button" class="btn-accion descargar" onclick="descargarArchivo('{{ a[0] }}')">⬇</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+
+
+    <script>
+    window.addEventListener('load', function () {
+        document.body.tabIndex = 0;
+        document.body.focus();
+
+        document.addEventListener('keydown', function (e) {
+        console.log('keydown', e.key, e.keyCode);
+        if (e.key === 'Escape' || e.keyCode === 27) {
+            if (window.history.length > 1) {
+            window.history.back();
+            } else {
+            console.log('No history -> fallback to /');
+            window.location.href = '/';
+            }
+        }
+        });
+    });
+    </script>
+
+</body>
+</html>

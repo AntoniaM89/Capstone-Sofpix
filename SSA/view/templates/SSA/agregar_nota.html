@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Nota - {{ asignatura_nombre }} - {{ curso.nivel }} {{ curso.generacion }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="add-item-page">
+
+    <div class="add-card">
+        <div class="add-header">
+            <h2>Agregar Nota</h2>
+            <title>Agregar Nota - {{ asignatura_nombre }} - {{ curso.nivel }} {{ curso.generacion }}</title>
+        </div>
+
+        <form method="POST" class="add-form add-info">
+
+            <!-- Campos ocultos -->
+            <input type="hidden" name="curso_id" value="{{ id_curso }}">
+            <input type="hidden" name="asignatura_codigo" value="{{ codigo_asignatura }}">
+
+            <!-- Selección de alumno -->
+            {% if alumnos %}
+            <div class="form-group">
+                <label>Alumno:</label>
+                <select name="alumno_rut_alum" required>
+                    <option value="" disabled selected>Seleccione un alumno</option>
+                    {% for alumno in alumnos %}
+                        <option value="{{ alumno.rut_alum }}">
+                            {{ alumno.nom_alum }}{% if alumno.seg_nom_alum %} {{ alumno.seg_nom_alum }}{% endif %} 
+                            {{ alumno.ap_pat_alum }}{% if alumno.ap_mat_alum %} {{ alumno.ap_mat_alum }}{% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% else %}
+                <p style="color: red;">No hay alumnos registrados en este curso para esta asignatura.</p>
+            {% endif %}
+
+            <!-- Nombre de la evaluación -->
+            <div class="form-group">
+                <label>Nombre Evaluación:</label>
+                <input type="text" name="nombre" required>
+            </div>
+
+            <!-- Nota -->
+            <div class="form-group">
+                <label>Nota:</label>
+                <input type="number" name="nota" id="nota" step="0.1" min="1" max="7" required>
+            </div>
+
+            <!-- Observación (opcional) -->
+            <div class="form-group full-width">
+                <label>Observación (opcional):</label>
+                <input type="text" name="observacion">
+            </div>
+
+            <div class="add-actions">
+                <button type="submit" class="add-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                </button>
+                <a href="{{ url_for('detalle_curso_prof_asignatura', codigo_asignatura=codigo_asignatura, codigo_curso=curso['id_curso']) }}" class="cancel-btn">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+    document.getElementById('nota').addEventListener('input', function(e) {
+        let value = parseFloat(this.value);
+        if (!isNaN(value)) {
+            // Redondea a un decimal
+            this.value = Math.round(value * 10) / 10;
+        }
+    });
+    </script>
+
+</body>
+</html>

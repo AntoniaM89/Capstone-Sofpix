@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Profesores</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profesor.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <a href="{{ url_for('home') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
+
+    <div class="scale-container-profesores">
+
+        {% if session.get('rol') == 'admin' %}
+        <div class="add-profesor">
+            <a href="{{ url_for('add_profesor') }}">
+                <i class="fa fa-plus"></i> Agregar Nuevo Profesor
+            </a>
+        </div>
+        {% endif %}
+
+       {% set is_admin = session.get('rol') == 'admin' %}
+        {% set correo_sesion = session.get('correo_prof') %}
+
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flash-container">
+            {% for category, message in messages %}
+            <li class="flash-message {% if category == 'success' %}flash-success{% elif category == 'error' %}flash-error{% else %}flash-info{% endif %}">
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        
+        {% for p in profesores %}
+            {% set is_self = correo_sesion == p.correo %}
+            
+            {% if is_admin or is_self %}
+            <div class="profesor-card {% if not is_admin and is_self %}profesor-card--self{% endif %}">
+                <div class="profesor-header">
+                    {% if is_admin %}
+                        <button class="profesor-toggle" aria-expanded="false" type="button">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            {{ p.nom_user }} {% if p.seg_nom_user %}{{ p.seg_nom_user }}{% endif %} {{ p.ap_pat_user }} {% if p.ap_mat_user %}{{ p.ap_mat_user }}{% endif %}
+                        </button>
+                    {% else %}
+                        <div class="profesor-title">
+                            {{ p.nom_user }} {% if p.seg_nom_user %}{{ p.seg_nom_user }}{% endif %} {{ p.ap_pat_user }} {% if p.ap_mat_user %}{{ p.ap_mat_user }}{% endif %}
+                        </div>
+                    {% endif %}
+
+                    <div class="admin-actions-prof">
+                        <a href="{{ url_for('detail_profesor', correo=p.correo) }}">
+                            <i class="fa fa-eye"></i> Ver
+                        </a>
+
+                        {% if is_admin or is_self %}
+                        <a href="{{ url_for('update_profesor', correo=p.correo) }}">
+                            <i class="fa fa-edit"></i> Editar
+                        </a>
+                        {% endif %}
+
+                        {% if is_admin %}
+                        <a href="{{ url_for('delete_profesor', correo=p.correo) }}">
+                            <i class="fa fa-trash"></i> Eliminar
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="profesor-info {% if not is_admin and is_self %}active{% endif %}">
+                    <p><b>Correo:</b> {{ p.correo }}</p>
+                    <p><b>Area:</b> {{ p.area or 'No especificada' }}</p>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+
+
+    </div>
+
+    <script>
+    (function () {
+        const backButton = document.querySelector('.back-button');
+        const container = document.querySelector('.scale-container-profesores');
+
+        function setupToggles() {
+            document.querySelectorAll('.profesor-toggle').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const card = btn.closest('.profesor-card');
+                    const info = card.querySelector('.profesor-info');
+                    const icon = btn.querySelector('i');
+
+                    const expanded = info.classList.toggle('active');
+
+                    icon.classList.toggle('fa-plus', !expanded);
+                    icon.classList.toggle('fa-minus', expanded);
+                    btn.setAttribute('aria-expanded', expanded);
+
+                    requestAnimationFrame(checkOverlap);
+                });
+            });
+        }
+
+        const margin = 5;
+        const minSpace = 500;
+
+        function checkOverlap() {
+            if (!backButton) return;
+
+            const buttonRect = backButton.getBoundingClientRect();
+            let isOverlapping = false;
+
+            document.querySelectorAll('.profesor-card').forEach(card => {
+                const cardRect = card.getBoundingClientRect();
+                const overlap = !(
+                    buttonRect.bottom < cardRect.top + margin ||
+                    buttonRect.top > cardRect.bottom - margin ||
+                    buttonRect.right < cardRect.left + margin ||
+                    buttonRect.left > cardRect.right - margin
+                );
+                if (overlap) isOverlapping = true;
+            });
+
+            const spaceAvailable = window.innerHeight - buttonRect.bottom;
+
+            if (isOverlapping || spaceAvailable < minSpace) {
+                backButton.classList.add('hidden');
+            } else {
+                backButton.classList.remove('hidden');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupToggles();
+            requestAnimationFrame(checkOverlap);
+
+            if (container) {
+                container.addEventListener('scroll', () => requestAnimationFrame(checkOverlap));
+            }
+            window.addEventListener('resize', () => requestAnimationFrame(checkOverlap));
+        });
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+{% include 'message.html' %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - Sofpix</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/signs.css">
+</head>
+<body>
+    <div class="scale-container-register">
+        <div class="login-card register-card">
+            <img src="{{ url_for('static', filename='icons/user.png') }}" alt="Usuario" class="login-icon">
+            <h2 class="login-title">Crear Cuenta</h2>
+
+            <form action="{{ url_for('add_profesor') }}" method="post" class="login-form form-grid">
+                <div>
+                    <label for="correo">Correo</label>
+                    <input type="email" id="correo" name="correo" required class="login-input">
+
+                    <label for="nom_user">Nombre</label>
+                    <input type="text" id="nom_user" name="nom_user" required class="login-input">
+
+                    <label for="ap_pat_user">Apellido Paterno</label>
+                    <input type="text" id="ap_pat_user" name="ap_pat_user" required class="login-input">
+                   
+                </div>
+
+
+                <div>
+                    <label for="pass_enc">Contraseña</label>
+                    <input type="password" id="pass_enc" name="pass_enc" required class="login-input">
+
+                    <label for="seg_nom_user">Segundo Nombre</label>
+                    <input type="text" id="seg_nom_user" name="seg_nom_user" class="login-input">
+                
+                    <label for="ap_mat_user">Apellido Materno</label>
+                    <input type="text" id="ap_mat_user" name="ap_mat_user" class="login-input">
+                </div>
+
+                <div style="grid-column: 1 / -1;">
+                    <label for="area">Área</label>
+                    <input type="text" id="area" name="area" required class="login-input">
+                </div>
+
+                <div class="btn-container">
+                    <button type="submit" class="login-btn">Registrarse</button>
+                </div>
+            </form>
+
+            <p class="login-link">
+                ¿Ya tienes una cuenta? 
+                <a href="{{ url_for('login') }}">Inicia Sesión</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
