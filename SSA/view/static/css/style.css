@@ -104,7 +104,7 @@ html, body {
     background-size: 100% 100%;
     background-repeat: no-repeat;
     font-family: 'LazyDog', Arial, sans-serif;
-    color: #333;
+    color: #974701;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -406,7 +406,7 @@ input[type=number]::-webkit-inner-spin-button {
 /* === FORMULARIOS DE EDICIÓN === */
 
 .edit-card {
-    background: linear-gradient(145deg, #ffb347, #ffcc33); /* mismo esquema del detalle */
+    background: linear-gradient(145deg, #ffb347, #ffcc33); 
     color: #222;
     border-radius: 20px;
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
@@ -497,7 +497,7 @@ input[type=number]::-webkit-inner-spin-button {
 /* Aseguramos que el select despliegue opciones hacia abajo */
 .edit-info select {
     appearance: none;
-    background: #fff url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
+    background: #fff right 10px center;
     background-size: 1em;
     cursor: pointer;
 }
@@ -617,7 +617,7 @@ input[type=number]::-webkit-inner-spin-button {
     font-size: 1rem;
     box-sizing: border-box;
     appearance: none;
-    background: #fff url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 14px center;
+    background: #fff right 14px center;
     background-size: 1em;
     cursor: pointer;
 }
@@ -658,7 +658,7 @@ input[type=number]::-webkit-inner-spin-button {
 /* Select con ícono */
 .add-form select {
     appearance: none;
-    background: #fff url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
+    background: #fff right 10px center;
     background-size: 1em;
     cursor: pointer;
 }
@@ -677,7 +677,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 .add-info select {
     appearance: none;
-    background: #fff url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
+    background: #fff right 10px center;
     background-size: 1em;
     cursor: pointer;
 }
@@ -762,7 +762,22 @@ input[type=number]::-webkit-inner-spin-button {
     background: linear-gradient(135deg, #e53935, #c62828);
 }
 
+.save-btn {
+    background: linear-gradient(135deg, #0080c8, #5de0e6);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-family: 'LazyDog', Arial, sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
 
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
 
 /* === RESPONSIVE === */
 @media screen and (max-width: 800px) {
@@ -944,7 +959,7 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex: 1; /* ocupa todo el espacio disponible */
+    flex: 1; 
     text-align: left;
     background: transparent;
     border: none;
@@ -1070,8 +1085,6 @@ input[type=number]::-webkit-inner-spin-button {
     display: grid;
 }
 
-/* ================= Items individuales (cursos dentro de asignaturas) ================= */
-
 
 /* ================= Lista con scroll interno ================= */
 .cards-list {
@@ -1162,7 +1175,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .card-crema li button.btn-action {
-    margin-left: 15px; /* separa el botón del texto */
+    margin-left: 15px;
 }
 
 .remove-btn {
@@ -1294,8 +1307,8 @@ input[type=number]::-webkit-inner-spin-button {
 /* Contenedor de cada asignatura */
 .asignatura-card {
     display: flex;
-    justify-content: space-between; /* nombre a la izquierda, botón a la derecha */
-    align-items: center;            /* alineación vertical */
+    justify-content: space-between; 
+    align-items: center;          
     padding: 8px 12px;
     border-radius: 10px;
     margin-bottom: 8px;
@@ -1304,9 +1317,9 @@ input[type=number]::-webkit-inner-spin-button {
 
 /* Ajusta el span del nombre para que no rompa el layout */
 .asignatura-card span {
-    flex-grow: 1;          /* ocupa todo el espacio disponible */
-    margin-right: 10px;    /* separa del botón */
-    word-break: break-word; /* evita desbordes largos */
+    flex-grow: 1;          
+    margin-right: 10px; 
+    word-break: break-word; 
 }
 
 

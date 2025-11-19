@@ -98,12 +98,13 @@ CREATE TABLE nota (
 CREATE TABLE biblioteca (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     nombre          VARCHAR(255) NOT NULL,
-    tipo            VARCHAR(50),                
+    tipo            VARCHAR(50),
     contenido       LONGBLOB NOT NULL,          
     fecha_subida    DATETIME DEFAULT CURRENT_TIMESTAMP,
-    carpeta         VARCHAR(100),               
+    carpeta         VARCHAR(100),
+    estado          VARCHAR(100) DEFAULT 'Pendiente',
     autor_original  VARCHAR(100),
-    profesor_correo VARCHAR(100),               
+    profesor_correo VARCHAR(100),
     FOREIGN KEY (profesor_correo) REFERENCES profesor (correo)
 );
 

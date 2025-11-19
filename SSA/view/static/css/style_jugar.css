@@ -1,0 +1,218 @@
+/* static/css/style_jugar.css */
+
+/* --- Estilos Generales --- */
+
+/* CAMBIO CLAVE: Usamos 'html, body' para tener la misma especificidad 
+   que style.css y poder sobrescribir sus reglas. */
+html, body {
+    /* 1. Anulamos el centrado de style.css y ponemos el nuestro */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Lo alinea arriba, no al centro */
+    
+    /* 2. Arreglamos el desborde y el fondo */
+    min-height: 100vh;
+    height: 100%; /* Anula el height: 100vh que causa el corte */
+    width: 100%; /* Anula el width: 100vw */
+    overflow-y: auto; /* ¡MUY IMPORTANTE! Esto devuelve el scroll */
+    overflow-x: hidden;
+    
+    color: #333;
+    box-sizing: border-box;
+
+    /* 5. Reseteamos los 'min-width/height' que pueden molestar */
+    min-width: 0; 
+    min-height: 0; 
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 25px;
+    text-transform: capitalize;
+}
+
+/* --- Contenedor Principal del Quiz (La "Card") --- */
+#quiz-container {
+    max-width: 1000px; /* Mantenemos el ancho que pediste */
+    width: 90%;
+    background: #ffffff;
+    padding: 40px 50px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.07);
+    box-sizing: border-box;
+}
+
+/* --- Elementos de la Pregunta --- */
+.pregunta {
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.imagen img {
+    max-width: 100%;
+    height: 500px;
+    border-radius: 12px;
+    margin: 25px auto;
+    display: block;
+}
+
+/* --- Contenedor de Opciones (Grilla 2x2) --- */
+.opciones {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas */
+    gap: 15px; /* Espacio entre botones */
+    margin: 20px 0;
+}
+
+
+/* --- Botones de Opciones (con colores) --- */
+.opciones button {
+    padding: 18px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    text-align: center; /* Centrado se ve mejor en 2x2 */
+    cursor: pointer;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    background-color: #ffffff;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Opción 1 (A): Naranja */
+.opciones button:nth-child(1) {
+    background-color: #fffaf0;
+    border-color: #f39c12;
+}
+.opciones button:nth-child(1):hover:not(:disabled) {
+    background-color: #fef5e7;
+    border-color: #e67e22;
+}
+
+/* Opción 2 (B): Celeste */
+.opciones button:nth-child(2) {
+    background-color: #f0faff;
+    border-color: #3498db;
+}
+.opciones button:nth-child(2):hover:not(:disabled) {
+    background-color: #e7f5fe;
+    border-color: #2980b9;
+}
+
+/* Opción 3 (C): Cian */
+.opciones button:nth-child(3) {
+    background-color: #e6fffe;
+    border-color: #0ff1f1;
+}
+.opciones button:nth-child(3):hover:not(:disabled) {
+    background-color: #e7fdfe;
+    border-color: #0dd4d4;
+}
+
+/* Opción 4 (D): Morado */
+.opciones button:nth-child(4) {
+    background-color: #f5f0ff;
+    border-color: #8e44ad;
+}
+.opciones button:nth-child(4):hover:not(:disabled) {
+    background-color: #f0eaff;
+    border-color: #7d3c98;
+}
+
+/* Estilos para botones de respuesta */
+.opciones button[disabled] {
+    cursor: not-allowed;
+    opacity: 0.9;
+}
+.opciones button.correcta {
+    background-color: #c8e6c9 !important;
+    border-color: #5cb85c !important;
+}
+.opciones button.incorrecta {
+    background-color: #ffcdd2 !important;
+    border-color: #d9534f !important;
+}
+
+
+/* --- Botón Siguiente --- */
+#siguiente {
+    /* Posición fija en la esquina */
+    position: fixed;
+    bottom: 40px; /* 40px desde abajo */
+    right: 40px;  /* 40px desde la derecha */
+    z-index: 100; /* Asegura que esté por encima de todo */
+    background-color: #ffa931;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+#siguiente:hover {
+    background-color: #b36500;
+}
+
+/* --- Pantalla de Resultado Final --- */
+#resultado {
+    text-align: center;
+    padding: 40px;
+}
+
+#resultado h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+#resultado button {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#resultado button:hover {
+    background-color: #218838;
+}
+
+.card-crema p {
+    font-size: 22px;
+}
+
+.boton-volver {
+    background-color: #4caf50;
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1.3rem;
+}
+
+.boton-volver:hover {
+    background-color: #388e3c;
+}
+
+.mensaje-error {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            padding: 30px;
+            font-size: 1.1em;
+        }

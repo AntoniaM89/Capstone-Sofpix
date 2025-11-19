@@ -111,10 +111,13 @@ app.add_url_rule('/Reportes/informe_alumno', 'informe_alumno', metricas_controll
 app.add_url_rule('/Reportes/informe_alumno/obtener_alumnos/<curso_id>', 'obtener_alumnos', metricas_controller.obtener_alumnos)
 app.add_url_rule('/Reportes/informe_alumno/pdf', 'informe_alumno_pdf', metricas_controller.export_informe_alumno_pdf)
 
+
 # ==============================
 # RUTAS ESPECIALES PARA DROPDOWNS
 # ==============================
 app.add_url_rule('/Reportes/filtros_dinamicos', 'filtros_dinamicos', metricas_controller.filtros_dinamicos)
+app.add_url_rule('/metricas/data', 'metricas_data', metricas_controller.metricas_data, methods=['GET'])
+app.add_url_rule('/metricas/kpis', 'metricas_kpis', metricas_controller.metricas_kpis, methods=['GET'])
 
 
 # ==============================
@@ -139,8 +142,8 @@ app.register_blueprint(biblioteca_controller, url_prefix="/biblioteca")
 app.register_blueprint(quiz_controller, url_prefix="/quiz")
 app.register_blueprint(quiz_pregunta_controller, url_prefix="/quiz_pregunta")
 
-@app.route('/prueba', methods=['GET', 'POST'])
-def prueba():
+@app.route('/Biblioteca', methods=['GET', 'POST'])
+def biblioteca():
     return render_template("Biblioteca/index.html")
 
 

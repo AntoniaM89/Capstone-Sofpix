@@ -5,6 +5,7 @@
     <title>Biblioteca</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/notas.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/biblioteca.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <script>
@@ -29,48 +30,21 @@
 </head>
 <body>
 
-    <!-- Botón Volver -->
-    <a href="{{ url_for('prueba') }}" class="back-button">
+    <a href="{{ url_for('biblioteca') }}" class="back-button">
         <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
         <span>Volver</span>
     </a>
 
     <div class="scale-container">
+        
         <div class="add-item">
-            <div class="upload-card collapsible">
-                <div class="add-header">
+            <div class="upload-card" onclick="abrirModalSubir()">
+                <div class="add-header" style="cursor: pointer;">
                     <h2>📤 Subir Archivo</h2>
-                </div>
-
-                <div class="collapsible-content" style="display: none;">
-                    <form method="POST" enctype="multipart/form-data" class="add-form">
-                        <label>Archivo:</label>
-                        <input type="file" name="contenido" required>
-
-                        <label>Carpeta:</label>
-                        <input type="text" name="carpeta" placeholder="Ej: Matemáticas">
-
-                        <label>Profesor:</label>
-                        <select name="profesor_correo" required>
-                            <option value="">-- Selecciona un profesor --</option>
-                            {% for p in profesores %}
-                                <option value="{{ p.correo }}">
-                                    {{ p.nom_user }} {{ p.ap_pat_user }} ({{ p.correo }})
-                                </option>
-                            {% endfor %}
-                        </select>
-
-                        <div class="add-actions" style="margin-top:15px;">
-                            <button type="submit" class="add-btn">
-                                <i class="fa fa-upload"></i> Subir Archivo
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- Mensajes flash -->
         {% include 'message.html' %}
 
         <div class="cards-list">
@@ -82,37 +56,103 @@
 
                 {% if archivos %}
                 <section class="tabla-notas-section">
+
+                    <div class="filtros-container">
+                        <div class="cont_filtro_opciones">
+                            <div class="filtro-item">
+                                <label for="filtroCarpeta">Carpeta</label>
+                                <select id="filtroCarpeta" name="filtroCarpeta">
+                                    <option value="">-- Todas --</option>
+                                    {% for c in carpetas_unicas %}
+                                    <option value="{{ c }}">{{ c }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            {% if rol == 'admin' %}
+                            <div class="filtro-item">
+                                <label for="filtroProfesor">Profesor</label>
+                                <select id="filtroProfesor" name="filtroProfesor">
+                                    <option value="">-- Todos --</option>
+                                    {% for p in profesores %}
+                                    <option value="{{ p.correo }}">{{ p.nom_user }} {{ p.ap_pat_user }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="filtro-item">
+                                <label for="filtroEstado">Estado</label>
+                                <select id="filtroEstado" name="filtroEstado">
+                                    <option value="">-- Todos --</option>
+                                    {% for e in estados_unicos %}
+                                    <option value="{{ e }}">{{ e }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+
+                            <button id="limpiarFiltros" type="button">Limpiar Filtros</button>
+                        </div>
+                    </div>
                     <div class="tabla-wrapper">
-                        <table class="tabla-notas">
+                        <table class="tabla-notas" id="tablaBiblioteca">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Nombre</th>
-                                    <th>Tipo</th>
-                                    <th>Fecha</th>
-                                    <th>Profesor</th>
-                                    <th>Carpeta</th>
+                                    <th data-column="id">ID</th>
+                                    <th data-column="nombre">Nombre</th>
+                                    <th data-column="tipo">Tipo</th>
+                                    <th data-column="fecha_subida">Fecha</th>
+                                    <th data-column="profesor_correo">Profesor</th>
+                                    <th data-column="carpeta">Carpeta</th>
+                                    {% if rol == 'admin' %}
+                                    <th data-column="estado">Estado</th>
+                                    {% endif %}
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tablaBibliotecaBody">
                                 {% for a in archivos %}
-                                <tr>
+                                <tr 
+                                    data-carpeta="{{ a.carpeta | default('', true) }}"
+                                    data-profesor="{{ a.profesor_correo | default('', true) }}"
+                                    data-estado="{{ a.estado | default('', true) }}">
                                     <td>{{ a.id }}</td>
                                     <td>{{ a.nombre }}</td>
                                     <td>{{ a.tipo }}</td>
                                     <td>{{ a.fecha_subida }}</td>
                                     <td>{{ a.profesor_correo }}</td>
                                     <td>{{ a.carpeta }}</td>
+                                    
+                                    {% if rol == 'admin' %}
+                                    <td>
+                                        <form action="{{ url_for('biblioteca_controller.actualizar_estado', id=a.id) }}" 
+                                              method="POST" 
+                                              style="margin:0;">
+                                            <select name="estado" onchange="this.form.submit()" 
+                                                    class="select-estado {{ a.estado | lower }}">
+                                                <option value="Pendiente" {% if a.estado == 'Pendiente' or a.estado == 'pendiente' %}selected{% endif %}>
+                                                    Pendiente
+                                                </option>
+                                                <option value="Aprobado" {% if a.estado == 'Aprobado' %}selected{% endif %}>
+                                                    Aprobado
+                                                </option>
+                                                <option value="Rechazado" {% if a.estado == 'Rechazado' %}selected{% endif %}>
+                                                    Rechazado
+                                                </option>
+                                            </select>
+                                        </form>
+                                    </td>
+                                    {% endif %}
+                                    
                                     <td class="acciones">
-                                        <!-- Botón Descargar -->
                                         <button type="button" class="btn-accion descargar"
                                                 title="Descargar"
                                                 onclick="descargarArchivo('{{ a.id }}')">
                                             <i class="fa-solid fa-download"></i>
                                         </button>
-
-                                        <!-- Botón Eliminar -->
+                                        <button type="button" class="btn-accion editar" title="Editar"
+                                                onclick="abrirModalEditar('{{ a.id }}', '{{ a.nombre }}', '{{ a.tipo }}')">
+                                            <i class="fa-solid fa-pencil"></i>
+                                        </button>
                                         <a href="{{ url_for('biblioteca_controller.delete_archivo', id=a.id) }}" class="btn-accion eliminar" title="Eliminar">
                                             <i class="fa-solid fa-trash"></i>
                                         </a>
@@ -130,45 +170,284 @@
         </div>
     </div>
 
+    <div id="modalSubir" class="modal-overlay" style="display:none;">
+        <div class="modal-contenido">
+            <h3>📤 Subir Archivo</h3>
+            <form method="POST" enctype="multipart/form-data" class="add-form" style="margin-top: 15px;">
+                <label>Archivo:</label>
+                <input type="file" name="contenido" required>
+
+                <label>Carpeta:</label>
+                <input type="text" name="carpeta" placeholder="Ej: Matemáticas">
+
+                <label>Profesor:</label>
+                <select name="profesor_correo" required>
+                    <option value="">-- Selecciona un profesor --</option>
+                    {% for p in profesores %}
+                        <option value="{{ p.correo }}">
+                            {{ p.nom_user }} {{ p.ap_pat_user }} ({{ p.correo }})
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <div class="modal-acciones" style="margin-top: 20px; text-align: right;">
+                    <button type="button" class="cancel-btn" onclick="cerrarModalSubir()" 
+                            style="border:none">
+                        <i class="fa-solid fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="save-btn">
+                        <i class="fa fa-upload"></i> Subir Archivo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalEditar" class="modal-overlay" style="display:none;">
+        <div class="modal-contenido">
+            <h3>Editar Nombre de Archivo</h3>
+            <form id="formEditar" method="POST" style="margin-top: 15px;">
+                <label for="edit-nombre-input" style="font-weight: bold; color: #fff;">Nuevo Nombre:</label>
+                <div style="display: flex; align-items: center; margin-top: 5px;">
+                    <input type="text" id="edit-nombre-input" name="nuevo_nombre" required style="flex-grow: 1; padding: 8px;">
+                    <span id="edit-extension-label" 
+                          style="padding: 8px; background-color: #e9ecef; border: 1px solid #ced4da; margin-left: -1px; border-radius: 0 4px 4px 0;">
+                        .ext
+                    </span>
+                </div>
+                
+                <div class="modal-acciones" style="margin-top: 20px; text-align: right;">
+                    <button type="button" class="cancel-btn" onclick="cerrarModalEditar()" 
+                            style="border: none;">
+                        <i class="fa-solid fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="save-btn" style="background-color: #007bff;">
+                        <i class="fa-solid fa-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     <script>
+        // === LISTENER 'LOAD' ===
         window.addEventListener('load', function () {
             document.body.tabIndex = 0;
             document.body.focus();
 
+            // Cierre de modales con tecla Escape
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape' || e.keyCode === 27) {
-                    if (window.history.length > 1) {
-                        window.history.back();
+                    const modalEditar = document.getElementById('modalEditar');
+                    const modalSubir = document.getElementById('modalSubir');
+                    
+                    if (modalSubir && modalSubir.style.display !== 'none') {
+                        cerrarModalSubir();
+                    } else if (modalEditar && modalEditar.style.display !== 'none') {
+                        cerrarModalEditar();
                     } else {
-                        window.location.href = '/';
+                        if (window.history.length > 1) {
+                            window.history.back();
+                        } else {
+                            window.location.href = '/'; 
+                        }
                     }
                 }
             });
         });
 
+        // === FUNCIONES MODAL EDITAR ===
+        function abrirModalEditar(id, nombreCompleto, tipo) {
+            const modal = document.getElementById('modalEditar');
+            const form = document.getElementById('formEditar');
+            const input = document.getElementById('edit-nombre-input');
+            const extLabel = document.getElementById('edit-extension-label');
+
+            form.action = `/biblioteca/editar/${id}`;
+            
+            let nombreBase = nombreCompleto;
+            const extensionConPunto = "." + tipo;
+            if (nombreCompleto.toLowerCase().endsWith(extensionConPunto.toLowerCase())) {
+                nombreBase = nombreCompleto.substring(0, nombreCompleto.length - extensionConPunto.length);
+            }
+            
+            input.value = nombreBase;
+            extLabel.textContent = extensionConPunto;
+            modal.style.display = 'flex';
+            input.focus();
+            input.select();
+        }
+
+        function cerrarModalEditar() {
+            document.getElementById('modalEditar').style.display = 'none';
+        }
+
+        // === FUNCIONES MODAL SUBIR ===
+        function abrirModalSubir() {
+            document.getElementById('modalSubir').style.display = 'flex';
+        }
+
+        function cerrarModalSubir() {
+            document.getElementById('modalSubir').style.display = 'none';
+        }
+
+
+        // ======================================================
+        // 2. LÓGICA DE FILTROS Y ORDENAMIENTO
+        // ======================================================
         document.addEventListener('DOMContentLoaded', () => {
-            const collapsibles = document.querySelectorAll('.upload-card.collapsible');
+            
+            // --- VARIABLES ---
+            const filtroCarpeta = document.getElementById('filtroCarpeta');
+            const filtroProfesor = document.getElementById('filtroProfesor'); // Puede ser null si no es admin
+            const filtroEstado = document.getElementById('filtroEstado');     // Puede ser null si no es admin
+            const limpiarFiltrosBtn = document.getElementById('limpiarFiltros');
+            const tablaBody = document.getElementById('tablaBibliotecaBody');
+            
+            // Obtenemos todas las filas originales una sola vez
+            const todasLasFilas = tablaBody ? Array.from(tablaBody.querySelectorAll('tr')) : [];
+            
+            // Variable Jinja transferida a JS de forma segura
+            const esAdmin = {{ 'true' if rol == 'admin' else 'false' }};
 
-            collapsibles.forEach(card => {
-                const content = card.querySelector('.collapsible-content');
+            // --- FUNCIÓN DE FILTRADO ---
+            function aplicarFiltros() {
+                console.log("Aplicando filtros..."); // Para depuración
 
-                // Toggle solo si clickeas en la cabecera (no en el contenido)
-                const header = card.querySelector('.add-header');
-                header.addEventListener('click', () => {
-                    if (content.style.display === "block") {
-                        content.style.display = "none";
+                // Obtenemos valores y limpiamos espacios (.trim)
+                const valCarpeta = filtroCarpeta ? filtroCarpeta.value.trim() : "";
+                const valProfesor = (esAdmin && filtroProfesor) ? filtroProfesor.value.trim() : "";
+                const valEstado = (esAdmin && filtroEstado) ? filtroEstado.value.trim() : "";
+
+                let contados = 0;
+
+                todasLasFilas.forEach(fila => {
+                    // Obtenemos los datos de la fila (dataset)
+                    const dataCarpeta = (fila.dataset.carpeta || "").trim();
+                    const dataProfesor = (fila.dataset.profesor || "").trim();
+                    const dataEstado = (fila.dataset.estado || "").trim();
+
+                    // Lógica de coincidencia
+                    const matchCarpeta = (valCarpeta === "") || (dataCarpeta === valCarpeta);
+                    const matchProfesor = !esAdmin || (valProfesor === "") || (dataProfesor === valProfesor);
+                    
+                    // Para el estado comparamos en minúsculas para evitar errores
+                    const matchEstado = !esAdmin || (valEstado === "") || (dataEstado.toLowerCase() === valEstado.toLowerCase());
+
+                    // Mostrar u ocultar
+                    if (matchCarpeta && matchProfesor && matchEstado) {
+                        fila.style.display = ""; // Mostrar
+                        contados++;
                     } else {
-                        content.style.display = "block";
+                        fila.style.display = "none"; // Ocultar
                     }
                 });
+                console.log(`Filtros aplicados. Filas visibles: ${contados}`);
+            }
 
-                // Evita que clics dentro del formulario cierren el collapsible
-                content.addEventListener('click', e => e.stopPropagation());
-            });
-        });
+            // --- EVENTOS DE FILTRADO ---
+            // Se activa al cambiar cualquier select
+            if (filtroCarpeta) filtroCarpeta.addEventListener('change', aplicarFiltros);
+            if (filtroProfesor) filtroProfesor.addEventListener('change', aplicarFiltros);
+            if (filtroEstado) filtroEstado.addEventListener('change', aplicarFiltros);
+
+            // Botón Limpiar
+            if (limpiarFiltrosBtn) {
+                limpiarFiltrosBtn.addEventListener('click', () => {
+                    if (filtroCarpeta) filtroCarpeta.value = "";
+                    if (esAdmin) {
+                        if (filtroProfesor) filtroProfesor.value = "";
+                        if (filtroEstado) filtroEstado.value = "";
+                    }
+                    aplicarFiltros(); // Re-aplicar para mostrar todo
+                });
+            }
 
 
+            // --- FUNCIÓN DE ORDENAMIENTO ---
+            const tabla = document.getElementById('tablaBiblioteca');
+
+            function sortTableByColumn(th, columnIndex, columnKey, isAsc) {
+                if (!tablaBody) return;
+
+                const dirModifier = isAsc ? 1 : -1;
+                
+                // Separamos filas visibles y ocultas para no perder las ocultas al ordenar
+                const filasVisibles = Array.from(tablaBody.querySelectorAll('tr')).filter(r => r.style.display !== 'none');
+                const filasOcultas = Array.from(tablaBody.querySelectorAll('tr')).filter(r => r.style.display === 'none');
+
+                // Comparador inteligente (números y texto)
+                const collator = new Intl.Collator('es', { numeric: true, sensitivity: 'base' });
+
+                filasVisibles.sort((a, b) => {
+                    let valA, valB;
+
+                    // Caso especial: Columna Estado (es un Select, no texto simple)
+                    if (columnKey === 'estado') {
+                        const selA = a.querySelector('.select-estado');
+                        const selB = b.querySelector('.select-estado');
+                        valA = selA ? selA.value : "";
+                        valB = selB ? selB.value : "";
+                    } else {
+                        valA = a.cells[columnIndex].textContent.trim();
+                        valB = b.cells[columnIndex].textContent.trim();
+                    }
+
+                    // Caso especial: ID (Numérico puro)
+                    if (columnKey === 'id') {
+                        return (parseInt(valA || 0) - parseInt(valB || 0)) * dirModifier;
+                    }
+
+                    // Comparación estándar
+                    return collator.compare(valA, valB) * dirModifier;
+                });
+
+                // Reconstruimos el cuerpo de la tabla
+                // 1. Limpiamos
+                while (tablaBody.firstChild) {
+                    tablaBody.removeChild(tablaBody.firstChild);
+                }
+                // 2. Añadimos ordenadas
+                tablaBody.append(...filasVisibles);
+                // 3. Añadimos las que estaban ocultas (al final)
+                tablaBody.append(...filasOcultas);
+
+                // Gestión visual de las flechas
+                tabla.querySelectorAll('th[data-column]').forEach(h => {
+                    h.classList.remove('sorted-asc', 'sorted-desc');
+                    const arrow = h.querySelector('.sort-arrow');
+                    if(arrow) arrow.style.opacity = '0.3';
+                });
+                
+                // Activamos la flecha de la columna actual
+                th.classList.toggle('sorted-asc', isAsc);
+                th.classList.toggle('sorted-desc', !isAsc);
+                const activeArrow = th.querySelector('.sort-arrow');
+                if(activeArrow) activeArrow.style.opacity = '1';
+                
+                // Guardamos la dirección para la próxima vez
+                th.dataset.sortDir = isAsc ? 'asc' : 'desc';
+            }
+
+            // Asignar eventos a los encabezados de tabla
+            if (tabla) {
+                tabla.querySelectorAll('th[data-column]').forEach(th => {
+                    // Crear flecha si no existe
+                    if(!th.querySelector('.sort-arrow')) {
+                        th.innerHTML += '<span class="sort-arrow"> ▼</span>';
+                    }
+                    
+                    th.addEventListener('click', () => {
+                        const columnKey = th.dataset.column;
+                        const columnIndex = th.cellIndex;
+                        // Alternar dirección
+                        const currentIsAsc = th.dataset.sortDir !== 'asc';
+                        sortTableByColumn(th, columnIndex, columnKey, currentIsAsc);
+                    });
+                });
+            }
+        }); // Fin DOMContentLoaded
     </script>
-
 </body>
 </html>

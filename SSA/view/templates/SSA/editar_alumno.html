@@ -50,15 +50,15 @@
 
 
         <div class="edit-actions">
+            <!-- Botón Cancelar -->
+            <a href="{{ url_for('list_alumnos') }}" class="cancel-btn" style="margin-right: 12px; text-decoration: none;">
+                <i class="fa-solid fa-xmark"></i> Cancelar
+            </a>
+
             <!-- Botón Guardar -->
             <button type="submit" class="save-btn">
                 <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
             </button>
-
-            <!-- Botón Cancelar -->
-            <a href="{{ url_for('list_alumnos') }}" class="save-btn cancel-btn" style="background: #ff4d4d; margin-left: 12px; text-decoration: none;">
-                <i class="fa-solid fa-xmark"></i> Cancelar
-            </a>
         </div>
 
     </form>

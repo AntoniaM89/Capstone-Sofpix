@@ -108,31 +108,3 @@ def list_profesores():
         profesores = []
 
     return render_template("SSA/all_profesores.html", profesores=profesores)
-
-
-
-
-        # Generar hash Argon2id seguro
-        try:
-            hashed_password = ph.hash(password)
-        except Exception as e:
-            print("Error generando hash Argon2id:", e)
-            set_flash("Error interno al crear cuenta", "error")
-            return render_template("login/sign_up.html")
-
-        # Guardar en BD el hash
-        profesores_mod.add_profesor(
-            correo,
-            nombre,
-            seg_nom,
-            ap_pat,
-            ap_mat,
-            hashed_password, # Aca ahora va el hash, no la contraseña plana
-            area
-        )
-
-        set_flash("Profesor agregado correctamente", "success")
-        return redirect(url_for('list_profesores'))
-
-    #Si es GET mostramos el formulario de register
-    return render_template("login/sign_up.html")

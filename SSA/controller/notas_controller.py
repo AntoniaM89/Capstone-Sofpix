@@ -7,6 +7,7 @@ from controller.SSA_Controller import set_flash, require_login
 
 
 # ================== NOTAS ==================
+# ================== NOTAS ==================
 def add_nota():
     rol = require_login()
     if isinstance(rol, str) and rol.startswith('redirect'):
@@ -28,6 +29,14 @@ def add_nota():
         return redirect(url_for('SSA'))
 
     alumnos = SSA.get_alumnos_por_curso_y_asignatura(codigo_asignatura, id_curso)
+    alumnos_unicos = []
+    dupli = set()
+    for a in alumnos:
+        rut = a.get("rut_alum")
+        if rut not in dupli:
+            dupli.add(rut)
+            alumnos_unicos.append(a)
+
     if request.method == 'POST':
         alumno_rut = request.form['alumno_rut_alum']
         nombre_eval = request.form['nombre'].strip()
@@ -38,12 +47,12 @@ def add_nota():
         id_nota = f"{codigo_asignatura}{id_curso}{alumno_rut}{nombre_id}"
 
         if notas_mod.nota_exists(id_nota):
-            flash(f"Ya existe una nota con ese nombre para este alumno en esta asignatura y curso.", "warning")
+            flash("Ya existe una nota con ese nombre para este alumno en esta asignatura y curso.", "warning")
             return render_template(
                 "SSA/agregar_nota.html",
                 curso=curso,
                 asignatura_nombre=asignatura.get("nombre") or asignatura.get("nombre_asi"),
-                alumnos=alumnos,
+                alumnos=alumnos_unicos,
                 codigo_asignatura=codigo_asignatura,
                 rol=rol
             )
@@ -58,13 +67,17 @@ def add_nota():
         )
 
         flash("Nota agregada correctamente", "success")
-        return redirect(url_for('detalle_curso_prof_asignatura', codigo_curso=id_curso, codigo_asignatura=codigo_asignatura))
+        return redirect(url_for(
+            'detalle_curso_prof_asignatura',
+            codigo_curso=id_curso,
+            codigo_asignatura=codigo_asignatura
+        ))
 
     return render_template(
         "SSA/agregar_nota.html",
         curso=curso,
         asignatura_nombre=asignatura.get("nombre") or asignatura.get("nombre_asi"),
-        alumnos=alumnos,
+        alumnos=alumnos_unicos,
         codigo_asignatura=codigo_asignatura,
         rol=rol
     )

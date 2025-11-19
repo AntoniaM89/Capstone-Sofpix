@@ -5,48 +5,22 @@
     <title>📘 Gestión de Quizzes</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/notas.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_quiz.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- Botón Volver -->
-    <a href="{{ url_for('prueba') }}" class="back-button">
+    <a href="{{ url_for('biblioteca') }}" class="back-button">
         <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
         <span>Volver</span>
     </a>
 
     <div class="scale-container">
+        
         <div class="add-item">
-            <div class="upload-card collapsible">
-                <div class="add-header">
+            <div class="upload-card" onclick="abrirModalCrear()">
+                <div class="add-header" style="cursor: pointer;">
                     <h2>📝 Crear nuevo Quiz</h2>
-                </div>
-
-                <div class="collapsible-content" style="display:none;">
-                    <form method="POST" action="{{ url_for('quiz_controller.gestionar_quizzes') }}" class="add-form">
-                        <label>Título:</label>
-                        <input type="text" name="titulo" required>
-
-                        <label>Descripción:</label>
-                        <textarea name="descripcion" rows="4"></textarea>
-
-                        <label>Carpeta:</label>
-                        <input type="text" name="carpeta" value="General">
-
-                        <label>Profesor:</label>
-                        <select name="profesor_correo" required>
-                            <option value="">-- Selecciona un profesor --</option>
-                            {% for prof in profesores %}
-                                <option value="{{ prof['correo'] }}">{{ prof['nom_user'] }} {{ prof['ap_pat_user'] }}</option>
-                            {% endfor %}
-                        </select>
-
-                        <div class="add-actions" style="margin-top:15px;">
-                            <button type="submit" class="add-btn">
-                                <i class="fa-solid fa-plus"></i> Crear Quiz
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -81,23 +55,19 @@
                                     <td>{{ q.ID }}</td>
                                     <td>{{ q.titulo }}</td>
                                     <td>{{ q.descripcion }}</td>
-                                    <td>{{ q.profesor_correo }}</td>
+                                    <td>{{ q.nom_user }} {{ q.ap_pat_user }}</td>
                                     <td>{{ q.fecha_creacion }}</td>
                                     <td>{{ q.carpeta }}</td>
                                     <td class="acciones">
                                         <a href="{{ url_for('quiz_controller.jugar_quiz', id_quiz=q.ID) }}" class="btn-accion jugar" title="Jugar">
                                             <i class="fa-solid fa-play"></i>
                                         </a>
-
                                         <a href="{{ url_for('quiz_pregunta_controller.gestionar_preguntas', quiz_id=q.ID) }}" class="btn-accion editar" title="Ver/Agregar preguntas">
                                             <i class="fa-solid fa-plus"></i>
                                         </a>
-
-                                        <form action="{{ url_for('quiz_controller.eliminar', id_quiz=q.ID) }}" method="POST" style="display:inline;">
-                                            <button type="submit" class="btn-accion eliminar" title="Eliminar" onclick="return confirm('¿Eliminar este quiz?')">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        <a href="{{ url_for('quiz_controller.eliminar', id_quiz=q.ID) }}" class="btn-accion eliminar" title="Eliminar">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -106,25 +76,93 @@
                     </div>
                 </section>
                 {% else %}
-                    <p class="mensaje-vacio">No hay quizzes creados todavía.</p>
+                    <p class="mensaje-vacio">No hay quizzes disponibles.</p>
                 {% endif %}
             </main>
         </div>
     </div>
 
+    <div id="modalCrearQuiz" class="modal-overlay" style="display:none;">
+        <div class="modal-contenido">
+            <h3>📝 Crear nuevo Quiz</h3>
+            
+            <form method="POST" action="{{ url_for('quiz_controller.gestionar_quizzes') }}" class="add-form" style="margin-top: 15px;">
+                
+                <label>Título:</label>
+                <input type="text" name="titulo" required>
+
+                <label>Descripción:</label>
+                <textarea name="descripcion" rows="4"></textarea>
+
+                <label>Carpeta:</label>
+                <input type="text" name="carpeta" value="General">
+
+                <label>Profesor:</label>
+                {% if rol == 'admin' %}
+                    <select name="profesor_correo" required>
+                        <option value="">-- Selecciona un profesor --</option>
+                        {% for prof in profesores %}
+                            <option value="{{ prof['correo'] }}">
+                                {{ prof['nom_user'] }} {{ prof['ap_pat_user'] }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% else %}
+                    {% if profesores %}
+                        <input type="text" value="{{ profesores[0]['nom_user'] }} {{ profesores[0]['ap_pat_user'] }}" 
+                               readonly style="background-color: #e9ecef; cursor: not-allowed; color: #666;">
+                        <input type="hidden" name="profesor_correo" value="{{ user_correo }}">
+                    {% else %}
+                        <p style="color:red;">Error: Usuario no identificado.</p>
+                    {% endif %}
+                {% endif %}
+
+                <div class="modal-acciones add-actions">
+                    <button type="button" class="cancel-btn no_border" onclick="cerrarModalCrear()" >
+                        <i class="fa-solid fa-times"></i> Cancelar
+                    </button>
+                    
+                    <button type="submit" class="add-btn">
+                        <i class="fa-solid fa-plus"></i> Crear Quiz
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const collapsibles = document.querySelectorAll('.upload-card.collapsible');
-            collapsibles.forEach(card => {
-                const content = card.querySelector('.collapsible-content');
-                const header = card.querySelector('.add-header');
-                header.addEventListener('click', () => {
-                    content.style.display = (content.style.display === "block") ? "none" : "block";
-                });
-                content.addEventListener('click', e => e.stopPropagation());
+        window.addEventListener('load', function () {
+            document.body.tabIndex = 0;
+            document.body.focus();
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' || e.keyCode === 27) {
+                    const modal = document.getElementById('modalCrearQuiz');
+                    if (modal && modal.style.display !== 'none') {
+                        cerrarModalCrear();
+                    } else {
+                        if (window.history.length > 1) {
+                            window.history.back();
+                        } else {
+                            window.location.href = '/'; 
+                        }
+                    }
+                }
             });
         });
-    </script>
 
+        function abrirModalCrear() {
+            const modal = document.getElementById('modalCrearQuiz');
+            modal.style.display = 'flex';
+            // Enfocar el primer input
+            const inputTitulo = modal.querySelector('input[name="titulo"]');
+            if(inputTitulo) inputTitulo.focus();
+        }
+
+        function cerrarModalCrear() {
+            const modal = document.getElementById('modalCrearQuiz');
+            modal.style.display = 'none';
+        }
+    </script>
 </body>
 </html>

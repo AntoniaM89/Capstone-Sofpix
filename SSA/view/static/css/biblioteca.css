@@ -1,0 +1,252 @@
+/* Estilos para el selector de estado */
+.select-estado {
+    border-radius: 5px;
+    padding: 6px 8px;
+    font-weight: bold;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    width: 100%; /* O un ancho fijo como 130px */
+}
+
+/* Color para estado Pendiente (asumiendo que es 'pendiente' o 'Pendiente') */
+.select-estado.pendiente {
+    border-color: #ffc107;
+    color: #856404;
+    background-color: #fff3cd;
+}
+
+/* Color para estado Aprobado */
+.select-estado.aprobado {
+    border-color: #28a745;
+    color: #155724;
+    background-color: #d4edda;
+}
+
+/* Color para estado Rechazado */
+.select-estado.rechazado {
+    border-color: #dc3545;
+    color: #721c24;
+    background-color: #f8d7da;
+}
+
+.filtros-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    background-color: #fffdf6;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 5px;
+}
+
+.filtro-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filtro-item label {
+    font-size: 1.2em;
+}
+
+.filtro-item select, .filtro-item input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#limpiarFiltros {
+    align-self: flex-end;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, #0080c8, #5de0e6);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: "LazyDog", Arial, Helvetica, sans-serif;
+    font-size: 15px;
+}
+
+#limpiarFiltros:hover {
+    background: #00b9d1;
+}
+
+/* Estilo para cabeceras ordenables */
+#tablaBiblioteca th[data-column] {
+    cursor: pointer;
+    position: relative;
+    user-select: none; /* Evita que se seleccione el texto al hacer doble clic */
+    transition: background-color 0.3s;
+}
+
+#tablaBiblioteca th[data-column]:hover {
+    background-color: #0080c8;
+}
+
+/* Flechas de ordenamiento (se añaden con JS) */
+#tablaBiblioteca th .sort-arrow {
+    margin-left: 5px;
+    opacity: 0.5;
+}
+
+#tablaBiblioteca th.sorted-asc .sort-arrow {
+    opacity: 1;
+    transform: rotate(180deg);
+}
+
+#tablaBiblioteca th.sorted-desc .sort-arrow {
+    opacity: 1;
+}
+
+/* --- CSS para el Modal (Añadir en style.css) --- */
+.modal-overlay {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-contenido {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 25px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s;
+}
+
+.modal-contenido h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    color: #fff;
+    font-size: 25px;
+}
+.modal-contenido p {
+    font-size: 0.9em;
+    color: #555;
+}
+
+.modal-acciones {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.modal-acciones .btn-accion {
+    /* (Asegúrate de que tus estilos .btn-accion se apliquen bien) */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/* ----- Fin CSS Modal ----- */
+
+.upload-card {
+    cursor: pointer;
+}
+
+.modal-contenido {
+    background: linear-gradient(135deg, #ffde59, #ff914d);
+}
+
+.notas-header h2 {
+    font-size: 2em;
+    margin: 5px 0;
+}
+
+.notas-header p {
+    font-size: 1.7rem;
+    margin: 10px 0;
+}
+
+.cont_filtro_opciones {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px;
+    margin: 0;
+}
+
+.upload-card .add-header h2 {
+    margin: 0;
+}
+
+/* Flechita de ordenamiento */
+.sort-arrow {
+    margin-left: 5px;
+    font-size: 0.8em;
+    opacity: 0.3;
+}
+/* Flecha activa (Ascendente) */
+th.sorted-asc .sort-arrow {
+    opacity: 1;
+    transform: rotate(180deg);
+    display: inline-block;
+}
+/* Flecha activa (Descendente) */
+th.sorted-desc .sort-arrow {
+    opacity: 1;
+    transform: rotate(0deg);
+    display: inline-block;
+}
+
+.tabla-notas th,
+.tabla-notas td {
+    font-size: 1.2rem;
+}
+
+/* Definir ancho fijo para el encabezado ID */
+#tablaBiblioteca th[data-column="id"] {
+    width: 50px;       /* Fuerza un ancho pequeño */
+    max-width: 60px;   /* Asegura que no crezca más de lo necesario */
+    text-align: center; /* Se ve mejor centrado al ser angosto */
+}
+
+/* Definir ancho fijo para el encabezado ID */
+#tablaBiblioteca th[data-column="tipo"] {
+    width: 60px;       /* Fuerza un ancho pequeño */
+    max-width: 60px;   /* Asegura que no crezca más de lo necesario */
+}
+
+/* Definir ancho fijo para el encabezado ID */
+#tablaBiblioteca th[data-column="fecha_subida"] {
+    width: 130px;       /* Fuerza el ancho */
+    max-width: 200px;   /* Asegura que no crezca más de lo necesario */
+}
+
+/* Definir ancho fijo para el encabezado ID */
+#tablaBiblioteca th[data-column="carpeta"] {
+    width: 100px;       /* Fuerza el ancho */
+    max-width: 200px;   /* Asegura que no crezca más de lo necesario */
+}
+
+/* Definir ancho fijo para el encabezado ID */
+#tablaBiblioteca th[data-column="estado"] {
+    width: 100px;       /* Fuerza el ancho */
+    max-width: 200px;   /* Asegura que no crezca más de lo necesario */
+}
+
+/* Centrar también los números de la columna ID en el cuerpo */
+#tablaBiblioteca tbody td:first-child {
+    text-align: center;
+}
+
+#tablaBiblioteca tbody td {
+    padding: 6px 8px;
+}

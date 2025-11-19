@@ -39,14 +39,14 @@
                 step="1" required
                 oninput="if(this.value.length > 4) this.value = this.value.slice(0,4); this.value = this.value.replace(/\D/g,'')">
             <div class="add-actions">
-                <button type="submit" class="add-btn">
-                    <i class="fa-solid fa-floppy-disk"></i> Guardar
-                </button>
-
                 <!-- Botón Cancelar -->
                 <a href="{{ url_for('list_cursos') }}" class="cancel-btn">
                     <i class="fa-solid fa-xmark"></i> Cancelar
                 </a>
+
+                <button type="submit" class="add-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                </button>                
             </div>
             </div>
 

@@ -16,7 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function renderCharts(asignaturas, profesores) {
+  // ===============================
+  //  🔥 HACEMOS renderCharts GLOBAL
+  // ===============================
+  window.renderCharts = function(asignaturas, profesores) {
+
     // ============================
     // 1) Promedio por asignaturas
     // ============================
@@ -33,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         options: {
           responsive: true,
           plugins: { legend: { display: false } },
-          scales: { y: { beginAtZero: true, max: 7 }, x: { ticks: { align: 'center', autoSkip: false, maxRotation:0, minRotation:0 } } }
+          scales: { y: { beginAtZero: true, max: 7 }, x: { ticks: { align: "center", autoSkip: false, maxRotation:0, minRotation:0 } } }
         }
       });
     }
@@ -41,34 +45,49 @@ document.addEventListener("DOMContentLoaded", () => {
     // ============================
     // 2) Promedio por profesor
     // ============================
-    const profArray = profesores;
+    const profArray = safeArray(profesores);
+
     if (chartProfesores) chartProfesores.destroy();
 
-    if (profArray !== null && profArray !== undefined) {
-      if (typeof profArray === "number") {
-        const color = profArray > 5.5 ? "#4caf50" : profArray > 4.5 ? "#ff9800" : "#f44336";
-        chartProfesores = crearGraficoSeguro("chartPromedioProfesor", {
-          type: "bar",
-          data: { labels: ["Profesor"], datasets: [{ label: "Promedio", data: [profArray], backgroundColor: color }] },
-          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 7 } } }
-        });
-      } else if (Array.isArray(profArray)) {
-        const labels = profArray.map(p => p.profe || p.nombre || "Desconocido");
-        const valores = profArray.map(p => Number(p.promedio) || 0);
-        const colores = valores.map(v => v > 5.5 ? "#4caf50" : v > 4.5 ? "#ff9800" : "#f44336");
+    if (profArray.length > 0) {
+      const labels = profArray.map(p => p.profe || p.nombre || "Profesor");
+      const valores = profArray.map(p => Number(p.promedio) || 0);
+      const colores2 = valores.map(v => v > 5.5 ? "#4caf50" : v > 4.5 ? "#ff9800" : "#f44336");
 
-        chartProfesores = crearGraficoSeguro("chartPromedioProfesor", {
-          type: "bar",
-          data: { labels, datasets: [{ label: "Promedio por Profesor", data: valores, backgroundColor: colores }] },
-          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 7 } } }
-        });
-      }
+      chartProfesores = crearGraficoSeguro("chartPromedioProfesor", {
+        type: "bar",
+        data: { labels, datasets: [{ label: "Promedio por Profesor", data: valores, backgroundColor: colores2 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 7 } } }
+      });
     }
+  };
+
+  // Render inicial con datos de backend
+  window.renderCharts(metricData.asignaturas_promedio, metricData.promedio_profesor);
+});
+
+// =====================================================
+// 🔄 FUNCIÓN GLOBAL PARA ACTUALIZAR KPI + GRÁFICOS
+// =====================================================
+window.cargarKpisYGraficos = async function () {
+  const curso = document.getElementById("filtroCurso").value;
+  const asignatura = document.getElementById("filtroAsignatura").value;
+  const profesor = document.getElementById("filtroProfesor").value;
+
+  const url = `/metricas/kpis?curso=${curso}&asignatura=${asignatura}&profesor=${profesor}`;
+
+  const res = await fetch(url);
+  const data = await res.json();
+
+  // ==============================
+  // KPIs (asegurar función global)
+  // ==============================
+  if (typeof window.actualizarKpis === "function") {
+    window.actualizarKpis(data);
   }
 
-  // Render inicial con datos de la carga de página
-  renderCharts(metricData.asignaturas_promedio, metricData.promedio_profesor);
-
-  // Exponer globalmente para actualizar desde actualizarFiltros()
-  window.updateMetricasCharts = renderCharts;
-});
+  // ==============================
+  // GRÁFICOS (llamamos global)
+  // ==============================
+  window.renderCharts(data.asignaturas, data.profesores);
+};

@@ -59,7 +59,6 @@
                 <!-- Info desplegable -->
                 <div class="items-list {% if session.get('rol') == 'profesor' and session.get('correo') == p.correo %}active{% endif %}">
                     <p><b>Correo:</b> {{ p.correo }}</p>
-                    <p><b>Área:</b> {{ p.area or 'No especificada' }}</p>
                 </div>
 
             </div>

@@ -26,7 +26,7 @@ class Metric:
         return None
 
 
-    def obtener_tabla_resultados(self, filtros, limite=None, offset=0, sin_limite=False):
+    def obtener_tabla_resultados(self, filtros, limite=None, offset=0, sort="nom_alum", order="ASC", sin_limite=False):
         conn = cur = None
         try:
             conn = get_connection()
@@ -70,8 +70,27 @@ class Metric:
                 query += " AND p.correo = %s"
                 params.append(filtros["profesor"])
 
-            query += " GROUP BY al.rut_alum, a.codigo ORDER BY nom_alum ASC, promedio ASC"
+            query += " GROUP BY al.rut_alum, a.codigo"
 
+            # -------------------------
+            # Orden seguro: mapear columnas permitidas
+            # -------------------------
+            columnas_permitidas = {
+                "nom_alum": "nom_alum",
+                "rut_alum": "al.rut_alum",
+                "nombre_asi": "a.nombre_asi",
+                "nivel": "c.nivel",
+                "generacion": "c.generacion",
+                "profesor": "profesor",
+                "promedio": "promedio",
+                "observacion": "observacion"
+            }
+
+            sort_key = columnas_permitidas.get(sort, "nom_alum")
+            order_sql = "DESC" if str(order).lower() == "desc" else "ASC"
+            query += f" ORDER BY {sort_key} {order_sql}"
+
+            # Paginación
             if not sin_limite and limite is not None:
                 query += " LIMIT %s OFFSET %s"
                 params.extend([limite, offset])
@@ -85,6 +104,7 @@ class Metric:
         finally:
             if cur: cur.close()
             if conn: conn.close()
+
 
 
     def contar_tabla_resultados(self, filtros):

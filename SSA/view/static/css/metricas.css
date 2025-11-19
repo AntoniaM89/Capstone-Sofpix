@@ -91,7 +91,7 @@ header p {
 }
 
 /* Botones de filtros */
-#filtros button {
+#filtros a {
     background: linear-gradient(135deg, #0080c8, #5de0e6);
     color: white;
     padding: 0.6rem 1.4rem;
@@ -99,9 +99,10 @@ header p {
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
+    text-decoration: none;
 }
 
-#filtros button:hover {
+#filtros a:hover {
     background: #00b9d1;
 }
 
@@ -256,7 +257,7 @@ header p {
 }
 
 .grafico-card.full-width {
-    grid-column: 1 / -1; /* ocupa todas las columnas */
+    grid-column: 1 / -1; 
 }
 
 
@@ -355,6 +356,10 @@ header p {
     padding: 0.8rem;
 }
 
+#tabla-reportes th:hover {
+    background: #0060f0;
+}
+
 #tabla-reportes td {
     padding: 0.8rem;
     border-top: 1px solid #eee;
@@ -365,24 +370,31 @@ header p {
 }
 
 /* ===========================
-   PAGINACIÓN
+   PAGINACIÓN (BOTONES JS)
    =========================== */
+.page-btn {
+    margin: 0 0.5rem;
+    color: #0052cc;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0;
+    font-family: 'LazyDog', Arial, sans-serif;
+}
+
+.page-btn:hover {
+    text-decoration: underline;
+    color: #005de9;
+}
+
+/* Contenedor igual que antes */
 #paginacion {
     text-align: right;
     margin-top: 1.5rem;
 }
 
-#paginacion a {
-    margin: 0 0.5rem;
-    color: #0052cc;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-#paginacion a:hover {
-    text-decoration: underline;
-    color: #005de9;
-}
 
 
 /* Scroll solo para el contenedor */
@@ -438,12 +450,12 @@ header p {
 /* Contenedor de ítems: ahora en fila */
 .summary-items {
     display: flex;
-    flex-direction: row; /* items horizontales */
-    justify-content: space-around; /* distribuidos a lo largo de la card */
+    flex-direction: row; 
+    justify-content: space-around;
     align-items: center;
     gap: 25px;
     width: 100%;
-    flex-wrap: wrap; /* para responsive */
+    flex-wrap: wrap;
 }
 
 /* Cada ítem */
@@ -503,7 +515,7 @@ header p {
 }
 
 .notas-table {
-    border-collapse: collapse; /* elimina el cellspacing */
+    border-collapse: collapse; 
     width: 100%;
     background: #fff;
 }
@@ -511,7 +523,7 @@ header p {
 .notas-table th,
 .notas-table td {
     border: 1px solid #000;
-    padding: 6px; /* reemplaza cellpadding */
+    padding: 6px; 
 }
 
 /* Asignaturas y promedio final alineados a la izquierda */
@@ -527,7 +539,7 @@ header p {
 
 .filtro-inline {
     display: flex;
-    align-items: flex-end; /* Alinea botones y selects en la misma fila */
+    align-items: flex-end; 
     gap: 20px;
     flex-wrap: wrap;
 }

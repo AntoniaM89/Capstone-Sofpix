@@ -53,7 +53,7 @@ def listar_archivos():
         conn = get_connection()
         cur = conn.cursor(dictionary=True)  # << dict
         cur.execute("""
-            SELECT id, nombre, tipo, fecha_subida, profesor_correo, carpeta
+            SELECT id, nombre, tipo, fecha_subida, profesor_correo, carpeta, estado
             FROM BIBLIOTECA
             ORDER BY fecha_subida DESC
         """)
@@ -119,6 +119,23 @@ def obtener_imagen(id_imagen):
         cur = conn.cursor(dictionary=True)
         cur.execute("SELECT contenido, tipo FROM BIBLIOTECA WHERE ID = %s", (id_imagen,))
         return cur.fetchone()
+    finally:
+        if cur: cur.close()
+        if conn: conn.close()
+
+def actualizar_estado_archivo(id_archivo, nuevo_estado):
+    """
+    Actualiza el estado de un archivo (Pendiente, Aprobado, Rechazado).
+    """
+    conn = cur = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE biblioteca SET estado = %s WHERE id = %s", 
+            (nuevo_estado, id_archivo)
+        )
+        conn.commit()
     finally:
         if cur: cur.close()
         if conn: conn.close()

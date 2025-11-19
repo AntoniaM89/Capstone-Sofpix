@@ -3,34 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Jugar Quiz - {{ quiz['titulo'] }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        body { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            text-align: center; 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; 
-            background: #fafafa;
-        }
-        h1 { margin-top: 20px; color: #333; }
-        #quiz-container { max-width: 800px; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .pregunta { font-size: 1.8em; margin-bottom: 25px; color: #222; }
-        .imagen img { max-width: 60%; height: auto; border-radius: 12px; margin: 20px auto; display: block; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
-        .opciones button { display: block; width: 80%; margin: 10px auto; padding: 15px; font-size: 1.1em; cursor: pointer; border: 2px solid #ddd; border-radius: 8px; background: white; transition: all 0.2s ease-in-out; }
-        .opciones button:hover:not(:disabled) { background-color: #f0f0f0; transform: scale(1.02); }
-        #siguiente { background-color: #2196f3; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background 0.3s; }
-        #siguiente:hover { background-color: #1976d2; }
-        #resultado { text-align: center; padding: 40px; }
-        #resultado h2 { font-size: 2em; margin-bottom: 10px; }
-        #resultado button { background-color: #4caf50; color: white; padding: 12px 25px; font-size: 1em; border: none; border-radius: 8px; cursor: pointer; }
-        #resultado button:hover { background-color: #388e3c; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_jugar.css') }}">
 </head>
 <body>
+    <!-- Botón Volver -->
+    <a href="{{ url_for('quiz_controller.gestionar_quizzes') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
 
     <h1>🎲 {{ quiz['titulo'] }}</h1>
 
@@ -38,15 +19,17 @@
         <div class="pregunta" id="pregunta"></div>
         <div class="imagen" id="imagen"></div>
         <div class="opciones" id="opciones"></div>
-        <button id="siguiente" style="margin-top: 20px; padding: 10px 20px; display:none;">Siguiente</button>
     </div>
+    <button id="siguiente" style="display:none;">Siguiente</button> 
 
     <div id="resultado" style="display:none;">
         <h2>🎉 ¡Quiz terminado!</h2>
-        <p id="puntaje"></p>
-        <button onclick="window.location.href='{{ url_for('quiz_controller.gestionar_quizzes') }}'">
-            Volver a lista de quizzes
-        </button>
+        <div class="card-crema">
+            <p id="puntaje"></p>
+            <a href="{{ url_for('quiz_controller.gestionar_quizzes') }}" class="boton-volver">
+                Volver a lista de quizzes
+            </a>
+        </div>
     </div>
 
     <script>
@@ -61,12 +44,17 @@
             const imgDiv = document.getElementById("imagen");
             imgDiv.innerHTML = "";
 
+            const img = document.createElement("img");
+
             if (p.IMAGEN) {
-                const img = document.createElement("img");
                 img.src = `/quiz/imagen_blob/${p.IMAGEN}`;
                 img.alt = "Imagen de la pregunta";
-                imgDiv.appendChild(img);
+            } else {
+                img.src = "{{ url_for('static', filename='icons/question_background.png') }}";
+                img.alt = "Imagen de placeholder";
             }
+            
+            imgDiv.appendChild(img);
 
             const opcionesDiv = document.getElementById("opciones");
             opcionesDiv.innerHTML = "";
@@ -76,12 +64,13 @@
                     const letra = ["A","B","C","D"][idx];
                     const btn = document.createElement("button");
                     btn.innerText = letra + ": " + p[key];
+                    
                     btn.onclick = () => {
                         if (letra === p.RESPUESTA_CORRECTA) {
                             puntaje++;
-                            btn.style.backgroundColor = "#c8e6c9";
+                            btn.classList.add("correcta"); 
                         } else {
-                            btn.style.backgroundColor = "#ffcdd2";
+                            btn.classList.add("incorrecta");
                         }
                         Array.from(opcionesDiv.children).forEach(b => b.disabled = true);
                         document.getElementById("siguiente").style.display = "block";
@@ -103,7 +92,19 @@
             }
         };
 
-        mostrarPregunta(index);
+        // ✅ Validador dentro del recuadro blanco
+        if (preguntas_juego.length === 0) {
+            const contenedor = document.getElementById("quiz-container");
+            contenedor.innerHTML = `
+                <div class="mensaje-error">
+                    ⚠️ No hay preguntas en este quiz.<br>
+                    Por favor agregue preguntas si desea jugar.
+                </div>
+            `;
+            document.getElementById("siguiente").style.display = "none";
+        } else {
+            mostrarPregunta(index);
+        }
     </script>
 
 </body>

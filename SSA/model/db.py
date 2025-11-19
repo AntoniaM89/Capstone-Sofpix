@@ -13,3 +13,5 @@ def get_connection():
         database=os.getenv("DB_NAME", "SSA_DB")
     )
     return conn
+
+

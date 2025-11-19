@@ -14,9 +14,6 @@ from reportlab.lib.units import cm
 # ==============================
 # PÁGINA PRINCIPAL DE MÉTRICAS
 # ==============================
-# ==============================
-# PÁGINA PRINCIPAL DE MÉTRICAS
-# ==============================
 def reportes():
     metric = Metric()
 
@@ -42,14 +39,11 @@ def reportes():
 
         # Cursos del profesor
         cursos = SSA.get_cursos_por_profesor(correo_user)
-        print(correo_user)
-        print(cursos)
         # Asignaturas del profesor, opcionalmente filtradas por curso
         asignaturas = SSA.get_asignaturas_por_profesor(
             correo_prof=correo_user
         )
 
-        print(asignaturas)
         
         # Profesores → solo él
         profesores = [{"correo": correo_user}]
@@ -103,6 +97,82 @@ def reportes():
         total_paginas=total_paginas,
         total_registros=total_registros
     )
+
+
+def metricas_data():
+    metric = Metric()
+
+    # Filtros (match con tu formulario)
+    filtros = {
+        "curso": request.args.get("curso") or None,
+        "asignatura": request.args.get("asignatura") or None,
+        "profesor": request.args.get("profesor") or None,
+    }
+
+    # Si el rol es profesor forzamos su correo (coherente con tu lógica)
+    rol = session.get("rol")
+    if rol == "profesor":
+        filtros["profesor"] = session.get("correo_prof")
+
+    # Paginación
+    page = int(request.args.get("page", 1))
+    per_page = int(request.args.get("per_page", 10))
+    offset = (page - 1) * per_page
+
+    # Ordenamiento (nombre de columna + dirección)
+    sort = request.args.get("sort", "nom_alum")
+    order = request.args.get("order", "ASC")
+
+    # Fetch datos paginados y ordenados
+    resultados = metric.obtener_tabla_resultados(
+        filtros,
+        limite=per_page,
+        offset=offset,
+        sort=sort,
+        order=order
+    )
+
+    total_registros = metric.contar_tabla_resultados(filtros)
+    total_paginas = (total_registros + per_page - 1) // per_page if total_registros > 0 else 1
+
+    return jsonify({
+        "success": True,
+        "datos": resultados,
+        "page": page,
+        "per_page": per_page,
+        "total_paginas": total_paginas,
+        "total_registros": total_registros,
+        "sort": sort,
+        "order": order
+    })
+
+
+def metricas_kpis():
+    filtros = {
+        "curso": request.args.get("curso"),
+        "asignatura": request.args.get("asignatura"),
+        "profesor": request.args.get("profesor")
+    }
+
+    metric = Metric()
+
+    return jsonify({
+        "promedio_curso": metric.obtener_promedio_curso(filtros["curso"]),
+        "total_alumnos": metric.obtener_alumnos_por_asignatura(
+            filtros["asignatura"], filtros["curso"], filtros["profesor"]
+        ),
+        "destacados": len(metric.obtener_alumnos_destacados(filtros)),
+        "normales": len(metric.obtener_alumnos_normal(filtros)),
+        "en_riesgo": len(metric.obtener_alumnos_en_riesgo(filtros)),
+        "asignaturas": metric.obtener_asignaturas_promedio(
+            filtros["curso"], filtros["profesor"]
+        ),
+        "profesores": metric.obtener_promedio_profesor(
+            profesor_correo=filtros["profesor"],
+            id_curso=filtros["curso"],
+            codigo_asignatura=filtros["asignatura"]
+        )
+    })
 
 # ==============================
 # FILTROS DINÁMICOS (AJAX)
@@ -164,9 +234,6 @@ def filtros_dinamicos():
     cursos_js = [{"id_curso": c["id_curso"], "nivel": c["nivel"], "generacion": c["generacion"], "nombre": c["nombre"]} for c in cursos]
     asignaturas_js = [{"codigo": a["codigo"], "nombre": f"{a['nombre_asi']} ({a['codigo']})"} for a in asignaturas]
 
-    print(cursos)
-    
-    print(asignaturas)
 
     return jsonify({
         "success": True,
@@ -181,37 +248,49 @@ def filtros_dinamicos():
 # EXPORTACIÓN A EXCEL
 # ==============================
 def export_metricas_excel():
+    # 🔹 Obtener filtros + sort + order
     filtros = {
         "curso": request.args.get("curso") or None,
         "asignatura": request.args.get("asignatura") or None,
         "profesor": request.args.get("profesor") or None,
     }
 
-    metric = Metric() # Asegúrate de que esta clase está correctamente instanciada
+    sort = request.args.get("sort", "nom_alum")
+    order = request.args.get("order", "ASC")
 
-    # 🔹 Obtener todos los registros sin límite
-    tabla = metric.obtener_tabla_resultados(filtros, sin_limite=True)
+    metric = Metric()
+
+    # 🔹 Obtener TODOS los datos según filtros (sin paginación)
+    tabla = metric.obtener_tabla_resultados(
+        filtros=filtros,
+        sin_limite=True,
+        sort=sort,
+        order=order
+    )
 
     if not tabla:
         flash("No hay datos para exportar con los filtros seleccionados.", "warning")
         return redirect(url_for("reportes"))
 
-    # 🔹 Obtener los nombres amigables para usar en el nombre del archivo
-    nombres_filtros = {
-        "curso_nom": metric.obtener_nombre_amigable_curso(filtros["curso"]) if filtros["curso"] else None,
-        "asignatura_nom": metric.obtener_nombre_amigable_asignatura(filtros["asignatura"]) if filtros["asignatura"] else None,
-        "profesor_nom": tabla[0]["profesor"] if filtros["profesor"] and tabla else None,
-    }
+    # 🔹 Crear nombre del archivo
+    partes = ["Reporte_Metricas"]
 
-    # 🔹 Convertir a DataFrame
+    if filtros["curso"]:
+        partes.append(f"{filtros['curso']}")
+    if filtros["asignatura"]:
+        partes.append(f"{filtros['asignatura']}")
+    if filtros["profesor"]:
+        partes.append(f"{filtros['profesor'].replace('@', '_')}")
+
+    nombre_archivo = "_".join(partes) + ".xlsx"
+
+    # 🔹 Crear DataFrame limpio
     df = pd.DataFrame(tabla)
 
-    print(df)
-    # 🔹 Renombrar columnas
     df = df.rename(columns={
         "nom_alum": "Alumno",
         "rut_alum": "RUT",
-        "nombre_asi": "Asignatura", 
+        "nombre_asi": "Asignatura",
         "nivel": "Nivel",
         "generacion": "Generación",
         "profesor": "Profesor",
@@ -219,36 +298,16 @@ def export_metricas_excel():
         "observacion": "Observación"
     })
 
-
-    # 🔹 Crear columna Curso combinando Nivel + Generación
+    # Curso: Nivel + Generación
     df["Curso"] = df["Nivel"] + " " + df["Generación"].astype(str)
 
-    # 🔹 Seleccionar solo las columnas finales y reordenarlas para Excel
     df = df[["Alumno", "RUT", "Asignatura", "Curso", "Profesor", "Promedio", "Observación"]]
 
-    # 🔹 Preparar archivo en memoria
+    # 🔹 Exportar
     output = BytesIO()
-    
-    # *** CORRECCIÓN APLICADA AQUÍ ***
-    # Se eliminó el argumento 'encoding'. Se añade 'engine' como buena práctica.
-    df.to_excel(output, index=False, engine='openpyxl') 
-    
+    df.to_excel(output, index=False, engine="openpyxl")
     output.seek(0)
 
-    # 🔹 Construir nombre de archivo usando NOMBRES AMIGABLES
-    partes = ["Reporte_Metricas"]
-    
-    if nombres_filtros["curso_nom"]:
-        partes.append(nombres_filtros["curso_nom"].replace(" ", "_").replace(".", "")) 
-    if nombres_filtros["asignatura_nom"]:
-        partes.append(nombres_filtros["asignatura_nom"].replace(" ", "_").replace(".", ""))
-    if nombres_filtros["profesor_nom"]:
-        profesor_limpio = nombres_filtros["profesor_nom"].replace(" ", "_").replace(".", "_").replace("@", "_")
-        partes.append(profesor_limpio)
-
-    nombre_archivo = "_".join(partes) + ".xlsx"
-
-    # 🔹 Enviar archivo al navegador
     return send_file(
         output,
         as_attachment=True,
@@ -256,30 +315,44 @@ def export_metricas_excel():
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
-
 # ==============================
 # EXPORTACIÓN A PDF
 # ==============================
 def export_metricas_pdf():
+    # 🔹 Obtener filtros + sort + order
     filtros = {
         "curso": request.args.get("curso") or None,
         "asignatura": request.args.get("asignatura") or None,
         "profesor": request.args.get("profesor") or None,
     }
 
-    metric = Metric()
-    resultados = metric.obtener_tabla_resultados(filtros, sin_limite=True)
+    sort = request.args.get("sort", "nom_alum")
+    order = request.args.get("order", "ASC")
 
-    nombre = "Reporte"
+    metric = Metric()
+
+    # 🔹 Obtener TODOS los datos filtrados (sin paginación)
+    resultados = metric.obtener_tabla_resultados(
+        filtros=filtros,
+        sin_limite=True,
+        sort=sort,
+        order=order
+    )
+
+    # 🔹 Crear nombre del archivo
+    partes = ["Reporte_Metricas"]
+
     if filtros["curso"]:
-        nombre += f"_{filtros['curso']}"
+        partes.append(f"{filtros['curso']}")
     if filtros["asignatura"]:
-        nombre += f"_{filtros['asignatura']}"
+        partes.append(f"{filtros['asignatura']}")
     if filtros["profesor"]:
-        nombre += f"_{filtros['profesor']}"
-    nombre += ".pdf"
+        partes.append(f"{filtros['profesor'].replace('@', '_')}")
+
+    nombre = "_".join(partes) + ".pdf"
 
     buffer = BytesIO()
+
     doc = SimpleDocTemplate(
         buffer,
         pagesize=landscape(A4),
@@ -291,86 +364,81 @@ def export_metricas_pdf():
 
     elements = []
 
-    # Estilos
+    # ====================
+    # ESTILOS
+    # ====================
     styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name='Wrapped', wordWrap='CJK', fontSize=9))
-    styles.add(ParagraphStyle(name='TableHeader', alignment=1, fontSize=10, fontName='Helvetica-Bold', textColor=colors.white))
-    styles.add(ParagraphStyle(name='Filters', fontSize=9, textColor=colors.black, leading=12))
+    styles.add(ParagraphStyle(name="Wrapped", wordWrap="CJK", fontSize=9))
+    styles.add(ParagraphStyle(name="Filters", fontSize=9))
+    styles.add(ParagraphStyle(name="TitleBig", fontSize=16, alignment=1))
 
-    # Encabezado con título
-    elements.append(Paragraph("Sistema SSA - Reporte de Notas", styles['Title']))
-    elements.append(Spacer(1, 6))
+    # ====================
+    # TÍTULO
+    # ====================
+    elements.append(Paragraph("Sistema SSA — Reporte Métricas", styles["TitleBig"]))
+    elements.append(Spacer(1, 10))
 
-    # Filtros aplicados
-    filtros_texto = ""
-    filtros_texto += f"Curso: {filtros['curso'] or 'Todos'}<br/>"
-    filtros_texto += f"Asignatura: {filtros['asignatura'] or 'Todas'}<br/>"
-    filtros_texto += f"Profesor: {filtros['profesor'] or 'Todos'}<br/>"
-    elements.append(Paragraph(filtros_texto, styles['Filters']))
+    # ====================
+    # FILTROS UTILIZADOS
+    # ====================
+    filtros_texto = (
+        f"<b>Curso:</b> {filtros['curso'] or 'Todos'}<br/>"
+        f"<b>Asignatura:</b> {filtros['asignatura'] or 'Todas'}<br/>"
+        f"<b>Profesor:</b> {filtros['profesor'] or 'Todos'}"
+    )
+
+    elements.append(Paragraph(filtros_texto, styles["Filters"]))
     elements.append(Spacer(1, 12))
 
-    # Datos de la tabla
+    # ====================
+    # TABLA
+    # ====================
     data = [["Alumno", "RUT", "Asignatura", "Curso", "Profesor", "Promedio", "Observación"]]
 
-    print(data)
-    
     for fila in resultados:
-        nombre_alumno = fila['nom_alum']
-       
         data.append([
-            Paragraph(nombre_alumno, styles['Wrapped']),
-            Paragraph(str(fila['rut_alum']), styles['Wrapped']),
-            Paragraph(fila['nombre_asi'], styles['Wrapped']),
-            Paragraph(f"{fila['nivel']} {fila['generacion']}", styles['Wrapped']),
-            Paragraph(fila['profesor'], styles['Wrapped']),
-            Paragraph(str(fila['promedio']), styles['Wrapped']),
-            Paragraph(fila.get('observacion',''), styles['Wrapped'])
+            Paragraph(fila["nom_alum"], styles["Wrapped"]),
+            Paragraph(str(fila["rut_alum"]), styles["Wrapped"]),
+            Paragraph(fila["nombre_asi"], styles["Wrapped"]),
+            Paragraph(f"{fila['nivel']} {fila['generacion']}", styles["Wrapped"]),
+            Paragraph(fila["profesor"], styles["Wrapped"]),
+            Paragraph(str(fila["promedio"]), styles["Wrapped"]),
+            Paragraph(fila.get("observacion", ""), styles["Wrapped"]),
         ])
 
-    # Columnas más angostas
-    col_widths = [5*cm, 2.5*cm, 5*cm, 2.5*cm, 4*cm, 2*cm, 5*cm]
+    col_widths = [5*cm, 3*cm, 5*cm, 3*cm, 4*cm, 2.5*cm, 5*cm]
 
-    table = Table(data, colWidths=col_widths, repeatRows=1, hAlign='LEFT')
+    table = Table(data, colWidths=col_widths, repeatRows=1)
 
-    # Estilos de tabla
-    tbl_style = TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#4F81BD")),
-        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
-        ('ALIGN',(0,0),(-1,-1),'CENTER'),
-        ('VALIGN',(0,0),(-1,-1),'TOP'),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0,0), (-1,0), 10),
-        ('BOTTOMPADDING', (0,0), (-1,0), 6),
-        ('TOPPADDING', (0,1), (-1,-1), 2),
-        ('BOTTOMPADDING', (0,1), (-1,-1), 2),
+    estilo = TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#4F81BD")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), 10),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
     ])
 
-    # Colorear filas alternas y destacar promedios
-    for i, fila in enumerate(resultados):
-        row_idx = i + 1
-        if i % 2 == 0:
-            tbl_style.add('BACKGROUND', (0,row_idx), (-1,row_idx), colors.HexColor("#DCE6F1"))
-        else:
-            tbl_style.add('BACKGROUND', (0,row_idx), (-1,row_idx), colors.white)
-        try:
-            promedio = float(fila['promedio'])
-            if promedio >= 6.0:
-                tbl_style.add('TEXTCOLOR', (5,row_idx), (5,row_idx), colors.green)
-            elif promedio < 4.0:
-                tbl_style.add('TEXTCOLOR', (5,row_idx), (5,row_idx), colors.red)
-        except:
-            pass
+    # Filas alternadas
+    for i in range(1, len(data)):
+        estilo.add(
+            "BACKGROUND",
+            (0, i), (-1, i),
+            colors.HexColor("#DCE6F1") if i % 2 else colors.white
+        )
 
-    table.setStyle(tbl_style)
+    table.setStyle(estilo)
     elements.append(table)
 
-    # Footer con fecha y página
+    # ====================
+    # FOOTER
+    # ====================
     def add_page_number(canvas, doc):
         canvas.saveState()
-        footer_text = f"Generado: {datetime.now().strftime('%d/%m/%Y %H:%M')} | Página {doc.page}"
-        canvas.setFont('Helvetica', 8)
-        canvas.drawRightString(landscape(A4)[0]-1*cm, 1*cm, footer_text)
+        text = f"Generado: {datetime.now().strftime('%d/%m/%Y %H:%M')} | Página {doc.page}"
+        canvas.setFont("Helvetica", 8)
+        canvas.drawRightString(landscape(A4)[0] - 1*cm, 1*cm, text)
         canvas.restoreState()
 
     doc.build(elements, onFirstPage=add_page_number, onLaterPages=add_page_number)
@@ -382,7 +450,6 @@ def export_metricas_pdf():
         download_name=nombre,
         mimetype="application/pdf"
     )
-
 
 def fecha_texto_spanish(dt):
     meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio",

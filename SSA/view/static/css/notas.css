@@ -225,16 +225,16 @@
 
 /* ==== Asegura que los botones de acciones se mantengan visibles y alineados ==== */
 .tabla-notas td.acciones {
-    white-space: nowrap;             /* evita que los botones se vayan a otra línea */
-    display: flex;                   /* los alinea en una fila */
-    justify-content: center;         /* los centra horizontalmente */
-    align-items: center;             /* los centra verticalmente */
-    gap: 8px;                        /* espacio entre botones */
+    white-space: nowrap;             
+    display: flex;                
+    justify-content: center;   
+    align-items: center;          
+    gap: 8px;                     
 }
 
 .tabla-notas td.acciones a,
 .tabla-notas td.acciones button {
-    flex-shrink: 0;                  /* evita que se compriman al achicar pantalla */
+    flex-shrink: 0;                
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -252,5 +252,5 @@
 
 .tabla-notas th:last-child,
 .tabla-notas td:last-child {
-    width: 150px;                    /* da espacio fijo a la columna de acciones */
+    width: 150px;                
 }

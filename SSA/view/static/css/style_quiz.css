@@ -1,0 +1,371 @@
+/* HTML y Body */
+html, body {
+    display: block;
+}
+
+.contenedor_titulo {
+    display: flex;
+    margin: 10px 0 10px 0;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+}
+.contenedor_titulo h1{
+    margin: 0;
+}
+
+.contenedor_general {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 10%;
+    gap: 5px;
+}
+
+.detail-card {
+    max-width: 80%;
+}
+
+.contenedor_agregar {
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
+}
+
+.contenedor_titulo_agregar {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.titulo_agregar {
+    font-size: 35px;
+    color: #fff;
+    padding: 0 0 10px 0;
+    border-bottom: 2px solid #fff;
+}
+
+.input_pregunta {
+    display: flex;
+    flex-direction: column;
+    font-size: 25px;
+    margin: 0 5px 20px 5px;
+}
+
+.input_pregunta input {
+    max-width: 70%;
+    height: 20px;
+    border-radius: 5px;
+}
+
+.input_imagen {
+    display: flex;
+    flex-direction: column;
+    font-size: 25px;
+    margin: 0 5px 20px 5px;
+}
+
+.input_imagen select {
+    max-width: 200px;
+    height: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid #111;
+    border-radius: 5px;
+}
+
+.contenedor_opciones {
+    display: flex;
+    flex-direction: column;
+    font-size: 25px;
+    margin: 0 5px 0 5px;
+}
+
+.texto_sugerencia {
+    font-size: 18px;
+    margin: 0;
+}
+
+.opciones {
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0 0 0;
+}
+
+.opcion {
+    font-size: 25px;
+    margin: 0 5px 5px 5px;
+}
+
+.opcion input {
+    height: 20px;
+    border-radius: 5px;
+}
+
+.contenedor_correcta {
+    display: flex;
+    flex-direction: column;
+    font-size: 25px;
+    margin: 10px 5px 20px 5px;
+}
+
+.contenedor_correcta select {
+    max-width: 50px;
+    height: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid #111;
+    border-radius: 5px;
+    font-weight: bold;
+    margin: 5px 0 0 0;
+}
+
+.add-actions {
+    align-items: center;
+    justify-content: center;
+}
+
+.add-actions .add-btn {
+    font-size: 1rem;
+}
+
+.contenedor_existentes {
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+}
+
+.contenedor_titulo_existentes {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.titulo_existente {
+    font-size: 35px;
+    color: #fff;
+    padding: 0 0 10px 0;
+    border-bottom: 2px solid #fff;
+}
+
+/* 1. Anulamos el 'display: flex' de style.css SÓLO para esta card */
+.contenedor_existentes > .card-crema {
+    display: block;  /* Sobrescribe 'display: flex' */
+    flex: none;      /* Sobrescribe 'flex: 1' */
+    
+    /* Mantenemos los estilos de style.css */
+    background: #fffdf6; 
+    color: #c65c00;
+}
+
+/* 2. El <ol> es el contenedor GRID */
+.contenedor_existentes .card-crema ol {
+    display: grid;
+    /* 4 columnas: (Pregunta, Opciones, Respuesta, Botón) */
+    grid-template-columns: 1.5fr 2fr auto auto; 
+    grid-auto-flow: row; /* Importante: asegura que cree filas nuevas */
+    
+    column-gap: 15px; /* Espacio horizontal */
+    row-gap: 15px;    /* Espacio vertical entre preguntas */
+    
+    /* Reseteos de la lista */
+    margin: 0;
+    padding: 0; /* Un poco de espacio en los bordes */
+    list-style: none; /* Quita los números 1, 2, 3... */
+
+    height: 481px;        /* 1. Fija la altura del contenedor de la lista */
+    overflow-y: auto;     /* 2. Agrega scroll vertical SÓLO si es necesario */
+    box-sizing: border-box;
+}
+
+/* 3. El <li> "desaparece". Esta es la corrección más importante.
+   Este selector es MÁS específico que '.card-crema li' de style.css */
+.contenedor_existentes .card-crema ol > li.fila_existente {
+    display: contents;
+    /* Anulamos los estilos conflictivos de '.card-crema li' */
+    padding: 0;
+    border-bottom: none;
+    justify-content: normal;
+    align-items: normal;
+}
+
+/* 4. El <div> interior también "desaparece" */
+.contenedor_existentes .fila_existente > .cont_row.gap {
+    display: contents;
+}
+
+/* 5. Centramos verticalmente todas las "celdas" (columnas) */
+.contenedor_existentes .fila_existente > .cont_row.gap > * {
+    align-self: center; 
+}
+
+/* 6. Reseteo para el <ul> de las opciones (Columna 2) */
+.contenedor_existentes .fila_existente > .cont_row.gap > ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    flex-grow: 0; /* Anula 'flex-grow: 1' de style.css */
+}
+
+/* 7. Estilos para el texto de la pregunta (Columna 1) */
+.contenedor_existentes .texto_pregunta_lista {
+    font-size: 20px;
+    max-width: none; /* El grid ya controla el ancho */
+}
+
+/* 8. Anulamos el borde de .opcion_lista */
+.contenedor_existentes .card-crema .opcion_lista{
+    border: none;
+}
+
+/* 9. Clases de utilidad que SÍ se usan (cont_row, cont_clm) */
+.contenedor_existentes .cont_row {
+    display: flex;
+    flex-direction: row;
+    gap: 0; /* El gap principal lo maneja el grid */
+}
+
+.cont_clm {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 10. Estilo para las opciones A, B, C, D */
+.opcion_lista {
+    width: 50%;
+}
+
+/* 11. Botón cancelar y contenedor central */
+.contenedor_existentes .cancel-btn {
+    border: none;
+    margin-right: 10px;
+}
+
+.cont_cntr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.gap {
+    gap: 10px; /* Se mantiene por si se usa dentro de las celdas */
+}
+
+/* --- FIN DE LA SECCIÓN CORREGIDA --- */
+
+
+/* Estilos de otras tablas (Notas) */
+.notas-header p {
+    font-size: 25px;
+}
+
+.tabla-notas thead{
+    font-size: 20px;
+}
+
+.tabla-notas tbody{
+    font-size: 18px;
+}
+
+/* --- Scroll Personalizado para Lista de Preguntas --- */
+
+/* 1. El "track" o fondo de la barra */
+.contenedor_existentes .card-crema ol::-webkit-scrollbar {
+    width: 12px;
+    background: transparent; /* Fondo de la barra transparente */
+}
+
+/* 2. El "pulgar" o la parte móvil */
+.contenedor_existentes .card-crema ol::-webkit-scrollbar-thumb {
+    background: #00b9d1; /* El color de tu barra (el que tenías) */
+    border-radius: 10px;
+    
+    /* Truco para el padding: un borde del color de fondo de la card */
+    border: 3px solid #fffdf6; /* <-- El color de fondo de tu .card-crema */
+    
+    background-clip: content-box;
+}
+
+/* 3. El estado "hover" del pulgar */
+.contenedor_existentes .card-crema ol::-webkit-scrollbar-thumb:hover {
+    filter: brightness(1.2);
+    /* tambien puede ser un color sólido: background: #009cb8; */
+}
+
+/* Fondo oscuro transparente */
+.modal-overlay {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Caja del contenido (Manteniendo tu estilo visual) */
+.modal-contenido {
+    /* Usamos el mismo degradado que tenías en biblioteca.css si te gustó */
+    background: linear-gradient(135deg, #ffde59, #ff914d); 
+    /* O si prefieres blanco simple para el quiz, usa: background-color: #fefefe; */
+    font-size: 25px;
+    margin: auto;
+    padding: 25px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s;
+}
+
+.modal-contenido h3 {
+    margin-top: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding-bottom: 10px;
+    color: #fff; /* Color oscuro para texto */
+}
+
+/* Aseguramos que tus inputs (.add-form input) se vean bien en el modal */
+.add-form label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+    color: #c65c00;
+}
+
+.add-form input, 
+.add-form select, 
+.add-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Importante para que no se salgan */
+}
+
+.modal-acciones {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-acciones .cancel-btn {
+    padding: 12px 26px;
+}
+
+.no_border {
+    border: none;
+}

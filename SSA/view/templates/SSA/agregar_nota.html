@@ -14,6 +14,8 @@
             <title>Agregar Nota - {{ asignatura_nombre }} - {{ curso.nivel }} {{ curso.generacion }}</title>
         </div>
 
+        {% include 'message.html' %}
+        
         <form method="POST" class="add-form add-info">
 
             <!-- Campos ocultos -->
@@ -57,12 +59,14 @@
             </div>
 
             <div class="add-actions">
-                <button type="submit" class="add-btn">
-                    <i class="fa-solid fa-floppy-disk"></i> Guardar
-                </button>
                 <a href="{{ url_for('detalle_curso_prof_asignatura', codigo_asignatura=codigo_asignatura, codigo_curso=curso['id_curso']) }}" class="cancel-btn">
                     <i class="fa-solid fa-xmark"></i> Cancelar
                 </a>
+
+                <button type="submit" class="add-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                </button>
+
             </div>
 
         </form>

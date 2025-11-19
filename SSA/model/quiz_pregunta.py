@@ -37,6 +37,7 @@ def listar_preguntas(quiz_id):
                 qp.ID,
                 qp.PREGUNTA,
                 b.ID AS IMAGEN,
+                b.NOMBRE AS NOMBREIMAGEN,
                 qp.OPCION_A,
                 qp.OPCION_B,
                 qp.OPCION_C,

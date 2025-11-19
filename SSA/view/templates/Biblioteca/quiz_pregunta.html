@@ -3,79 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <title>Preguntas del Quiz</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_quiz.css') }}">
 </head>
 <body>
+    
+    <!-- Botón Volver -->
+    <a href="{{ url_for('quiz_controller.gestionar_quizzes') }}" class="back-button">
+        <img src="{{ url_for('static', filename='icons/pencil_welcome.png') }}" alt="Volver">
+        <span>Volver</span>
+    </a>
 
-    <h1>🧩 Preguntas del Quiz #{{ quiz_id }}</h1>
+    <div class="contenedor_titulo">
+        <h1>🧩 Preguntas del Quiz #{{ quiz_id }}</h1>
+    </div>
 
-    <a href="{{ url_for('quiz_controller.gestionar_quizzes') }}">⬅ Volver a la lista de quizzes</a>
-    <hr>
 
-    <!-- === AGREGAR NUEVA PREGUNTA === -->
-    <section>
-        <h2>Agregar pregunta</h2>
-        <form method="POST" action="{{ url_for('quiz_pregunta_controller.gestionar_preguntas', quiz_id=quiz_id) }}">
-            <label for="pregunta">Pregunta:</label><br>
-            <input type="text" name="pregunta" required><br><br>
+    <div class="contenedor_general detail-card">
+        <!-- === AGREGAR NUEVA PREGUNTA === -->
+        <section>
+            <div class="contenedor_agregar">
+                <div class="contenedor_titulo_agregar">
+                    <h2 class="titulo_agregar">Agregar pregunta</h2>
+                </div>                
+                <div class="card-crema">
+                    <form method="POST" action="{{ url_for('quiz_pregunta_controller.gestionar_preguntas', quiz_id=quiz_id) }}">
+                        <div class="input_pregunta">
+                            <label for="pregunta">Pregunta:</label>
+                            <input type="text" id="pregunta" name="pregunta" required>
+                        </div>
+                        <div class="input_imagen">
+                            <label for="img_id">Imagen (desde biblioteca):</label>
+                            <select name="img_id">
+                                <option value="">-- Sin imagen --</option>
+                                {% for archivo in archivos %}
+                                    <option value="{{ archivo['ID'] }}">{{ archivo['Nombre'] }}.{{ archivo['Tipo'] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
 
-            <label for="img_id">Imagen (desde biblioteca):</label><br>
-            <select name="img_id">
-                <option value="">-- Sin imagen --</option>
-                {% for archivo in archivos %}
-                    <option value="{{ archivo['ID'] }}">{{ archivo['Nombre'] }}.{{ archivo['Tipo'] }}</option>
-                {% endfor %}
-            </select><br><br>
+                        <div class="contenedor_opciones">
+                            <label>Opciones: </label>
+                            <p class="texto_sugerencia">(Al menos debe llenar la opcion A y B)</p>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    A) <input type="text" name="opcion_a" required>
+                                    B) <input type="text" name="opcion_b" required>
+                                </div>
+                            </div>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    C) <input type="text" name="opcion_c">
+                                    D) <input type="text" name="opcion_d">
+                                </div>
+                            </div>
 
-            <label>Opciones:</label><br>
-            A) <input type="text" name="opcion_a" required><br>
-            B) <input type="text" name="opcion_b" required><br>
-            C) <input type="text" name="opcion_c"><br>
-            D) <input type="text" name="opcion_d"><br><br>
+                            <div class="contenedor_correcta">
+                                <label for="respuesta_correcta">Respuesta Correcta:</label>
+                                <select name="respuesta_correcta" required>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                </select>
+                            </div>
+                        </div>
 
-            <label for="respuesta_correcta">Respuesta Correcta:</label><br>
-            <select name="respuesta_correcta" required>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-            </select><br><br>
+                        <div class="add-actions">
+                            <button class="add-btn" type="submit">Agregar Pregunta</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
 
-            <button type="submit">Agregar Pregunta</button>
-        </form>
-    </section>
+        <!-- === LISTAR PREGUNTAS EXISTENTES === -->
+        <section>
+            <div class="contenedor_existentes">
+                <div class="contenedor_titulo_existentes">
+                    <h2 class="titulo_existente">Preguntas actuales</h2>
+                </div>
+                <div class="card-crema">
+                    {% if preguntas %}
+                        <ol>
+                            {% for p in preguntas %}
+                            <li class="fila_existente">
+                                <div class="cont_row gap">
+                                    <div class="cont_clm">
+                                        <div class="texto_pregunta_lista">
+                                            <strong>{{ p['PREGUNTA'] }}</strong>
+                                        </div>
+                                        {% if p['NOMBREIMAGEN'] %}
+                                            <p>Imagen: {{ p['NOMBREIMAGEN'] }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <ul>
+                                        <div class="cont_clm">
+                                            <div class="cont_row">
+                                                <li class="opcion_lista">A: {{ p['OPCION_A'] }}</li>
+                                                <li class="opcion_lista">B: {{ p['OPCION_B'] }}</li>
+                                            </div>
+                                            <div class="cont_row">
+                                                {% if p['OPCION_C'] %}<li class="opcion_lista">C: {{ p['OPCION_C'] }}</li>{% endif %}
+                                                {% if p['OPCION_D'] %}<li class="opcion_lista">D: {{ p['OPCION_D'] }}</li>{% endif %}
+                                            </div>
+                                        </div>
+                                    </ul>
+                                    <div class="cont_cntr">
+                                        <em>Respuesta Correcta: {{ p['RESPUESTA_CORRECTA'] }}</em>
+                                    </div>
+                                    
+                                    <div class="cont_cntr">
+                                        <form method="POST" action="{{ url_for('quiz_pregunta_controller.eliminar_pregunta', quiz_id=quiz_id, id_pregunta=p['ID']) }}" style="display:inline;">
+                                            <button class="cancel-btn" type="submit" onclick="return confirm('¿Eliminar esta pregunta?')">Eliminar</button>
+                                        </form>
+                                    </div>
 
-    <hr>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ol>
+                    {% else %}
+                        <p>No hay preguntas registradas aún.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
 
-    <!-- === LISTAR PREGUNTAS EXISTENTES === -->
-    <section>
-        <h2>Preguntas actuales</h2>
-        {% if preguntas %}
-            <ol>
-                {% for p in preguntas %}
-                    <li>
-                        <strong>{{ p['PREGUNTA'] }}</strong><br>
-                        {% if p['IMAGEN'] %}
-                            <p>{{ p['IMAGEN'] }}</p>
-                        {% endif %}
-                        <ul>
-                            <li>A: {{ p['OPCION_A'] }}</li>
-                            <li>B: {{ p['OPCION_B'] }}</li>
-                            {% if p['OPCION_C'] %}<li>C: {{ p['OPCION_C'] }}</li>{% endif %}
-                            {% if p['OPCION_D'] %}<li>D: {{ p['OPCION_D'] }}</li>{% endif %}
-                        </ul>
-                        <em>Respuesta Correcta: {{ p['RESPUESTA_CORRECTA'] }}</em><br>
-
-                        <form method="POST" action="{{ url_for('quiz_pregunta_controller.eliminar_pregunta', quiz_id=quiz_id, id_pregunta=p['ID']) }}" style="display:inline;">
-                            <button type="submit" onclick="return confirm('¿Eliminar esta pregunta?')">Eliminar</button>
-                        </form>
-                    </li>
-                {% endfor %}
-            </ol>
-        {% else %}
-            <p>No hay preguntas registradas aún.</p>
-        {% endif %}
-    </section>
 
 </body>
 </html>
